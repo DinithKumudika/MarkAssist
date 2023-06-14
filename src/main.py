@@ -11,12 +11,14 @@ from config import config
 # routes
 import routes.user as user_router
 import routes.paper as paper_router
+import routes.answer as answer_router
 
 from scripts.text import preprocess, compare
 
 app = FastAPI()
 app.include_router(user_router.router)
 app.include_router(paper_router.router)
+app.include_router(answer_router.router)
 
 @app.on_event("startup")
 async def startup_db_client():
