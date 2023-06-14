@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from fastapi.params import Body
 from bson.objectid import ObjectId
 
@@ -21,16 +21,16 @@ router = APIRouter(prefix="/answers")
 
 @router.get("/text/{paper_no}", response_description="extract answers as text")
 async def answer_to_text(paper_no):
-     images = helpers.get_images(os.path.join('./../data/images/', paper_no))
-     
+     answer_texts = []
+     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = config.settings.GOOGLE_APPLICATION_CREDENTIALS
      try:
+          images = helpers.get_images(os.path.join('./../data/images/', paper_no))
           save_path = os.path.join('./../data/answers/', paper_no)
           os.mkdir(save_path)
           
           client = vision.ImageAnnotatorClient()
      
           for img_idx, image in enumerate(images):
-               os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'./../venv/service_account.json'
                src_image = cv2.imread(image)
                screen_width = helpers.get_screen_width()
                screen_height = helpers.get_screen_height() 
@@ -55,15 +55,21 @@ async def answer_to_text(paper_no):
           for ans_idx, answer in enumerate(answers):
                helpers.save_image(answer, save_path, ans_idx, img_idx)
           
-          answer_images = helpers.get_images(save_path)
-          for i, image in enumerate(answer_images):
+          for i, image in enumerate(answers):
                scanned_text = helpers.read_text(client, image)
-          
-          return {"message": "OK"}
+               answer_texts.append({
+                    "question no": i+1, 
+                    "text": scanned_text
+               })
+          return {"status": status.HTTP_200_OK, "answers": answer_texts}
      except OSError:
-          return {"error": OSError}
+          return {"error": "os error"}
 
           
 @router.post('/{paper_no}', response_description="save extracted answers to the database")
 async def save_answers(paper_no):
-     pass
+     client = vision.ImageAnnotatorClient()
+     answer_path = os.path.join('./../data/answers/', paper_no)
+     answer_images = helpers.get_images(answer_path)
+     for i, image in enumerate(answer_images):
+          scanned_text = helpers.read_text(client, image)

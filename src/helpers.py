@@ -105,8 +105,8 @@ def read_text(client, image):
      response = client.document_text_detection(image=image)
      text = response.full_text_annotation.text
      return text
-     
-     
+
+
 def show_text(image, options):
      gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
      

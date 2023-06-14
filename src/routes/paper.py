@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from fastapi.params import Body
 from bson.objectid import ObjectId
 import cv2
@@ -25,7 +25,10 @@ async def get_all_papers():
      papers = papersEntity(papers_collection.find())
      if papers:
           return {"status": 200, "papers": papers}
-     raise HTTPException(404, "No papers to show")
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail="No papers to show"
+     )
 
 
 # get paper by id
@@ -34,7 +37,10 @@ async def get_by_id(paper_id):
      paper = paperEntity(papers_collection.find_one({"_id": ObjectId(paper_id)}))
      if paper:
           return {"paper": paper}
-     raise HTTPException(404, f"There is no paper with the id of{paper_id}")
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail=f"There is no paper with the id of{paper_id}"
+     )
 
 
 @router.get("/download/{paper_id}", response_description="Download paper from cloud storage")
@@ -62,7 +68,10 @@ async def download_paper(paper_id):
                }
           except OSError:
                return {"error": OSError}
-     raise HTTPException(404, f"There is no paper with the id of{paper_id}")
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail=f"There is no paper with the id of{paper_id}"
+     )
 
 
 @router.get("/user/{user_id}", response_description="Get papers by user id")
@@ -71,7 +80,10 @@ async def get_paper_by_uid(user_id):
      papers = papersEntity(papers_collection.find({"user": uid}))
      if papers:
           return {"papers": papers}
-     raise HTTPException(f"No papers related to user with id of {user_id}")
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail=f"No papers related to user with id of {user_id}"
+     )
 
 
 # add pdf page images to cloud storage and save in database
