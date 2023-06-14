@@ -19,13 +19,13 @@ $ python -m venv venv
 
 3. You also need to start your mongodb instance. See the `.env.sample` for configurations.
 
-5. goto src directory.
+4. goto src directory.
 
 ```console
 cd src
 ```
 
-6. Start the application:
+5. Start the application:
 
 ```console
 python main.py
