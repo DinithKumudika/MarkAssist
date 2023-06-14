@@ -10,15 +10,13 @@ from config import config
 
 # routes
 import routes.user as user_router
-
-# schemas
-from schemas.paper import paperEntity, papersEntity
-from schemas.answer import answerEntity, answersEntity
+import routes.paper as paper_router
 
 from scripts.text import preprocess, compare
 
 app = FastAPI()
 app.include_router(user_router.router)
+app.include_router(paper_router.router)
 
 @app.on_event("startup")
 async def startup_db_client():
@@ -37,10 +35,6 @@ async def home():
      return {
           "message": "marker assist API"
      }
-
-
-
-
 
 if __name__ == "__main__":
      uvicorn.run(

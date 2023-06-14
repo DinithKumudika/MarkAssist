@@ -4,6 +4,7 @@ from bson.objectid import ObjectId
 import cv2
 import numpy as np
 from google.cloud import vision
+import httpx
 
 import os
 
@@ -32,7 +33,29 @@ async def get_by_id(paper_id):
      return {"paper": paper}
 
 
-@router.get("papers/user/{user_id}", response_description="Get papers by user id")
+@router.get("/download/{paper_id}", response_description="Download paper from cloud storage")
+async def download_paper(paper_id):
+     paper = paperEntity(papers_collection.find_one({"_id": ObjectId(paper_id)}))
+     document_url = paper["paper_path"]
+     
+     async with httpx.AsyncClient() as client:
+          response = await client.get(document_url)
+          response.raise_for_status()
+          save_path = f"./../data/papers/{paper_id}.pdf"
+          with open(save_path, "wb") as file:
+               file.write(response.content)
+     
+     dir_path = os.path.join('./../data/images/', paper_id)
+     os.mkdir(dir_path)
+     images = helpers.convert_to_images(save_path, dir_path)
+
+     return {
+          "message": "ok", 
+          "paper_path": document_url
+     }
+
+
+@router.get("/user/{user_id}", response_description="Get papers by user id")
 async def get_paper_by_uid(user_id):
      uid = ObjectId(user_id)
      papers = papersEntity(papers_collection.find({"user": uid}))
@@ -49,7 +72,6 @@ async def create_images(payload: dict = Body(...)):
 @router.get("/{paper_id}/images")
 async def create_images(paper_id):
      paper = paperEntity(papers_collection.find_one({"_id": ObjectId(paper_id)}))
-     # uploads\\images\\79f48a54-27cf-4ef0-84ea-061e2e2c1f41.pdf
      paper_path = paper["paper_path"]
      filename = paper_path.split("\\")[-1]
      dir = filename.split(".pdf")[0]

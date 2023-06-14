@@ -10,7 +10,6 @@ from pytesseract import Output
 import os
 import io
 
-
 def get_screen_width():
      screen = screeninfo.get_monitors()[0]
      return screen.width
