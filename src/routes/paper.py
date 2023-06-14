@@ -8,8 +8,6 @@ import httpx
 
 import os
 
-from config import config
-
 from config.database import Database
 from models.paper import Paper
 from schemas.paper import paperEntity, papersEntity

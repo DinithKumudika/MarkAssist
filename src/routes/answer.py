@@ -55,7 +55,8 @@ async def answer_to_text(paper_no):
           for ans_idx, answer in enumerate(answers):
                helpers.save_image(answer, save_path, ans_idx, img_idx)
           
-          for i, image in enumerate(answers):
+          answer_images = helpers.get_images(save_path)
+          for i, image in enumerate(answer_images):
                scanned_text = helpers.read_text(client, image)
                answer_texts.append({
                     "question no": i+1, 
