@@ -6,14 +6,14 @@ from google.cloud import vision
 
 import os
 
-import config.config
+from config.config import settings
 import helpers
 
 class Answer(BaseModel):
      pass
 
 def extract_answers(paper_no):
-     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = config.settings.GOOGLE_APPLICATION_CREDENTIALS
+     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = settings.GOOGLE_APPLICATION_CREDENTIALS
      count = 0
      
      try:

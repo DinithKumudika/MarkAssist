@@ -11,14 +11,14 @@ class CommonSettings(BaseSettings):
      
 class ServerSettings(BaseSettings):
      HOST: str = "127.0.0.1"
-     PORT: int = env["PORT"]
+     PORT: int = env.get("PORT")
 
 class ServiceSettings(BaseSettings):
      GOOGLE_APPLICATION_CREDENTIALS: str = './../venv/service_account.json'
 
 class DatabaseSettings(BaseSettings):
-     DB_URI: str = env["MONGO_URI"]
-     DB_NAME: str = "test"
+     DB_URI: str = env.get("MONGO_URI")
+     DB_NAME: str = env.get("DB_NAME")
      
 class Settings(CommonSettings, ServerSettings, ServiceSettings, DatabaseSettings):
      pass

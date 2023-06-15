@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Body, HTTPException, status
+from typing import Optional
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
 
@@ -11,18 +12,30 @@ db = database.connect()
 users_collection = db["users"]
 router = APIRouter(prefix="/users")
 
-@router.get('/', response_description="Get all users")
-async def get_all():
+
+@router.get('/', response_description="Get users")
+async def get_all(limit: Optional[int] = None):
      users = usersEntity(users_collection.find())
      if users:
-          return {"status": status.HTTP_200_OK, "users": users}
+          return {
+               "status": status.HTTP_200_OK, 
+               "data": {
+                    "count": limit, 
+                    "users": users
+               }
+          }
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 
           detail="no users found"
      )
 
 
-@router.post("/create", response_description="Create new user")
+@router.post("/login", response_description="login a user")
+async def login():
+     pass
+
+
+@router.post("/register", response_description="Create new user")
 async def create_user(user: User = Body(...)):
      user = jsonable_encoder(user)
      new_user = users_collection.insert_one(user)
@@ -34,6 +47,7 @@ async def create_user(user: User = Body(...)):
           status_code=status.HTTP_400_BAD_REQUEST, 
           detail="couldn't create new user"
      )
+
 
 @router.get('/{id}', response_description="Get a user by id")
 async def get_by_id(id: str):
