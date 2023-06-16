@@ -11,16 +11,19 @@ class CommonSettings(BaseSettings):
      
 class ServerSettings(BaseSettings):
      HOST: str = "127.0.0.1"
-     PORT: int = env.get("PORT")
+     PORT: int = 8000
 
-class ServiceSettings(BaseSettings):
+class GoogleServiceSettings(BaseSettings):
      GOOGLE_APPLICATION_CREDENTIALS: str = './../venv/service_account.json'
+     FIREBASE_API_KEY: str = env.get('API_KEY')
+     FIRESTORE_BUCKET: str = env.get('STORAGE_BUCKET')
+
 
 class DatabaseSettings(BaseSettings):
      DB_URI: str = env.get("MONGO_URI")
-     DB_NAME: str = env.get("DB_NAME")
+     DB_NAME: str = "test"
      
-class Settings(CommonSettings, ServerSettings, ServiceSettings, DatabaseSettings):
+class Settings(CommonSettings, ServerSettings, DatabaseSettings, GoogleServiceSettings):
      pass
 
 settings = Settings()

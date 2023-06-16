@@ -1,23 +1,25 @@
 from pymongo import MongoClient
-from dotenv import dotenv_values
 
-from config import config
+from config.config import settings
 
 class Database:
      def __init__(self):
-          mongo_uri = config.settings.DB_URI
-          self.client = MongoClient(mongo_uri)
-     
-     def get_client(self):
-          return self.client
+          self.db_uri = settings.DB_URI
+          self.db_name = settings.DB_NAME
+          self.client = None
+          self.conn = None
      
      def connect(self):
           try:
-               self.client.admin.command('ping')
-               print("You successfully connected to MongoDB!")
-               db = self.client[config.settings.DB_NAME]
-               return db
+               self.client = MongoClient(self.db_uri)
+               return self.client[self.db_name]
           except Exception as e:
-               print(e)
+               raise ConnectionError(f"Error connecting to database: {e}") from e
+     
+     
+     def get_client(self):
+          if not self.client:
+               raise ConnectionError("Database client is not connected")
+          return self.client
 
 

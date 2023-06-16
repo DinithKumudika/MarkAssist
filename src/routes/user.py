@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Body, HTTPException, status
+from fastapi import APIRouter, Request, HTTPException, status 
 from typing import Optional
+from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
 
@@ -7,23 +8,19 @@ from config.database import Database
 from models.user import User
 from schemas.user import userEntity, usersEntity
 
-database = Database()
-db = database.connect()
-users_collection = db["users"]
-router = APIRouter(prefix="/users")
+router = APIRouter()
 
 
 @router.get('/', response_description="Get users")
-async def get_all(limit: Optional[int] = None):
-     users = usersEntity(users_collection.find())
+async def get_all(request: Request ,limit: Optional[int] = None):
+     users = usersEntity(request.app.mongodb["users"].find())
      if users:
-          return {
+          return JSONResponse({
                "status": status.HTTP_200_OK, 
                "data": {
-                    "count": limit, 
                     "users": users
                }
-          }
+          })
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 
           detail="no users found"
@@ -36,13 +33,16 @@ async def login():
 
 
 @router.post("/register", response_description="Create new user")
-async def create_user(user: User = Body(...)):
+async def create_user(request: Request, user: User):
      user = jsonable_encoder(user)
-     new_user = users_collection.insert_one(user)
-     user = usersEntity(users_collection.find_one({"_id": new_user.inserted_id}))
+     new_user = request.app.mongodb["users"].insert_one(user)
+     user = usersEntity(request.app.mongodb["users"].find_one({"_id": new_user.inserted_id}))
      
      if user:
-          return {"status": status.HTTP_200_OK, "user": user}
+          return JSONResponse({
+               "status": status.HTTP_200_OK, 
+               "user": user
+          }) 
      raise HTTPException(
           status_code=status.HTTP_400_BAD_REQUEST, 
           detail="couldn't create new user"
@@ -50,10 +50,13 @@ async def create_user(user: User = Body(...)):
 
 
 @router.get('/{id}', response_description="Get a user by id")
-async def get_by_id(id: str):
-     user = userEntity(users_collection.find_one({"_id": ObjectId(id)}))
+async def get_by_id(request: Request ,id: str):
+     user = userEntity(request.app.mongodb["users"].find_one({"_id": ObjectId(id)}))
      if user:
-          return {"status": status.HTTP_200_OK, "user": user}
+          return JSONResponse({
+               "status": status.HTTP_200_OK, 
+               "user": user
+          }) 
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 
           detail=f"couldn't find a user by id of {id}"

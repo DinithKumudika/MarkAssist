@@ -1,15 +1,34 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional
+
+def hash_password(password: str):
+     pass
+
 
 class User(BaseModel):
      firstName: str
      lastName: str
-     email: str
+     email: EmailStr
      password: str
      userType: str
      emailActive: bool
      isDeleted: bool
      
+     class Config:
+          schema_extra = {
+               "example": {
+                    "firstName": "Dinith",
+                    "lastName": "Kumudika",
+                    "email": "dinith1999@gmail.com",
+                    "password": "dinith@123",
+                    "userType": "student",
+                    "emailActive": False,
+                    "isDeleted": False
+               }
+          }
+
+
+class UserCreate(User):
      class Config:
           schema_extra = {
                "example": {
@@ -22,6 +41,8 @@ class User(BaseModel):
                     "isDeleted": False
                }
           }
-          
-class UpdateUser(BaseModel):
+
+
+class UserUpdate(BaseModel):
      pass
+
