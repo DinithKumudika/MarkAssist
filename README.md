@@ -33,7 +33,18 @@ cd src
 python main.py
 ```
 
-The starter listens on port 5000 on localhost
+The starter listens on port 8000 on localhost
+
+## Project structure
+
+main.py - FastAPI application instance, CORS configuration and api router
+api.py - handlers for routes
+config - app configuration and database connection
+crud - CRUD functions for types from models
+models - pydantic models that used in crud or route handlers
+routes - api endpoints
+schemas - defined schemas for querying database (MongoDB)
+utils - utility functions and classes
 
 ## License
 
