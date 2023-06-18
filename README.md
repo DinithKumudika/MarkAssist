@@ -6,7 +6,9 @@ RESTful API implementation for MarkAssist using FastAPI
 To use the application, follow the outlined steps:
 
 1. Clone this repository and create a virtual environment in it:
-
+```console
+git clone https://github.com/DinithKumudika/MarkAssist-API.git
+```
 ```console
 $ python -m venv venv
 ```
