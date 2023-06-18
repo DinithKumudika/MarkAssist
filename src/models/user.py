@@ -1,10 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 
-def hash_password(password: str):
-     pass
-
-
 class User(BaseModel):
      firstName: str
      lastName: str
@@ -27,6 +23,18 @@ class User(BaseModel):
                }
           }
 
+
+class UserLogin(BaseModel):
+     email: EmailStr
+     password: str
+     
+     class Config:
+          schema_extra = {
+               "example": {
+                    "email": "dinith1999@gmail.com",
+                    "password": "Dinith@123"
+               }
+          }
 
 class UserCreate(User):
      class Config:

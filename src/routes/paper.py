@@ -2,14 +2,10 @@ from fastapi import APIRouter, Body, HTTPException, Request, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
-import cv2
-import numpy as np
-from google.cloud import vision
 import httpx
 
 import os
 
-from config.database import Database
 from models.paper import Paper
 from schemas.paper import paperEntity, papersEntity
 import helpers

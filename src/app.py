@@ -5,12 +5,7 @@ from bson.objectid import ObjectId
 from typing import Optional
 
 from config.database import Database
-
-# routes
-import routes.user as user_router
-import routes.paper as paper_router
-import routes.answer as answer_router
-
+from api import router
 from scripts.text import preprocess, compare
 
 app = FastAPI()
@@ -25,16 +20,15 @@ app = FastAPI()
 #      allow_headers = ["*"]
 # )
 
-app.include_router(user_router.router, tags=["users"], prefix="/users")
-app.include_router(paper_router.router,  tags=["papers"], prefix="/papers")
-app.include_router(answer_router.router, tags=["answers"], prefix="/answers")
+# register routes
+app.include_router(router, prefix="/api_v1")
 
 @app.on_event("startup")
 async def startup_db_client():
      try:
           database = Database()
           app.mongodb = database.connect()
-          app.mongodb_client = database.get_client()
+          app.mongodb_client = database.get_client() 
           print("You successfully connected to MongoDB!")
      except ConnectionError as e:
           print(str(e))
