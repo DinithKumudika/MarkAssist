@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Request, HTTPException, status 
-from typing import Optional
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
@@ -26,10 +25,15 @@ async def register(request: Request, user: User):
      
      if user:
           return JSONResponse({
-               "status": status.HTTP_200_OK, 
+               "status": status.HTTP_201_CREATED, 
                "user": user
           }) 
      raise HTTPException(
           status_code=status.HTTP_400_BAD_REQUEST, 
           detail="couldn't create new user"
      )
+
+
+@router.get("/token", response_description="get OAuth2 Token")
+async def get_token():
+     pass

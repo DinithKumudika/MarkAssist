@@ -29,7 +29,7 @@ async def save_answers(request: Request, paper_no):
      answers = read_answers(paper_no)
      if answers:
           return JSONResponse({
-               "status": status.HTTP_201_OK, 
+               "status": status.HTTP_200_OK, 
                "answers": answers
           }) 
      else:
