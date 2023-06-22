@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 
 class User(BaseModel):
@@ -12,15 +12,13 @@ class UserBase(BaseModel):
      firstName: str
      lastName: str
      email: EmailStr
-     password: str
      
      class Config:
           schema_extra = {
                "example": {
                     "firstName": "Dinith",
                     "lastName": "Kumudika",
-                    "email": "dinith1999@gmail.com",
-                    "password": "$2a$10$8KkORxP4/YpPBarYGKd6VO6aohKYAaDQC/9ZYZImj0Yf71VHGfGEG"
+                    "email": "dinith1999@gmail.com"
                }
           }
 
@@ -38,9 +36,10 @@ class UserLogin(BaseModel):
           }
 
 class UserCreate(UserBase):
+     password: str
      userType: str
-     emailActive: bool
-     isDeleted: bool
+     emailActive: bool = Field(default=False)
+     isDeleted: bool = Field(default=False)
      class Config:
           schema_extra = {
                "example": {
@@ -54,7 +53,7 @@ class UserCreate(UserBase):
                }
           }
 
-class UserUpdate(BaseModel):
+class UserUpdate(UserBase):
      firsName: Optional[str]
      lastName: Optional[str]
      email: Optional[EmailStr]
