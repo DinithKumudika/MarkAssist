@@ -12,7 +12,7 @@ router = APIRouter()
 user_model = UserModel()
 
 
-@router.get('/', response_description="Get users", response_model=List[User])
+@router.get('/', response_description="Get users", response_model=List[User],status_code=status.HTTP_200_OK)
 async def read_users(request: Request, limit: Optional[int] = None):
      users = user_model.list_users(request)
      
@@ -24,7 +24,7 @@ async def read_users(request: Request, limit: Optional[int] = None):
      )
 
 
-@router.get('/{id}', response_description="Get a user by id", response_model=User)
+@router.get('/{id}', response_description="Get a user by id", response_model=User,status_code=status.HTTP_200_OK)
 async def get_by_id(request: Request ,id: str):
      user = user_model.by_id(request, id)
      if user:
@@ -35,7 +35,7 @@ async def get_by_id(request: Request ,id: str):
      )
 
 
-@router.delete('/{id}', response_description="delete a user")
+@router.delete('/{id}', response_description="delete a user",status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(request: Request, id: str):
      user = user_model.delete(request, id)
      if user:

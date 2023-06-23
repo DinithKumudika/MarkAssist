@@ -1,25 +1,24 @@
-from fastapi import APIRouter, Body, HTTPException, Request, status
+from fastapi import APIRouter, Body, HTTPException, Request, Response, status
 from fastapi.responses import JSONResponse
+from typing import List
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
 import httpx
 
 import os
 
-from models.paper import Paper
-from schemas.paper import paperEntity, papersEntity
+from models.paper import PaperModel
+from schemas.paper import Paper
 import helpers
 
 router = APIRouter()
+paper_model = PaperModel()
 
-@router.get("/", response_description="Get all papers")
+@router.get("/", response_description="Get all papers", response_model=List[Paper])
 async def get_all_papers(request: Request):
-     papers = papersEntity(request.app.mongodb["tickets"].find())
+     papers = paper_model.list_papers(request)
      if papers:
-          return JSONResponse({
-               "status": status.HTTP_200_OK, 
-               "papers": papers
-          }) 
+          return papers
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 
           detail="No papers to show"
@@ -27,14 +26,13 @@ async def get_all_papers(request: Request):
 
 
 # get paper by id
-@router.get("/{paper_id}", response_description="Get a paper by id")
+@router.get("/{paper_id}", response_description="Get a paper by id",response_model=Paper)
 async def get_by_id(request: Request, paper_id):
-     paper = paperEntity(request.app.mongodb["tickets"].find_one({"_id": ObjectId(paper_id)}))
+     # paper = paperEntity(request.app.mongodb["tickets"].find_one({"_id": ObjectId(paper_id)}))
+     paper = paper_model.paper_by_id(request,paper_id)
+
      if paper:
-          return JSONResponse({
-               "status": status.HTTP_200_OK, 
-               "paper": paper
-          }) 
+          return paper 
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 
           detail=f"There is no paper with the id of{paper_id}"
@@ -43,10 +41,12 @@ async def get_by_id(request: Request, paper_id):
 
 @router.get("/download/{paper_id}", response_description="Download paper from cloud storage")
 async def download_paper(request: Request, paper_id):
-     paper = paperEntity(request.app.mongodb["tickets"].find_one({"_id": ObjectId(paper_id)}))
+     # paper = paperEntity(request.app.mongodb["tickets"].find_one({"_id": ObjectId(paper_id)}))
+     paper = paper_model.paper_by_id(request,paper_id)
+     print("This is paper", paper)
      
      if paper:
-          document_url = paper["paper_path"]
+          document_url = paper["paper"]
      
           async with httpx.AsyncClient() as client:
                response = await client.get(document_url)
@@ -72,15 +72,13 @@ async def download_paper(request: Request, paper_id):
      )
 
 
-@router.get("/user/{user_id}", response_description="Get papers by user id")
+@router.get("/user/{user_id}", response_description="Get papers by user id",response_model=List[Paper])
 async def get_paper_by_uid(request: Request, user_id):
      uid = ObjectId(user_id)
-     papers = papersEntity(request.app.mongodb["tickets"].find({"user": uid}))
+     # papers = papersEntity(request.app.mongodb["tickets"].find({"user": uid}))
+     papers = paper_model.list_papers_by_user_id(request,uid)
      if papers:
-          return JSONResponse({
-               "status": status.HTTP_200_OK, 
-               "papers": papers
-          }) 
+          return papers 
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 
           detail=f"No papers related to user with id of {user_id}"
@@ -99,5 +97,7 @@ async def create_images(request:Request, payload: dict = Body(...)):
 
 @router.get("/{paper_id}/images")
 async def create_images(request:Request, paper_id):
-     paper = await paperEntity(request.app.mongodb["tickets"].find_one({"_id": ObjectId(paper_id)}))
-     paper_path = paper["paper_path"]
+     # paper = await paperEntity(request.app.mongodb["tickets"].find_one({"_id": ObjectId(paper_id)}))
+     paper_id =  ObjectId(paper_id)
+     paper = await paper_model.paper_by_id(request, paper_id)
+     paper_path = paper["paper"]
