@@ -1,37 +1,34 @@
-from fastapi import APIRouter, Request, Response, HTTPException, status 
-from typing import Optional
+from fastapi import APIRouter, Request, Response, HTTPException, status
+from bson.json_util import dumps
+from typing import Optional, List
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
 
-from models.user import User
-from schemas.user import userEntity, usersEntity
+from schemas.user import User
+from models.user import UserModel
 
 router = APIRouter()
+user_model = UserModel()
 
 
-@router.get('/', response_description="Get users")
+@router.get('/', response_description="Get users", response_model=List[User])
 async def read_users(request: Request, limit: Optional[int] = None):
-     users = usersEntity(request.app.mongodb["users"].find())
+     users = user_model.list_users(request)
+     
      if users:
-          return JSONResponse(
-               {"users": users}, 
-               status_code=status.HTTP_200_OK
-          )
+          return users 
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 
           detail="no users found"
      )
 
 
-@router.get('/{id}', response_description="Get a user by id")
+@router.get('/{id}', response_description="Get a user by id", response_model=User)
 async def get_by_id(request: Request ,id: str):
-     user = userEntity(request.app.mongodb["users"].find_one({"_id": ObjectId(id)}))
+     user = user_model.by_id(request, id)
      if user:
-          return JSONResponse(
-               {"user": user}, 
-               status_code= status.HTTP_200_OK
-          ) 
+          return user
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 
           detail=f"couldn't find a user by id of {id}"
@@ -40,9 +37,8 @@ async def get_by_id(request: Request ,id: str):
 
 @router.delete('/{id}', response_description="delete a user")
 async def delete_user(request: Request, id: str):
-     user = userEntity(request.app.mongodb["users"].find_one({"_id": ObjectId(id)}))
+     user = user_model.delete(request, id)
      if user:
-          deleted_user = request.app.mongodb["users"].find_one_and_delete({"_id": ObjectId(id)})
           return Response(status_code=status.HTTP_204_NO_CONTENT)
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND,

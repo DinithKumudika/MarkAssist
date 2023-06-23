@@ -1,59 +1,26 @@
-from pydantic import BaseModel, EmailStr, Field
+from fastapi import Request
+from bson.objectid import ObjectId
 from typing import Optional
+from config.database import Database
+from schemas.user import User
 
-class User(BaseModel):
-     id: str
-     firstName: str
-     lastName: str
-     email: EmailStr
+class UserModel():
+     collection: str = "users"
      
-
-class UserBase(BaseModel):
-     firstName: str
-     lastName: str
-     email: EmailStr
+     def get_collection(self, request: Request):
+          return request.app.mongodb[self.collection]
      
-     class Config:
-          schema_extra = {
-               "example": {
-                    "firstName": "Dinith",
-                    "lastName": "Kumudika",
-                    "email": "dinith1999@gmail.com"
-               }
-          }
-
-
-class UserLogin(BaseModel):
-     email: EmailStr
-     password: str
+     def list_users(self, request: Request) -> list:
+          users = list(self.get_collection(request).find())
+          for user in users:
+               user["id"] = str(user["_id"]) 
+          return users
      
-     class Config:
-          schema_extra = {
-               "example": {
-                    "email": "dinith1999@gmail.com",
-                    "password": "Dinith@123"
-               }
-          }
-
-class UserCreate(UserBase):
-     password: str
-     userType: str
-     emailActive: bool = Field(default=False)
-     isDeleted: bool = Field(default=False)
-     class Config:
-          schema_extra = {
-               "example": {
-                    "firstName": "Dinith",
-                    "lastName": "Kumudika",
-                    "email": "dinith1999@gmail.com",
-                    "password": "$2a$10$8KkORxP4/YpPBarYGKd6VO6aohKYAaDQC/9ZYZImj0Yf71VHGfGEG",
-                    "userType": "student",
-                    "emailActive": False,
-                    "isDeleted": False
-               }
-          }
-
-class UserUpdate(UserBase):
-     firsName: Optional[str]
-     lastName: Optional[str]
-     email: Optional[EmailStr]
+     def by_id(self, request: Request, id: str) -> User:
+          user = self.get_collection(request).find_one({"_id": ObjectId(id)})
+          if user:
+               user["id"] = str(user["_id"])
+               return user
+     
+     def delete(self, request: Request, id: str):
+          user = self.get_collection(request).find_one_and_delete({"_id": ObjectId(id)})
