@@ -43,13 +43,11 @@ api.py - handlers for routes
 
 config - app configuration and database connection
 
-crud - CRUD functions for types from models
-
-models - pydantic models that used in crud or route handlers
+models - database quering methods
 
 routes - api endpoints
 
-schemas - defined schemas for querying database (MongoDB)
+schemas - defined schemas for validate requests and responses
 
 utils - utility functions and classes
 
