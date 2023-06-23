@@ -6,7 +6,20 @@ class User(BaseModel):
      firstName: str
      lastName: str
      email: EmailStr
+     userType: str
+     isDeleted: bool
      
+     class Config:
+          schema_extra = {
+               "example": {
+                    "firstName": "Dinith",
+                    "lastName": "Kumudika",
+                    "email": "dinith1999@gmail.com",
+                    "userType": "student",
+                    "isDeleted": False
+               }
+          }
+
 
 class UserBase(BaseModel):
      firstName: str
@@ -35,6 +48,7 @@ class UserLogin(BaseModel):
                }
           }
 
+
 class UserCreate(UserBase):
      password: str
      userType: str
@@ -54,6 +68,6 @@ class UserCreate(UserBase):
           }
 
 class UserUpdate(UserBase):
-     firsName: Optional[str]
-     lastName: Optional[str]
-     email: Optional[EmailStr]
+     firsName: Optional[str] = None
+     lastName: Optional[str] = None
+     email: Optional[EmailStr] = None

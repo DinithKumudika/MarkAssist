@@ -25,7 +25,7 @@ async def read_users(request: Request, limit: Optional[int] = None):
 
 
 @router.get('/{id}', response_description="Get a user by id", response_model=User)
-async def get_by_id(request: Request ,id: str):
+async def get_by_id(request: Request , id: str):
      user = user_model.by_id(request, id)
      if user:
           return user

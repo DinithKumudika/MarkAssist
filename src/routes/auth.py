@@ -4,65 +4,53 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
 
-from schemas.user import User, UserLogin, UserCreate
+from models.user import UserModel
+from schemas.user import User, UserCreate
 from schemas.token import Token
 from utils.auth import generate_token
 from utils.hashing import Hasher
 
 router = APIRouter()
+user_model = UserModel()
 
-@router.post("/login", response_description="login a user", response_model=Token)
+@router.post("/token", response_description="get OAuth2 Token", response_model=Token)
 async def login(request: Request, payload: OAuth2PasswordRequestForm = Depends()):
-     user = userEntity(request.app.mongodb["users"].find_one({"email": payload.username}))
+     user = user_model.by_email(request, payload.username)
      if not user:
           raise HTTPException(
-               status_code=status.HTTP_403_FORBIDDEN, 
+               status_code=status.HTTP_401_UNAUTHORIZED, 
                detail= "Invalid credentials"
           )
      if not Hasher.verify_password(payload.password, user["password"]):
           raise HTTPException(
-               status_code=status.HTTP_403_FORBIDDEN, 
+               status_code=status.HTTP_401_UNAUTHORIZED, 
                detail= "Invalid credentials"
           )
      
      token = generate_token({
                "user_id": user["id"], 
-               "username": user["email"]
+               "username": user["email"],
+               "user_role": user["userType"]
           })
      
-     return JSONResponse(
-          {
-               "token": token, 
-               "token_type": "bearer"
-          }, 
-          status_code=status.HTTP_200_OK
-     )
+     return Token(token=token, token_type="bearer")
 
 
 @router.post("/register", response_description="Create new user")
-async def register(request: Request, payload: UserCreate = Body()):
-     user = usersEntity(request.app.mongodb["users"].find_one({"email": UserCreate.email}))
+async def register(request: Request, payload: UserCreate = Body()) -> User:
+     user = user_model.by_email(request, payload.email)
      if user:
-          return JSONResponse(
-               {"message": "user already exists"}, 
-               status_code=status.HTTP_200_OK
+          raise HTTPException(
+               status_code=status.HTTP_400_BAD_REQUEST, 
+               detail="user already exists"
           )
-          
      payload.password = Hasher.get_password_hash(payload.password)
-     new_user = request.app.mongodb["users"].insert_one(payload)
-     user = request.app.mongodb["users"].find_one({"_id": new_user.inserted_id})
+     new_user_id = user_model.create_user(payload)
+     user = user_model.by_id(new_user_id)
      
      if user:
-          return JSONResponse(
-               {"user": user}, 
-               status_code= status.HTTP_201_CREATED
-          ) 
+          return user
      raise HTTPException(
           status_code=status.HTTP_400_BAD_REQUEST, 
           detail="couldn't create new user"
      )
-
-
-@router.get("/token", response_description="get OAuth2 Token")
-async def get_token():
-     pass

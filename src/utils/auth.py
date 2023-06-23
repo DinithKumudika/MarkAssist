@@ -4,13 +4,15 @@ from jose import jwt, JWTError
 
 from datetime import datetime, timedelta
 
+from models.user import UserModel
+from schemas.user import User
 from schemas.token import TokenData
 from config.config import settings
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 def generate_token(data:dict):
      to_encode = data.copy()
@@ -25,25 +27,39 @@ def generate_token(data:dict):
 def verify_token(token:str, credentials_exception):
      try:
           payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
-          id:str = payload.get("user_id")
-          username:str = payload.get("username")
           
-          if id is None or username is None:
+          id: str = payload.get("user_id")
+          username: str = payload.get("username")
+          user_role: str = payload.get("user_role")
+          
+          if id is None or username is None or user_role is None:
                raise credentials_exception
           
-          token_data = TokenData(user_id=id, username=username)
+          token_data = TokenData(id, username, user_role)
      except JWTError:
           raise credentials_exception
      
      return token_data
 
 
-def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(request: Request, token: str = Depends(oauth2_scheme)):
      credentials_exception= HTTPException(
           status_code=status.HTTP_401_UNAUTHORIZED, 
           detail="Could not validate credentials",
           headers={"WWW-Authenticate": "Bearer"},
      )
      token_data = verify_token(token, credentials_exception)
-     
-     
+     user_model = UserModel()
+     user = user_model.by_id(request, token_data.user_id)
+     if user is None:
+          raise credentials_exception
+     return user
+
+
+async def get_current_active_user(request: Request, current_user: User = Depends(get_current_user)):
+     if current_user.isDeleted:
+          raise HTTPException(
+               status_code=status.HTTP_400_BAD_REQUEST, 
+               detail="inactive user"
+          )
+     return current_user

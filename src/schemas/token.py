@@ -7,3 +7,4 @@ class Token(BaseModel):
 class TokenData(BaseModel):
      user_id: str
      username: EmailStr
+     user_role: str
