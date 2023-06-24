@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Body, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Body, HTTPException, Request, Response, status, UploadFile, File,Form
 from fastapi.responses import JSONResponse
 from typing import List
+from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
 import httpx
 
@@ -62,22 +63,20 @@ async def download_paper(request: Request, paper_id, current_user: User = Depend
                     "images_created": len(images)
                }) 
           except OSError:
-               raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-                    detail="Cannot download paper"
-               )
+               return {"error": OSError}
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 
           detail=f"There is no paper with the id of{paper_id}"
      )
 
 
-@router.get("/user/{user_id}", response_description="Get papers by user id", response_model=List[Paper])
+@router.get("/user/{user_id}", response_description="Get papers by user id",response_model=List[Paper])
 async def get_paper_by_uid(request: Request, user_id):
      uid = ObjectId(user_id)
-     papers = paper_model.by_user_id(request, uid)
+     # papers = papersEntity(request.app.mongodb["tickets"].find({"user": uid}))
+     papers = paper_model.list_papers_by_user_id(request,uid)
      if papers:
-          return papers
+          return papers 
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 
           detail=f"No papers related to user with id of {user_id}"
@@ -96,6 +95,21 @@ async def create_images(request:Request, payload: dict = Body(...)):
 
 @router.get("/{paper_id}/images")
 async def create_images(request:Request, paper_id):
+     # paper = await paperEntity(request.app.mongodb["tickets"].find_one({"_id": ObjectId(paper_id)}))
      paper_id =  ObjectId(paper_id)
-     paper = await paper_model.by_id(request, paper_id)
+     paper = await paper_model.paper_by_id(request, paper_id)
      paper_path = paper["paper"]
+     
+@router.post('/upload/file/')
+async def upload_files(request: Request, file: UploadFile = File(...)):
+    paper_url = await upload_file(file, file.filename)
+#     marking_url = await upload_file(files[1], files[1].filename)
+    
+    data = {
+        "status": 200,
+        "message": "File uploaded successfully",
+        "paper_url": paper_url
+    }
+
+
+    return data

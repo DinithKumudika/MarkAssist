@@ -6,7 +6,7 @@ import axios from 'axios'
 function SubjectsPage() {
   const allItems=JSON.parse(localStorage.getItem('token'));
   const user_id=allItems['_id'];
-  const userType = allItems['userType'];
+  const userType = allItems['user_role'];
   const [isClicked,setClick] = useState("outer");
   const [subjects,setSubjects] = useState([]);
 
@@ -24,11 +24,13 @@ function SubjectsPage() {
       //****Methana subjects code eken group karaganna oona
       let response = {}
       if(userType==="admin"){
-        response = await axios.get(`http://localhost:5000/api/subjects/${user_id}`,config);
+        response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`);
       }else if(userType==="teacher"){
-        response = await axios.get(`http://localhost:5000/api/subjects/${user_id}`,config);
+        console.log(user_id);
+        response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`);
       }
       const data = response.data;
+      console.log(data);
       setSubjects(data);
     }catch(error){
       console.log(error);
