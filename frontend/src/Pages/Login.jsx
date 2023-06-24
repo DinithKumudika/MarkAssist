@@ -35,7 +35,7 @@ function Login(){
         event.preventDefault();
         // console.log(formData);
         try{
-            const response = await axios.post('http://localhost:5000/api/users/login',formData);
+            const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/token',formData);
             // console.log(response.data);
             localStorage.setItem('token', JSON.stringify(response.data));
             const allItems=JSON.parse(localStorage.getItem('token'));

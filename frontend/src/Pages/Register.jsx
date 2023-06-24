@@ -41,7 +41,7 @@ function Register(){
         }else{
             console.log(formData);
             try{
-                const response = await axios.post('http://localhost:5000/api/users/',formData);
+                const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/register',formData);
                 console.log(response.data); 
                 navigate('/login');
             }catch(error){
