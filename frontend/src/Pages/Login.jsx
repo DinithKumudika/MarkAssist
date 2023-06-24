@@ -6,6 +6,8 @@ import InputField from '../Components/InputField';
 import SubmitButton from '../Components/SubmitButton';
 import classnames from 'classnames';
 import axios from 'axios';
+// import jwt_decode from "jsonwebtoken";
+import jwt_decode from "jwt-decode";
 function Login(){
     const navigate = useNavigate();
 
@@ -16,11 +18,11 @@ function Login(){
     }
 
     const [formData , setFormData] = useState({
-        email: '',
+        username: '',
         password: '',
     });
 
-    const { email, password } = formData;
+    const { username, password } = formData;
 
     const [error, setError] = useState();
 
@@ -34,17 +36,21 @@ function Login(){
     const handleSubmit = async (event)=>{
         event.preventDefault();
         // console.log(formData);
+        const formdata = new FormData();
+        formdata.append('username', formData.username);
+        formdata.append('password', formData.password);
         try{
-            const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/token',formData);
-            // console.log(response.data);
-            localStorage.setItem('token', JSON.stringify(response.data));
-            const allItems=JSON.parse(localStorage.getItem('token'));
-            // console.log(allItems['userType']);
-            if(allItems['userType']==="student"){
+            const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/token',formdata);
+            
+            const allItems=jwt_decode(response.data.token);
+            // console.log(allItems);
+            localStorage.setItem('token', JSON.stringify(allItems));
+            console.log(localStorage.getItem('token'));
+            if(allItems['user_role']==="student"){
                 navigate('/subjects');
-            }else if(allItems['userType']==="teacher"){
+            }else if(allItems['user_role']==="teacher"){
                 navigate('/subjects');
-            }else if(allItems['userType']==="admin"){
+            }else if(allItems['user_role']==="admin"){
                 navigate('/admin/dashboard');
             }
 
@@ -75,7 +81,7 @@ function Login(){
                 <div className="w-full">
                     <form className="flex flex-col items-center justify-center w-full" onSubmit={handleSubmit}>
                         {error && <div className="bg-red-500 text-white text-sm mb-2 w-full p-2 rounded text-center mb-6">{error}</div>}
-                        <input className={classes} name="email" type="email" value={email} placeholder="E-mail address" onChange={onChange}/>
+                        <input className={classes} name="username" type="email" value={username} placeholder="E-mail address" onChange={onChange}/>
                         <input className={classes} name="password" type="password" value={password} placeholder="Confirm password" onChange={onChange}/>
                         <SubmitButton type="submit">Continue</SubmitButton>
                     </form>

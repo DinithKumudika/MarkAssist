@@ -17,7 +17,7 @@ class UserModel():
           return users
      
      def create_user(self, request: Request, user: UserCreate):
-          new_user = self.get_collection(request).insert_one(user)
+          new_user = self.get_collection(request).insert_one(user.dict())
           
           if new_user:
                return new_user.inserted_id

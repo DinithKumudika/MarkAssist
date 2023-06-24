@@ -20,7 +20,10 @@ function Register(){
         lastName: '',
         email: '',
         password: '',
+        userType: 'student',
         confirmPassword: '',
+        emailActive : false,
+        isDeleted : false,
     });
     
     const [error, setError] = useState();
@@ -39,7 +42,15 @@ function Register(){
         if(password !== confirmPassword){
             setError("Passwords do not match");
         }else{
-            console.log(formData);
+            // console.log(formData);
+            const formdata = new FormData();
+            formdata.append('firstName', formData.firstName);
+            formdata.append('lastName', formData.lastName);
+            formdata.append('email', formData.email);
+            formdata.append('password', formData.password);
+            formdata.append('userType', 'student');
+            formdata.append('emailActive', false);
+            formdata.append('isDeleted', false);
             try{
                 const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/register',formData);
                 console.log(response.data); 

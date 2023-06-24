@@ -52,8 +52,8 @@ class UserLogin(BaseModel):
 class UserCreate(UserBase):
      password: str
      userType: str
-     emailActive: bool = Field(default=False)
-     isDeleted: bool = Field(default=False)
+     emailActive: bool
+     isDeleted: bool
      class Config:
           schema_extra = {
                "example": {

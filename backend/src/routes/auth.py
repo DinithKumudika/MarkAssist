@@ -15,6 +15,7 @@ user_model = UserModel()
 
 @router.post("/token", response_description="get OAuth2 Token", response_model=Token)
 async def login(request: Request, payload: OAuth2PasswordRequestForm = Depends()):
+     print(payload)
      user = user_model.by_email(request, payload.username)
      if not user:
           raise HTTPException(
@@ -38,17 +39,20 @@ async def login(request: Request, payload: OAuth2PasswordRequestForm = Depends()
 
 @router.post("/register", response_description="Create new user")
 async def register(request: Request, payload: UserCreate = Body()) -> User:
+     print("Data:",payload.password)
      user = user_model.by_email(request, payload.email)
+     print("Hello")
      if user:
           raise HTTPException(
                status_code=status.HTTP_400_BAD_REQUEST, 
                detail="user already exists"
           )
      payload.password = Hasher.get_password_hash(payload.password)
-     new_user_id = user_model.create_user(payload)
-     user = user_model.by_id(new_user_id)
+     new_user_id = user_model.create_user(request,payload)
+     user = user_model.by_id(request,new_user_id)
      
      if user:
+          print(user)
           return user
      raise HTTPException(
           status_code=status.HTTP_400_BAD_REQUEST, 
