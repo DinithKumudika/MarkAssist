@@ -7,7 +7,10 @@ import axios from 'axios'
 function AnswerSheetsPage() {
   const { year,subjectId} = useParams()
   const allItems=JSON.parse(localStorage.getItem('token'));
-  const user_id=allItems['_id'];
+  if(!allItems){
+    window.location.href="/";
+  }
+  const user_id=allItems['user_id'];
   const [isClicked,setClick] = useState("outer");
   const [markingScheme,setMarkingScheme] = useState([]);
 

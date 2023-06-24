@@ -5,7 +5,10 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 function SubjectsPage() {
   const allItems=JSON.parse(localStorage.getItem('token'));
-  const user_id=allItems['_id'];
+  if(!allItems){
+    window.location.href="/";
+  }
+  const user_id=allItems['user_id'];
   const userType = allItems['user_role'];
   const [isClicked,setClick] = useState("outer");
   const [subjects,setSubjects] = useState([]);
@@ -26,11 +29,11 @@ function SubjectsPage() {
       if(userType==="admin"){
         response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`);
       }else if(userType==="teacher"){
-        console.log(user_id);
+        // console.log(user_id);
         response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`);
       }
       const data = response.data;
-      console.log(data);
+      // console.log(data);
       setSubjects(data);
     }catch(error){
       console.log(error);

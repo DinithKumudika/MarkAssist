@@ -13,7 +13,7 @@ function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onC
   //Gets details from local storage
   const allItems=JSON.parse(localStorage.getItem('token'));
   const userType=allItems['user_role'];
-  console.log(userType);
+  // console.log(userType);
   
   const currentURL = window.location.href;
   const location = useLocation();

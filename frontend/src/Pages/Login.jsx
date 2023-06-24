@@ -45,7 +45,7 @@ function Login(){
             const allItems=jwt_decode(response.data.token);
             // console.log(allItems);
             localStorage.setItem('token', JSON.stringify(allItems));
-            console.log(localStorage.getItem('token'));
+            // console.log(localStorage.getItem('token'));
             if(allItems['user_role']==="student"){
                 navigate('/subjects');
             }else if(allItems['user_role']==="teacher"){
@@ -83,7 +83,7 @@ function Login(){
                         {error && <div className="bg-red-500 text-white text-sm mb-2 w-full p-2 rounded text-center mb-6">{error}</div>}
                         <input className={classes} name="username" type="email" value={username} placeholder="E-mail address" onChange={onChange}/>
                         <input className={classes} name="password" type="password" value={password} placeholder="Confirm password" onChange={onChange}/>
-                        <SubmitButton type="submit">Continue</SubmitButton>
+                        <SubmitButton type="submit" classes="rounded">Continue</SubmitButton>
                     </form>
                 </div>
                 <div className="text-sm text-slate-500 mt-7">Don't have an account?</div>

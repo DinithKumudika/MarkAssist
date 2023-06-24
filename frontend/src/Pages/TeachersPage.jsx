@@ -1,39 +1,39 @@
 import NavBar from '../Components/NavBar'
 import SideBar from '../Components/SideBar'
-import Years from '../Components/Years'
-
-import { useParams, useNavigate } from 'react-router-dom'
+import Subjects from '../Components/Subjects/Subjects'
+import Teachers from '../Components/Teachers'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
-function YearsPage() {
-  const { subjectCode } = useParams()
+function TeachersPage() {
   const allItems=JSON.parse(localStorage.getItem('token'));
   if(!allItems){
     window.location.href="/";
   }
   const user_id=allItems['user_id'];
+  const userType = allItems['user_role'];
   const [isClicked,setClick] = useState("outer");
-  const [years,setYears] = useState([]);
+  const [subjects,setSubjects] = useState([]);
 
   useEffect(()=>{
-    fetchYears();
+    fetchSubjects();
   },[]);
 
-  const fetchYears = async () =>{
+  const fetchSubjects = async () =>{
     try{
       const config = {
         headers: {
           Authorization: `Bearer ${allItems['token']}`,
         },
       }
-      const response = await axios.get(`http://localhost:5000/api/subjects/years/${user_id}/${subjectCode}`,config);
+      //****Methana subjects code eken group karaganna oona
+      const response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`);
       const data = response.data;
-      setYears(data);
+      // console.log(data);
+      setSubjects(data);
     }catch(error){
       console.log(error);
     }
   }
-
   //Function to handle the click of the hamburger menu
   const handleClick = () => {
     if(isClicked==="outer"){
@@ -46,11 +46,11 @@ function YearsPage() {
 
   return (
     <div>
-      <NavBar black />
+      <NavBar black onClickFunc={handleClick}/>
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
-      <Years clicked={isClicked} data={years}/>
+      <Teachers clicked={isClicked} data={subjects}/>
     </div>
   )
 }
 
-export default YearsPage
+export default TeachersPage
