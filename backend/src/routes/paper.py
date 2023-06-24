@@ -106,14 +106,15 @@ async def create_images(request:Request, paper_id):
      paper_path = paper["paper"]
      
 @router.post('/upload/file/')
-async def upload_files(request: Request, files: List[UploadFile] = File(...), text_data: str = Form(...)):
-    paper_url = await upload_file(files[0], files[0].filename)
-    marking_url = await upload_file(files[1], files[1].filename)
+async def upload_files(request: Request, file: UploadFile = File(...)):
+    paper_url = await upload_file(file, file.filename)
+#     marking_url = await upload_file(files[1], files[1].filename)
     
-    return JSONResponse({
+    data = {
         "status": 200,
         "message": "File uploaded successfully",
-        "paper_url": paper_url,
-        "marking_url":marking_url
-        
-    })
+        "paper_url": paper_url
+    }
+
+
+    return data
