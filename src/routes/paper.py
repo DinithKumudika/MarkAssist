@@ -1,11 +1,14 @@
-from fastapi import APIRouter, Body, HTTPException, Request, Response, status
+from fastapi import APIRouter, Body, HTTPException, Request, Response, status, UploadFile, File,Form
 from fastapi.responses import JSONResponse
 from typing import List
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
 import httpx
+from utils.firebase_storage import upload_file
 
 import os
+import time
+import uuid
 
 from models.paper import PaperModel
 from schemas.paper import Paper
@@ -101,3 +104,16 @@ async def create_images(request:Request, paper_id):
      paper_id =  ObjectId(paper_id)
      paper = await paper_model.paper_by_id(request, paper_id)
      paper_path = paper["paper"]
+     
+@router.post('/upload/file/')
+async def upload_files(request: Request, files: List[UploadFile] = File(...), text_data: str = Form(...)):
+    paper_url = await upload_file(files[0], files[0].filename)
+    marking_url = await upload_file(files[1], files[1].filename)
+    
+    return JSONResponse({
+        "status": 200,
+        "message": "File uploaded successfully",
+        "paper_url": paper_url,
+        "marking_url":marking_url
+        
+    })
