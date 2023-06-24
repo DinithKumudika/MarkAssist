@@ -1,0 +1,95 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+
+/* .nav{
+    position: relative;
+    background-color: #FFFFFF;
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 2px;
+    padding-right: 10rem;
+  
+  height: 110px;
+
+}
+
+.vector1-image{
+   margin-top: 15vh;
+   width: 90vw;
+   
+   height: 2px;
+   
+
+}
+.topbar-link1{
+    position: absolute;
+    margin: 50px;
+    
+    padding: 0px;
+
+    left: 500px;
+    font-size: 17px;
+    font-weight: 700;
+    color: black;
+
+}
+.topbar-link2{
+    position: absolute;
+    margin: 50px;
+    padding: 0px;
+    left: 650px;
+    font-size: 17px;
+    font-weight: 700;
+    color: black
+}
+.topbar-link3{
+    position: absolute;
+    margin: 50px;
+    padding: 0px;
+    left: 800px;
+    font-size: 17px;
+    font-weight: 700;
+    color: black
+}
+.logo-image{
+    position: absolute;
+    width: 297px;
+    height: 48px;
+    left: 52px;
+    top: 24px;
+}
+.topbar-link4{
+    position: absolute;
+    margin: 50px;
+    padding: 0px;
+    right: 300px;
+    font-size: 17px;
+    font-weight: 700;
+    color: black
+}
+.topbar-link5{
+    position: absolute;
+    margin: 40px;
+    
+    padding: 12px 28px;
+    padding-right: 50px;
+    right: 80px;
+    background-color: blue;
+    border-radius: 39px;
+    color: #F5F5F5;
+    font-size: 17px;
+    font-weight: 700;
+}
+.arrow-icon{
+    position: absolute;
+    margin: 40px;
+    padding: 0px;
+    left: 85px;
+    bottom: -33px;
+    height: 29px;
+    width: 29px;
+} */
