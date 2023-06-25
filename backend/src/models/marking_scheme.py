@@ -48,13 +48,14 @@ class MarkingSchemeModel():
           return marking_schemes
      
 
-     def add_new_marking(self, request: Request, marking: MarkingSchemeCreate) -> MarkingScheme:
+     async def add_new_marking(self, request: Request, marking: MarkingSchemeCreate) -> MarkingScheme:
           new_marking = self.get_collection(request).insert_one(marking.dict())
           inserted_id = new_marking.inserted_id
           inserted_marking = self.get_collection(request).find_one({"_id": inserted_id})
           if inserted_marking:
                inserted_marking["id"] = str(inserted_marking["_id"])
                inserted_marking["subjectId"] = str(inserted_marking["subjectId"])
+               # print("This is id",str(inserted_id));   
                return inserted_marking
           return None
      
