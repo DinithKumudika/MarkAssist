@@ -45,3 +45,15 @@ async def delete_subject(request: Request, id: str):
           status_code=status.HTTP_404_NOT_FOUND,
           detail= f"no subject with the id of {id}"
      )
+     
+@router.get('/teacher/{id}', response_description="Get subjects by teacher id",response_model= List[Subject],status_code=status.HTTP_200_OK)
+async def get_subjects_by_teacher_id(request: Request, id: str):
+     subjects = subject_model.get_subject_teacher(request, id)
+     # subjects = list(subjects)
+     # print ("This is subjects",(subjects))
+     if subjects:
+          return subjects
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND,
+          detail= f"no subjects with the teacher id of {id}"
+     )

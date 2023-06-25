@@ -6,7 +6,7 @@ class Subject(BaseModel):
      subjectCode:str
      subjectName:str
      year:int
-     lectureId:str
+     teacherId:str
      semester:int
      academicYear:int
            
@@ -17,7 +17,7 @@ class Subject(BaseModel):
             "subjectCode": "SCS2213",
             "subjectName":"DSA",
             "year": 2022,
-            "lectureId": "64873b4029eb156b34979ab0",
+            "teacherId": "64873b4029eb156b34979ab0",
             "semester":2 ,
             "academicYear":2,
             }
