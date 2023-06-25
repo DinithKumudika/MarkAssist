@@ -26,3 +26,35 @@ class SubjectModel():
      
      def delete_subject(self, request: Request, id: str):
           subject = self.get_collection(request).find_one_and_delete({"_id": ObjectId(id)})
+          
+     def get_subject_teacher(self, request: Request, id: str) -> list:
+          teacher_id = ObjectId(id)
+
+          subjects = self.get_collection(request).aggregate([
+               { 
+                    "$match": { 
+                         "teacherId": teacher_id 
+                         }
+               },
+               { 
+                    "$sort": { 
+                         "createdDate": 1 
+                         }
+               },
+               {
+                    "$group": {
+                         "_id": "$teacherId",
+                         "subjects": { "$push": "$$ROOT" }
+                    }
+               }
+          ])
+
+          # Convert ObjectId to string for compatibility with the existing code
+          for subject in subjects:
+               subject["_id"] = str(subject["_id"])
+               for sub in subject["subjects"]:
+                    sub["id"] = str(sub["_id"])
+                    sub["teacherId"] = str(sub["teacherId"])
+          new_subjects = subject['subjects']
+          print("This is new_subjects",new_subjects)
+          return new_subjects

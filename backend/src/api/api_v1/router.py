@@ -5,6 +5,7 @@ from api.api_v1.endpoints import auth
 from api.api_v1.endpoints import subject
 from api.api_v1.endpoints import paper
 from api.api_v1.endpoints import answer
+from api.api_v1.endpoints import marking_scheme
 
 router = APIRouter()
 
@@ -14,3 +15,4 @@ router.include_router(user.router, tags=["users"], prefix="/users")
 router.include_router(paper.router,  tags=["papers"], prefix="/papers")
 router.include_router(answer.router, tags=["answers"], prefix="/answers")
 router.include_router(subject.router, tags=["subjects"], prefix="/subjects")
+router.include_router(marking_scheme.router, tags=["marking_schemes"], prefix="/markings")
