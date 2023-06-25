@@ -6,6 +6,7 @@ from routes.user import router as user_router
 from routes.paper import router as paper_router
 from routes.answer import router as answer_router
 from routes.subject import router as subject_router
+from routes.marking_scheme import router as marking_scheme_router
 
 router = APIRouter()
 
@@ -15,3 +16,4 @@ router.include_router(user_router, tags=["users"], prefix="/users")
 router.include_router(paper_router,  tags=["papers"], prefix="/papers")
 router.include_router(answer_router, tags=["answers"], prefix="/answers")
 router.include_router(subject_router, tags=["subjects"], prefix="/subjects")
+router.include_router(marking_scheme_router, tags=["marking_schemes"], prefix="/markings")

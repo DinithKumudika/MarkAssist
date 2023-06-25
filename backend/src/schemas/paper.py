@@ -8,3 +8,8 @@ class Paper(BaseModel):
      paper:str
      markingScheme:str
      status:str
+     # id: str
+     # subject:id
+     # user:str
+     # file_name_orginal:str,
+     # paper_url:str
