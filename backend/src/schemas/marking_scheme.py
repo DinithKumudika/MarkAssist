@@ -1,10 +1,11 @@
 from pydantic import BaseModel, Field
+from fastapi import UploadFile,File
 from typing import Optional
 
 class MarkingScheme(BaseModel):
      id: str
-     subjectCode:str
-     subjectName:str
+     subjectCode:str|None
+     subjectName:str|None
      year:int
      subjectId:str
      markingUrl:str
@@ -36,6 +37,20 @@ class MarkingSchemeCreate(BaseModel):
             "year": 2022,
             "subjectId": "64873b4029eb156b34979ab0",
             "markingUrl":"https://firebasestorage.googleapis.com/v0/b/papermarkin.appspot.com/o/",
+            }
+        }
+        
+class MarkingSchemeForm(BaseModel):
+     file: UploadFile = File(...)
+     year:int
+     subjectId:str
+           
+     class Config:
+        schema_extra = {
+        "example": {
+            "file":"Upload a file",
+            "year": 2022,
+            "subjectId": "64873b4029eb156b34979ab0",
             }
         }
         

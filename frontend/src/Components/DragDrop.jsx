@@ -47,12 +47,17 @@ function DragDrop({children,closeFunc}) {
     const formData = new FormData()
     files.forEach(file => formData.append('file', file))
     console.log(formData)
+    
 
     let response = []
     try{
       if(pathName[0]==="markingschemes"){
-        response = axios.post(`http://127.0.0.1:8000/api_v1/papers/upload/file`,formData);
+        formData.append('year', year);
+        formData.append('subjectId',subjectId);
+        response = axios.post(`http://127.0.0.1:8000/api_v1/markings`,formData);
       }else if(pathName[0]==="answersheets"){
+        formData.append('year', year);
+        formData.append('subjectId',subjectId);
         response = axios.post(`http://127.0.0.1:8000/api_v1/papers/upload/file`,formData);
       }
       console.log(response);
