@@ -1,16 +1,22 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from beanie import init_beanie
 
-from bson.objectid import ObjectId
-from typing import Optional
-
+from models.user import User
+from config.config import settings
 from config.database import Database
-from api import router
-from scripts.text import preprocess, compare
+from api.api_v1.router import router
 
-app = FastAPI()
 
-origins = ['http://localhost:3000']
+app = FastAPI(
+     title=settings.APP_NAME, 
+     version=settings.API_VERSION
+)
+
+origins = [
+     'http://localhost:3000', 
+     'http://localhost:5000'
+]
 
 app.add_middleware(
      CORSMiddleware,
@@ -21,14 +27,23 @@ app.add_middleware(
 )
 
 # register routes
-app.include_router(router, prefix="/api_v1")
+app.include_router(router, prefix=settings.API_VERSION_STR)
 
 @app.on_event("startup")
-async def startup_db_client():
+async def app_init():
+     """
+          initialise crucial application services
+     """
      try:
           database = Database()
-          app.mongodb = database.connect()
-          app.mongodb_client = database.get_client() 
+          app.db = database.connect()
+          app.db_client = database.get_client()
+          # await init_beanie(
+          #      database=app.db, 
+          #      document_models=[
+          #           User
+          #      ]
+          # ) 
           print("You successfully connected to MongoDB!")
      except ConnectionError as e:
           print(str(e))
@@ -36,7 +51,7 @@ async def startup_db_client():
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-     app.mongodb_client.close()
+     app.db_client.close()
 
 
 @app.get("/", tags=["Root"])

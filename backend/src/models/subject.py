@@ -8,7 +8,7 @@ class SubjectModel():
      collection: str = "subjects"
      
      def get_collection(self, request: Request):
-          return request.app.mongodb[self.collection]
+          return request.app.db[self.collection]
      
      def list_subjects(self, request: Request) -> list:
           subjects = list(self.get_collection(request).find())

@@ -1,10 +1,8 @@
-from fastapi import APIRouter, Body, HTTPException, Request, Response, status, UploadFile, File,Form
+from fastapi import APIRouter, Body, Depends, HTTPException, Request, Response, status, UploadFile, File,Form
 from fastapi.responses import JSONResponse
 from typing import List
-from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
 import httpx
-from utils.firebase_storage import upload_file
 
 import os
 import time
@@ -12,13 +10,16 @@ import uuid
 
 from models.paper import PaperModel
 from schemas.paper import Paper
+from schemas.user import User
+from utils.auth import get_current_active_user
+from utils.firebase_storage import upload_file
 import helpers
 
 router = APIRouter()
 paper_model = PaperModel()
 
 @router.get("/", response_description="Get all papers", response_model=List[Paper])
-async def get_all_papers(request: Request):
+async def get_all_papers(request: Request, current_user: User = Depends(get_current_active_user)):
      papers = paper_model.list_papers(request)
      if papers:
           return papers
@@ -30,8 +31,7 @@ async def get_all_papers(request: Request):
 
 # get paper by id
 @router.get("/{paper_id}", response_description="Get a paper by id",response_model=Paper)
-async def get_by_id(request: Request, paper_id):
-     # paper = paperEntity(request.app.mongodb["tickets"].find_one({"_id": ObjectId(paper_id)}))
+async def get_by_id(request: Request, paper_id, current_user: User = Depends(get_current_active_user)):
      paper = paper_model.paper_by_id(request,paper_id)
 
      if paper:
@@ -43,8 +43,7 @@ async def get_by_id(request: Request, paper_id):
 
 
 @router.get("/download/{paper_id}", response_description="Download paper from cloud storage")
-async def download_paper(request: Request, paper_id):
-     # paper = paperEntity(request.app.mongodb["tickets"].find_one({"_id": ObjectId(paper_id)}))
+async def download_paper(request: Request, paper_id, current_user: User = Depends(get_current_active_user)):
      paper = paper_model.paper_by_id(request,paper_id)
      print("This is paper", paper)
      
@@ -68,7 +67,10 @@ async def download_paper(request: Request, paper_id):
                     "images_created": len(images)
                }) 
           except OSError:
-               return {"error": OSError}
+               raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+                    detail="Cannot download paper"
+               )
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 
           detail=f"There is no paper with the id of{paper_id}"
@@ -78,8 +80,7 @@ async def download_paper(request: Request, paper_id):
 @router.get("/user/{user_id}", response_description="Get papers by user id",response_model=List[Paper])
 async def get_paper_by_uid(request: Request, user_id):
      uid = ObjectId(user_id)
-     # papers = papersEntity(request.app.mongodb["tickets"].find({"user": uid}))
-     papers = paper_model.list_papers_by_user_id(request,uid)
+     papers = paper_model.by_user_id(request, uid)
      if papers:
           return papers 
      raise HTTPException(
@@ -100,20 +101,20 @@ async def create_images(request:Request, payload: dict = Body(...)):
 
 @router.get("/{paper_id}/images")
 async def create_images(request:Request, paper_id):
-     # paper = await paperEntity(request.app.mongodb["tickets"].find_one({"_id": ObjectId(paper_id)}))
      paper_id =  ObjectId(paper_id)
      paper = await paper_model.paper_by_id(request, paper_id)
      paper_path = paper["paper"]
-     
+
+
 @router.post('/upload/file/')
-async def upload_files(request: Request, files: List[UploadFile] = File(...), text_data: str = Form(...)):
-    paper_url = await upload_file(files[0], files[0].filename)
-    marking_url = await upload_file(files[1], files[1].filename)
-    
-    return JSONResponse({
-        "status": 200,
-        "message": "File uploaded successfully",
-        "paper_url": paper_url,
-        "marking_url":marking_url
-        
-    })
+async def upload_files(request: Request, files: List[UploadFile] = File(...), text_data: str = Form(...)) -> JSONResponse:
+     paper_url = await upload_file(files[0], files[0].filename)
+     marking_url = await upload_file(files[1], files[1].filename)
+     
+     return JSONResponse({
+               "message": "File uploaded successfully",
+               "paper_url": paper_url,
+               "marking_url":marking_url
+          }, 
+          status_code=status.HTTP_200_OK
+     )

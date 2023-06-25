@@ -8,7 +8,7 @@ class PaperModel():
      collection: str = "papers"
      
      def get_collection(self, request: Request):
-          return request.app.mongodb[self.collection]
+          return request.app.db[self.collection]
      
      def list_papers(self, request: Request) -> list:
           papers = list(self.get_collection(request).find())
