@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Request,Depends,UploadFile, File,Form
 from fastapi.params import Body
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from typing import List
 from bson.objectid import ObjectId
@@ -29,7 +30,7 @@ async def get_All(request: Request):
           detail="No marking schems to show"
      )
      
-@router.post("/", response_description="Add a marking scheme")
+@router.post("/", response_description="Add a marking scheme", response_model = MarkingScheme, status_code= status.HTTP_201_CREATED)
 async def add_marking(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...) ):
     
     # get the subjectCode and subjectName using subjectId
@@ -48,11 +49,11 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
             subjectCode=subject['subjectCode'],
             subjectName=subject['subjectName'],
             year=year,
-            subjectId=subjectId,
+            subjectId=str(subjectId),
             markingUrl=marking_url,
         )
         
-        # print(marking_scheme);
+        # print(jsonable_encoder(marking_scheme));
 
         # Save the marking scheme to the database using your model
         new_marking_scheme = await marking_scheme_model.add_new_marking(request, marking_scheme)

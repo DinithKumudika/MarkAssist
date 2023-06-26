@@ -1,4 +1,5 @@
 from fastapi import Request
+from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
 from typing import Optional
 from config.database import Database
@@ -49,7 +50,9 @@ class MarkingSchemeModel():
      
 
      async def add_new_marking(self, request: Request, marking: MarkingSchemeCreate) -> MarkingScheme:
-          new_marking = self.get_collection(request).insert_one(marking.dict())
+          # new_marking = self.get_collection(request).insert_one(marking.dict())
+          new_marking = self.get_collection(request).insert_one(jsonable_encoder(marking))
+
           inserted_id = new_marking.inserted_id
           inserted_marking = self.get_collection(request).find_one({"_id": inserted_id})
           if inserted_marking:

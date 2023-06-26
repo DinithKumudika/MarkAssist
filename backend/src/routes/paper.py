@@ -119,7 +119,7 @@ async def create_images(request:Request, paper_id):
           
 #      return "File upload success";
 
-@router.post('/upload/file/')
+@router.post('/upload/file/',response_description="Add a new paper", response_model = Paper, status_code= status.HTTP_201_CREATED)
 async def upload_files(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...)):     
      # get the subjectCode and subjectName using subjectId
      subject = subject_model.subject_by_id(request, subjectId);
