@@ -47,14 +47,27 @@ function DragDrop({children,closeFunc}) {
     const formData = new FormData()
     files.forEach(file => formData.append('file', file))
     console.log(formData)
+    
 
-    let response = {}
-    // if(pathName[0]==="markingschemes"){
-    //   response = axios.post(`http://localhost:5000/api/markingschemes/upload/${year}/${subjectId}`,formData);
-    // }else if(pathName[0]==="answersheets"){
-    //   response = axios.post(`http://localhost:5000/api/answersheets/upload/${year}/${subjectId}`,formData);
-    // }
-    // console.log(response);
+    let response = []
+    try{
+      if(pathName[0]==="markingschemes"){
+        formData.append('year', year);
+        formData.append('subjectId',subjectId);
+        response = axios.post(`http://127.0.0.1:8000/api_v1/markings`,formData);
+      }else if(pathName[0]==="answersheets"){
+        formData.append('year', year);
+        formData.append('subjectId',subjectId);
+        response = axios.post(`http://127.0.0.1:8000/api_v1/papers/upload/file`,formData);
+      }
+      console.log(response);
+    }catch(error){
+      // console.log("error:"+error.response.data.message);
+      if(error.response && error.response.status >=400 && error.response.status <500){
+          // console.log(error.response.data.message);
+          console.log(error.response.data.message);
+      }
+  }
 
   
   }

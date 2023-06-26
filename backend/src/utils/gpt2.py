@@ -1,13 +1,15 @@
 import openai
+from src.config.config import settings
 
-from config.config import settings
+# from config.config import settings
 
-# Set up OpenAI API credentials
+# Set up OpenAI API credentials\
+     
 openai.api_key = settings.OPENAI_API_KEY
 
 def compare_text_similarity(text1, text2):
      # Prepare the prompt
-     prompt = f"Text 1: {text1}\nText 2: {text2}\nSimilarity percentage:"
+     prompt = f"Text 1: {text1}\nText 2: {text2}\nGive a similarity score for Text 1 and Text 2:"
 
      # Make an API request
      response = openai.Completion.create(
@@ -28,7 +30,7 @@ def compare_text_similarity(text1, text2):
 
 # Example usage
 marking_scheme = "A router is a networking device that connects multiple computer networks together and directs data traffic between them by determining the optimal path for data packets"
-answer_sheet = " A router is a device that links different networks, such as a home network and the internet, and manages the flow of data between them, ensuring efficient communication."
+answer_sheet = "A router is a device that links different networks, such as a home network and the internet, and manages the flow of data between them, ensuring efficient communication."
 
 similarity_percentage = compare_text_similarity(marking_scheme, answer_sheet)
 

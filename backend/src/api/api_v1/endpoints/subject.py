@@ -1,19 +1,23 @@
-from fastapi import APIRouter, Request, Response, HTTPException, status
+from fastapi import APIRouter, Request, Response, HTTPException, status, Depends
 from bson.json_util import dumps
 from typing import Optional, List
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
 
+from schemas.user import User
 from schemas.subject import Subject 
 from models.subject import SubjectModel
+from utils.auth import get_current_active_user
 
 router = APIRouter()
 subject_model = SubjectModel()
 
 
-@router.get('/', response_description="Get Subjects", response_model=List[Subject], status_code=status.HTTP_200_OK)
-async def get_subjects(request: Request, limit: Optional[int] = None):
+@router.get('/', response_description="Get Subjects", response_model=List[Subject],status_code=status.HTTP_200_OK)
+async def get_subjects(request: Request, limit: Optional[int] = None, current_user: User = Depends(get_current_active_user)):
+     print(request.headers)
+     print("Hello")
      subjects = subject_model.list_subjects(request)
      
      if subjects:
@@ -25,7 +29,7 @@ async def get_subjects(request: Request, limit: Optional[int] = None):
 
 
 @router.get('/{id}', response_description="Get a subject by id", response_model=Subject,status_code=status.HTTP_200_OK)
-async def get_subject_by_id(request: Request ,id: str):
+async def get_subject_by_id(request: Request ,id: str, current_user: User = Depends(get_current_active_user)):
      subject = subject_model.subject_by_id(request, id)
      if subject:
           return subject

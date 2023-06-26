@@ -1,28 +1,32 @@
-from fastapi import APIRouter, Body, Depends, HTTPException, Request, Response, status, UploadFile, File,Form
+from fastapi import APIRouter, Body, HTTPException, Request, Response, status, UploadFile, File,Form,Depends
 from fastapi.responses import JSONResponse
 from typing import List
+from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
 import httpx
 
 import os
-import time
-import uuid
 
 from models.paper import PaperModel
-from schemas.paper import Paper
+from schemas.user import User
+from schemas.paper import Paper,PaperCreate,PaperForm
+from models.subject import SubjectModel;
+
 from schemas.user import User
 from utils.auth import get_current_active_user
-from utils.firebase_storage import upload_file
+
+from utils.firebase_storage import upload_file 
 import helpers
 
 router = APIRouter()
 paper_model = PaperModel()
+subject_model = SubjectModel()
 
 @router.get("/", response_description="Get all papers", response_model=List[Paper])
 async def get_all_papers(request: Request, current_user: User = Depends(get_current_active_user)):
      papers = paper_model.list_papers(request)
      if papers:
-          return papers
+          return papers 
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 
           detail="No papers to show"
@@ -30,10 +34,9 @@ async def get_all_papers(request: Request, current_user: User = Depends(get_curr
 
 
 # get paper by id
-@router.get("/{paper_id}", response_description="Get a paper by id",response_model=Paper)
+@router.get("/{paper_id}", response_description="Get a paper by id", response_model=Paper)
 async def get_by_id(request: Request, paper_id, current_user: User = Depends(get_current_active_user)):
-     paper = paper_model.paper_by_id(request,paper_id)
-
+     paper = paper_model.by_id(request, paper_id)
      if paper:
           return paper 
      raise HTTPException(
@@ -43,12 +46,11 @@ async def get_by_id(request: Request, paper_id, current_user: User = Depends(get
 
 
 @router.get("/download/{paper_id}", response_description="Download paper from cloud storage")
-async def download_paper(request: Request, paper_id, current_user: User = Depends(get_current_active_user)):
-     paper = paper_model.paper_by_id(request,paper_id)
-     print("This is paper", paper)
+async def download_paper(request: Request, paper_id):
+     paper = paper_model.by_id(request, paper_id)
      
      if paper:
-          document_url = paper["paper"]
+          document_url = paper["paperUrl"]
      
           async with httpx.AsyncClient() as client:
                response = await client.get(document_url)
@@ -57,7 +59,7 @@ async def download_paper(request: Request, paper_id, current_user: User = Depend
                with open(save_path, "wb") as file:
                     file.write(response.content)
           try:
-               dir_path = os.path.join('./../data/images/', paper_id)
+               dir_path = os.path.join('./../data/images/paper', paper_id)
                os.mkdir(dir_path)
                images = helpers.convert_to_images(save_path, dir_path)
                
@@ -67,10 +69,7 @@ async def download_paper(request: Request, paper_id, current_user: User = Depend
                     "images_created": len(images)
                }) 
           except OSError:
-               raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-                    detail="Cannot download paper"
-               )
+               return {"error": OSError}
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 
           detail=f"There is no paper with the id of{paper_id}"
@@ -80,7 +79,8 @@ async def download_paper(request: Request, paper_id, current_user: User = Depend
 @router.get("/user/{user_id}", response_description="Get papers by user id",response_model=List[Paper])
 async def get_paper_by_uid(request: Request, user_id):
      uid = ObjectId(user_id)
-     papers = paper_model.by_user_id(request, uid)
+     # papers = papersEntity(request.app.mongodb["tickets"].find({"user": uid}))
+     papers = paper_model.by_user_id(request,uid)
      if papers:
           return papers 
      raise HTTPException(
@@ -101,17 +101,61 @@ async def create_images(request:Request, payload: dict = Body(...)):
 
 @router.get("/{paper_id}/images")
 async def create_images(request:Request, paper_id):
+     # paper = await paperEntity(request.app.mongodb["tickets"].find_one({"_id": ObjectId(paper_id)}))
      paper_id =  ObjectId(paper_id)
      paper = await paper_model.paper_by_id(request, paper_id)
      paper_path = paper["paper"]
-
+     
+# @router.post('/upload/file/')
+# async def upload_files(request: Request, files: List[UploadFile] = File(...)):
+#      for file in files:
+#           paper_url = await upload_file(file, file.filename)
+          
+#           data = {
+#                "status":200,
+#                "message": "File uploaded successfully",
+#                "paper_url":paper_url
+#           }
+          
+#      return "File upload success";
 
 @router.post('/upload/file/')
-async def upload_files(request: Request, files: List[UploadFile] = File(...)) -> JSONResponse:
-     for file in files:
-          paper_url = await upload_file(file, file.filename)
+async def upload_files(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...)):     
+     # get the subjectCode and subjectName using subjectId
+     subject = subject_model.subject_by_id(request, subjectId);
+     if(subject):
+          # print("There is subject")
+          # print(subject['subjectName'])
+          # print(subject['subjectCode'])
+          # print(file.filename)
+
+          # Upload the file and get the file URL
+          paper_url_up = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
+          print(paper_url_up)
+
+          # Create a new paper object with the provided data and file URL
+          paper = PaperCreate(
+               year=year,
+               subjectId=subjectId,
+               subjectCode=subject['subjectCode'],
+               subjectName=subject['subjectName'],
+               paper = file.filename,
+               paperUrl= paper_url_up,
+          )
+          # print(paper);
+
+          # Save the paper to the database using your model
+          new_paper = await paper_model.add_new_paper(request, paper)
+          if new_paper:
+               return new_paper
+
+          raise HTTPException(
+               status_code=status.HTTP_404_NOT_FOUND,
+               detail="No marking schemes to show"
+          )
+     else:
+          raise HTTPException(
+               status_code=status.HTTP_404_NOT_FOUND,
+               detail="Add subject First"
+          )
      
-          return JSONResponse({
-               "message": "File uploaded successfully",
-               "paper_url": paper_url
-          }, status_code=status.HTTP_200_OK)

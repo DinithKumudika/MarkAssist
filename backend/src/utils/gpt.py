@@ -2,12 +2,11 @@ import openai
 import numpy as np
 from langchain.embeddings import OpenAIEmbeddings
 import faiss
-from config.config import settings
 
 marking = "A router is a networking device that connects multiple computer networks together and directs data traffic between them by determining the optimal path for data packets"
 answer = " A router is a device that links different networks, such as a home network and the internet, and manages the flow of data between them, ensuring efficient communication."
 
-embeddings = OpenAIEmbeddings(openai_api_key=settings.OPENAI_API_KEY)
+embeddings = OpenAIEmbeddings(openai_api_key='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')
 
 answer_vector = embeddings.embed_query(answer)
 answer_vector = np.array([answer_vector]).astype("float32")

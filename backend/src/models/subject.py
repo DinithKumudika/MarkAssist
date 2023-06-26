@@ -14,33 +14,26 @@ class SubjectModel():
           subjects = list(self.get_collection(request).find())
           for subject in subjects:
                subject["id"] = str(subject["_id"]) 
-               subject["lectureId"] = str(subject["lectureId"]) 
+               subject["teacherId"] = str(subject["teacherId"]) 
           return subjects
      
      def subject_by_id(self, request: Request, id: str) -> Subject:
           subject = self.get_collection(request).find_one({"_id": ObjectId(id)})
           if subject:
                subject["id"] = str(subject["_id"]) 
-               subject["lectureId"] = str(subject["lectureId"]) 
+               subject["teacherId"] = str(subject["teacherId"]) 
                return subject
      
      def delete_subject(self, request: Request, id: str):
           subject = self.get_collection(request).find_one_and_delete({"_id": ObjectId(id)})
           
+     
      def get_subject_teacher(self, request: Request, id: str) -> list:
           teacher_id = ObjectId(id)
 
           subjects = self.get_collection(request).aggregate([
-               { 
-                    "$match": { 
-                         "teacherId": teacher_id 
-                         }
-               },
-               { 
-                    "$sort": { 
-                         "createdDate": 1 
-                         }
-               },
+               { "$match": { "teacherId": teacher_id } },
+               { "$sort": { "createdDate": 1 } },
                {
                     "$group": {
                          "_id": "$teacherId",
@@ -51,6 +44,7 @@ class SubjectModel():
 
           # Convert ObjectId to string for compatibility with the existing code
           for subject in subjects:
+               # print("This is subject",subject)
                subject["_id"] = str(subject["_id"])
                for sub in subject["subjects"]:
                     sub["id"] = str(sub["_id"])
