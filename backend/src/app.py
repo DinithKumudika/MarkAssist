@@ -5,7 +5,7 @@ from bson.objectid import ObjectId
 from typing import Optional
 
 from config.database import Database
-from api import router
+from api.api_v1.router import router
 from scripts.text import preprocess, compare
 
 app = FastAPI()
