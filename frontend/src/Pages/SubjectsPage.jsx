@@ -7,6 +7,7 @@ function SubjectsPage() {
   const allItems=JSON.parse(localStorage.getItem('token'));
   const user_id=allItems['_id'];
   const userType = allItems['user_role'];
+  const accessToken = localStorage.getItem('accessToken')
   const [isClicked,setClick] = useState("outer");
   const [subjects,setSubjects] = useState([]);
 
@@ -16,18 +17,19 @@ function SubjectsPage() {
 
   const fetchSubjects = async () =>{
     try{
+      console.log(accessToken)
       const config = {
         headers: {
-          Authorization: `Bearer ${allItems['token']}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       }
       //****Methana subjects code eken group karaganna oona
       let response = {}
       if(userType==="admin"){
-        response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`);
+        response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`, config);
       }else if(userType==="teacher"){
         console.log(user_id);
-        response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`);
+        response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`, config);
       }
       const data = response.data;
       console.log(data);

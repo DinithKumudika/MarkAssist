@@ -46,11 +46,11 @@ async def get_by_id(request: Request, paper_id, current_user: User = Depends(get
 
 
 @router.get("/download/{paper_id}", response_description="Download paper from cloud storage")
-async def download_paper(request: Request, paper_id, current_user: User = Depends(get_current_active_user)):
-     paper = paper_model.by_id(request,paper_id)
+async def download_paper(request: Request, paper_id):
+     paper = paper_model.by_id(request, paper_id)
      
      if paper:
-          document_url = paper["paper"]
+          document_url = paper["paperUrl"]
      
           async with httpx.AsyncClient() as client:
                response = await client.get(document_url)
@@ -59,7 +59,7 @@ async def download_paper(request: Request, paper_id, current_user: User = Depend
                with open(save_path, "wb") as file:
                     file.write(response.content)
           try:
-               dir_path = os.path.join('./../data/images/', paper_id)
+               dir_path = os.path.join('./../data/images/paper', paper_id)
                os.mkdir(dir_path)
                images = helpers.convert_to_images(save_path, dir_path)
                
@@ -124,41 +124,38 @@ async def upload_files(request: Request, file: UploadFile = File(...), year: str
      # get the subjectCode and subjectName using subjectId
      subject = subject_model.subject_by_id(request, subjectId);
      if(subject):
-        # print("There is subject")
-        # print(subject['subjectName'])
-        # print(subject['subjectCode'])
-        # print(file.filename)
+          # print("There is subject")
+          # print(subject['subjectName'])
+          # print(subject['subjectCode'])
+          # print(file.filename)
 
-        # Upload the file and get the file URL
-        paper_url_up = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
-        print(paper_url_up)
+          # Upload the file and get the file URL
+          paper_url_up = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
+          print(paper_url_up)
 
-        # Create a new paper object with the provided data and file URL
-        
-        paper = PaperCreate(
-             year=year,
-             subjectId=subjectId,
-             subjectCode=subject['subjectCode'],
-             subjectName=subject['subjectName'],
-             paper = file.filename,
-             paperUrl= paper_url_up,
-        )
-        
-        # print(paper);
+          # Create a new paper object with the provided data and file URL
+          paper = PaperCreate(
+               year=year,
+               subjectId=subjectId,
+               subjectCode=subject['subjectCode'],
+               subjectName=subject['subjectName'],
+               paper = file.filename,
+               paperUrl= paper_url_up,
+          )
+          # print(paper);
 
-        # Save the paper to the database using your model
-        new_paper = await paper_model.add_new_paper(request, paper)
-        if new_paper:
-            return new_paper
+          # Save the paper to the database using your model
+          new_paper = await paper_model.add_new_paper(request, paper)
+          if new_paper:
+               return new_paper
 
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No marking schemes to show"
-        )
+          raise HTTPException(
+               status_code=status.HTTP_404_NOT_FOUND,
+               detail="No marking schemes to show"
+          )
      else:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Add subject First"
-        )
-     
+          raise HTTPException(
+               status_code=status.HTTP_404_NOT_FOUND,
+               detail="Add subject First"
+          )
      

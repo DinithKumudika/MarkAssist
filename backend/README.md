@@ -1,5 +1,6 @@
 # MarkAssist-API
-RESTful API implementation for MarkAssist using FastAPI
+
+## RESTful API implementation for MarkAssist using FastAPI -->
 
 ## Using the applicaiton
 

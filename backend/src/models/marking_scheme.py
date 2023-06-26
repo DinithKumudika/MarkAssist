@@ -9,7 +9,7 @@ class MarkingSchemeModel():
      collection: str = "marking_schemes"
      
      def get_collection(self, request: Request):
-          return request.app.mongodb[self.collection]
+          return request.app.db[self.collection]
      
      def list_marking_schemes(self, request: Request) -> list:
           marking_schemes = list(self.get_collection(request).find())
@@ -18,9 +18,16 @@ class MarkingSchemeModel():
                marking_scheme["subjectId"] = str(marking_scheme["subjectId"]) 
           return marking_schemes
      
+     def by_id(self, request:Request, id: str)->MarkingScheme:
+          marking_scheme = self.get_collection(request).find_one({'_id': ObjectId(id)})
+          if marking_scheme:
+               marking_scheme["id"] = str(marking_scheme["_id"]) 
+               marking_scheme["subjectId"] = str(marking_scheme["subjectId"]) 
+          return marking_scheme
+     
      def get_marking_schemes_by_id(self, request:Request, id:str)->list:
           id = ObjectId(id)
-          marking_schemes = list(self.get_collection(request).find({'_id':str}))
+          marking_schemes = list(self.get_collection(request).find({'_id': id}))
           for marking_scheme in marking_schemes:
                marking_scheme["id"] = str(marking_scheme["_id"]) 
                marking_scheme["subjectId"] = str(marking_scheme["subjectId"]) 
