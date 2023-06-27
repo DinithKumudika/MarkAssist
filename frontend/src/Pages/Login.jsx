@@ -43,7 +43,7 @@ function Login(){
             const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/token',formdata);
             
             const allItems=jwt_decode(response.data.token);
-            // console.log(allItems);
+            localStorage.setItem('accessToken', response.data.token)
             localStorage.setItem('token', JSON.stringify(allItems));
             // console.log(localStorage.getItem('token'));
             if(allItems['user_role']==="student"){

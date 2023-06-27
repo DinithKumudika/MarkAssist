@@ -3,14 +3,16 @@ import uuid
 from fastapi import File,UploadFile
 from io import BytesIO
 
+from config.config import settings
+
 firebase_config = {
-  "apiKey": "AIzaSyAijhFV9Y2hKxOfZsikHfQyXPE-eSRwKZg",
-  "authDomain": "papermarkin.firebaseapp.com",
-  "projectId": "papermarkin",
-  "storageBucket": "papermarkin.appspot.com",
-  "messagingSenderId": "529261970661",
-  "appId": "1:529261970661:web:7b9e613f7d71e0cf1d800c",
-  "measurementId": "G-852GDJS8LT",
+  "apiKey": settings.FIREBASE_API_KEY,
+  "authDomain": settings.FIREBASE_AUTH_DOMAIN,
+  "projectId": settings.FIREBASE_PROJECT_ID,
+  "storageBucket": settings.FIREBASE_BUCKET,
+  "messagingSenderId": settings.FIREBASE_SENDER_ID,
+  "appId": settings.FIREBASE_APP_ID,
+  "measurementId": settings.FIREBASE_MEASUREMENT_ID,
   "databaseURL": "" 
 }
 

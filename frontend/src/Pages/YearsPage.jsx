@@ -26,7 +26,7 @@ function YearsPage() {
           Authorization: `Bearer ${allItems['token']}`,
         },
       }
-      const response = await axios.get(`http://localhost:5000/api/subjects/years/${user_id}/${subjectCode}`,config);
+      const response = await axios.get(`http://localhost:5000/api_v1/subjects/years/${user_id}/${subjectCode}`,config);
       const data = response.data;
       setYears(data);
     }catch(error){

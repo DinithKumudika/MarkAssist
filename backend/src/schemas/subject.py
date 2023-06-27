@@ -2,15 +2,15 @@ from pydantic import BaseModel, Field
 from typing import Optional
 
 class Subject(BaseModel):
-     id: str
-     subjectCode:str
-     subjectName:str
-     year:int
-     teacherId:str
-     semester:int
-     academicYear:int
-           
-     class Config:
+    id: str
+    subjectCode:str
+    subjectName:str
+    year:int
+    teacherId:str
+    semester:int
+    academicYear:int
+
+    class Config:
         schema_extra = {
         "example": {
             "id": "64882f6c32d15c1d89f06cdf",
@@ -22,8 +22,5 @@ class Subject(BaseModel):
             "academicYear":2,
             }
         }
-
-     
-
 
 

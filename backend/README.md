@@ -1,5 +1,6 @@
 # MarkAssist-API
-RESTful API implementation for MarkAssist using FastAPI & Beanie ODM
+
+## RESTful API implementation for MarkAssist using FastAPI -->
 
 ## Using the applicaiton
 
