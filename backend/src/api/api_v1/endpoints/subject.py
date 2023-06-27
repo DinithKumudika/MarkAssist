@@ -15,9 +15,7 @@ subject_model = SubjectModel()
 
 
 @router.get('/', response_description="Get Subjects", response_model=List[Subject],status_code=status.HTTP_200_OK)
-async def get_subjects(request: Request, limit: Optional[int] = None):
-     print(request.headers)
-     print("Hello")
+async def get_subjects(request: Request, limit: Optional[int] = None, current_user: User = Depends(get_current_active_user)):
      subjects = subject_model.list_subjects(request)
      
      if subjects:

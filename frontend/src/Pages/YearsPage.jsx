@@ -7,8 +7,8 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 function YearsPage() {
   const { subjectCode } = useParams()
-  const allItems=JSON.parse(localStorage.getItem('token'));
-  const user_id=allItems['_id'];
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
+  const user_id=allItems['id'];
   const [isClicked,setClick] = useState("outer");
   const [years,setYears] = useState([]);
 
@@ -23,7 +23,7 @@ function YearsPage() {
           Authorization: `Bearer ${allItems['token']}`,
         },
       }
-      const response = await axios.get(`http://localhost:5000/api_v1/subjects/years/${user_id}/${subjectCode}`,config);
+      const response = await axios.get(`http://localhost:8000/api_v1/subjects/years/${user_id}/${subjectCode}`,config);
       const data = response.data;
       setYears(data);
     }catch(error){

@@ -15,7 +15,6 @@ user_model = UserModel()
 
 @router.post("/token", response_description="get OAuth2 Token", response_model=Token)
 async def login(request: Request, payload: OAuth2PasswordRequestForm = Depends()):
-     print(payload)
      user = user_model.by_email(request, payload.username)
      if not user:
           raise HTTPException(
@@ -34,10 +33,10 @@ async def login(request: Request, payload: OAuth2PasswordRequestForm = Depends()
                "user_role": user["userType"]
           })
      
-     return Token(token=token, token_type="bearer")
+     return Token(access_token=token, token_type="bearer")
 
 
-@router.post("/register", response_description="Create new user")
+@router.post("/register", response_description="Create new user", response_model=User)
 async def register(request: Request, payload: UserCreate = Body()) -> User:
      print("Data:",payload.password)
      user = user_model.by_email(request, payload.email)
