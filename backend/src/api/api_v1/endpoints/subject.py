@@ -3,10 +3,10 @@ from bson.json_util import dumps
 from typing import Optional, List
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
-from bson.objectid import ObjectId
+from bson.objectid import ObjectId 
 
 from schemas.user import User
-from schemas.subject import Subject 
+from schemas.subject import Subject, SubjectYearsByCode 
 from models.subject import SubjectModel
 from utils.auth import get_current_active_user
 
@@ -15,7 +15,7 @@ subject_model = SubjectModel()
 
 
 @router.get('/', response_description="Get Subjects", response_model=List[Subject],status_code=status.HTTP_200_OK)
-async def get_subjects(request: Request, limit: Optional[int] = None, current_user: User = Depends(get_current_active_user)):
+async def get_subjects(request: Request, limit: Optional[int] = None):
      print(request.headers)
      print("Hello")
      subjects = subject_model.list_subjects(request)
@@ -49,6 +49,17 @@ async def delete_subject(request: Request, id: str):
           detail= f"no subject with the id of {id}"
      )
      
+# get years list according to a subject code in  ascending order.
+@router.get('/years', response_description=" get list of years according to subjectCode",status_code=status.HTTP_200_OK,response_model=List[SubjectYearsByCode])
+async def get_years_list(request:Request, subjectCode:str):
+     subject_list = subject_model.get_years_by_subjectCode(request,subjectCode)
+     if subject_list:
+          return subject_list;
+     raise HTTPException(
+          status_code= status.HTTP_404_NOT_FOUND,
+          detail= f"No years for subject code {subjectCode}"
+     )
+     
 @router.get('/teacher/{id}', response_description="Get subjects by teacher id",response_model= List[Subject],status_code=status.HTTP_200_OK)
 async def get_subjects_by_teacher_id(request: Request, id: str):
      subjects = subject_model.get_subject_teacher(request, id)
@@ -60,3 +71,8 @@ async def get_subjects_by_teacher_id(request: Request, id: str):
           status_code=status.HTTP_404_NOT_FOUND,
           detail= f"no subjects with the teacher id of {id}"
      )
+     
+# Add a new subject
+@router.post('/createSubject', response_description="Add a new subject", response_model= Subject, status_code= status.HTTP_201_CREATED)
+async def add_a_subject(request):
+     pass

@@ -12,7 +12,7 @@ import httpx
 import os
 
 from models.marking_scheme import MarkingSchemeModel
-from schemas.marking_scheme import MarkingScheme,MarkingSchemeCreate,MarkingSchemeForm
+from schemas.marking_scheme import MarkingScheme,MarkingSchemeCreate,MarkingSchemeUpdate
 
 from models.subject import SubjectModel;
 
@@ -36,39 +36,64 @@ async def get_All(request: Request):
           detail="No marking schemes to show"
      )
      
-@router.post("/", response_description="Add a marking scheme")
+@router.post("/", response_description="Add a marking scheme", response_model = MarkingScheme, status_code= status.HTTP_201_CREATED)
 async def add_marking(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...) ):
+     # print("This is subjectId", subjectId)
+     
      # get the subjectCode and subjectName using subjectId
      subject = subject_model.subject_by_id(request, subjectId);
      if(subject):
+          
           # print("There is subject")
-          # print(subject['subjectName'])
           # print(subject['subjectCode'])
           # print(file.filename)
-
+          
+          # check if there any current marking scheme for this subject
+          current_marking = marking_scheme_model.get_marking_scheme_by_year_subjectId(request, int(year), subject['id'])
+          print("This is current_marking",current_marking)
+          
           # Upload the file and get the file URL
-          marking_url = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
+          marking_url = await upload_file(file,file.filename) 
+          
+          if current_marking:
+               # There is a marking for this subject
+               # create MarkingSchemeUpdate obj
+               marking_update_obj = MarkingSchemeUpdate(
+                    markingUrl= marking_url,
+               )
+               update_current_marking = marking_scheme_model.update_existing_marking(request,current_marking['id'], marking_update_obj )
+               
+               if update_current_marking:
+                    return update_current_marking
+               else:
+                    raise HTTPException(
+                         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, # should change to correct code
+                         detail="Marking scheme failed"
+                    )
+               
+          else:
+               # no existing marking for subject 
+               # Create a new MarkingScheme object with the provided data and file URL
+               marking_scheme = MarkingSchemeCreate(
+                    subjectCode=subject['subjectCode'],
+                    subjectName=subject['subjectName'],
+                    year=year,
+                    subjectId=subjectId,
+                    markingUrl=marking_url,
+               )
+               # print(marking_scheme);
 
-          # Create a new MarkingScheme object with the provided data and file URL
-          marking_scheme = MarkingSchemeCreate(
-               subjectCode=subject['subjectCode'],
-               subjectName=subject['subjectName'],
-               year=year,
-               subjectId=subjectId,
-               markingUrl=marking_url,
-          )
-          # print(marking_scheme);
+               # Save the marking scheme to the database using your model
+               new_marking_scheme = await marking_scheme_model.add_new_marking(request, marking_scheme)
+               if new_marking_scheme:
+                    return new_marking_scheme
 
-          # Save the marking scheme to the database using your model
-          new_marking_scheme = await marking_scheme_model.add_new_marking(request, marking_scheme)
-          if new_marking_scheme:
-               return new_marking_scheme
-
-          raise HTTPException(
-               status_code=status.HTTP_404_NOT_FOUND,
-               detail="No marking schemes to show"
-          )
+               raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="No marking schemes to show"
+               )
      else:
+          # no subject
           raise HTTPException(
                status_code=status.HTTP_404_NOT_FOUND,
                detail="Add subject First"

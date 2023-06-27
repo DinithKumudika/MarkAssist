@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from beanie import init_beanie
 
 from models.user import User
 from config.config import settings

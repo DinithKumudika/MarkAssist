@@ -26,6 +26,16 @@ class SubjectModel():
      
      def delete_subject(self, request: Request, id: str):
           subject = self.get_collection(request).find_one_and_delete({"_id": ObjectId(id)})
+     
+
+     # get a list of year according to a given year
+     def get_years_by_subjectCode(self, request: Request, subjectCode: str) -> list:
+          years = self.get_collection(request).distinct("year", {"subjectCode": subjectCode})
+          if years:
+               sorted_years = sorted(years)
+               return sorted_years
+          return None
+
           
      
      def get_subject_teacher(self, request: Request, id: str) -> list:
@@ -50,5 +60,5 @@ class SubjectModel():
                     sub["id"] = str(sub["_id"])
                     sub["teacherId"] = str(sub["teacherId"])
           new_subjects = subject['subjects']
-          print("This is new_subjects",new_subjects)
+          # print("This is new_subjects",new_subjects)
           return new_subjects

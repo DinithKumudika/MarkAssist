@@ -1,7 +1,6 @@
 from fastapi import Request
 from bson.objectid import ObjectId
 from typing import Optional
-from beanie import Document, Indexed
 from uuid import UUID, uuid4
 from pydantic import Field, EmailStr
 
