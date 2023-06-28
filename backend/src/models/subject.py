@@ -11,15 +11,39 @@ class SubjectModel():
      def get_collection(self, request: Request):
           return request.app.db[self.collection]
      
-     def list_subjects(self, request: Request) -> list:
-          subjects = list(self.get_collection(request).find())
+     def list_subjects_by_user_id(self, request: Request,user_id:str) -> list:
+          user_id = ObjectId(user_id);
+          subjects = list(self.get_collection(request).find({'teacherId':user_id}))
           for subject in subjects:
                subject["id"] = str(subject["_id"]) 
                subject["teacherId"] = str(subject["teacherId"]) 
           return subjects
      
+     # get subject by subjectCode and user id as a list
+     def get_subject_by_subjectCode_userId(self,request:Request,user_id:str, subjectCode:str) -> list:
+          subjects = list(self.get_collection(request).find({"teacherId": user_id, "subjectCode":subjectCode}).sort("year", -1))
+          if subjects:               
+               print("No subjects",subjects)
+               for subject in subjects:
+                    subject["id"] = str(subject["_id"]) 
+                    # print("This is subject id", subjects["id"])
+                    subject["teacherId"] = str(subject["teacherId"]) 
+               return subjects
+          else:
+               print("There are no subjects")
+               return None;
+     
+     
      def subject_by_id(self, request: Request, id: str) -> Subject:
           subject = self.get_collection(request).find_one({"_id": ObjectId(id)})
+          if subject:
+               subject["id"] = str(subject["_id"]) 
+               subject["teacherId"] = str(subject["teacherId"]) 
+               return subject
+          
+     # get subject by subjectId and UserId
+     def get_subject_by_id_user_id(self, request: Request,user_id:str, id: str) -> Subject:
+          subject = self.get_collection(request).find_one({"_id": ObjectId(id),'teacherId':user_id})
           if subject:
                subject["id"] = str(subject["_id"]) 
                subject["teacherId"] = str(subject["teacherId"]) 
@@ -37,16 +61,6 @@ class SubjectModel():
                return subject
           else:
                return None;
-     
-
-     # get a list of year according to a given year
-     def get_years_by_subjectCode(self, request: Request, subjectCode: str) -> list:
-          years = self.get_collection(request).distinct("year", {"subjectCode": subjectCode})
-          print("This is years",years)
-          if years:
-               sorted_years = sorted(years)
-               return sorted_years
-          return None
 
           
      
@@ -77,7 +91,7 @@ class SubjectModel():
      
 
      async def add_new_subject(self, request: Request, new_subject: SubjectCreate) -> Optional[Subject]:
-          result = self.get_collection(request).insert_one(jsonable_encoder(new_subject))
+          result = self.get_collection(request).insert_one(dict(new_subject))
           # print("This is result",result)
           if result.inserted_id:
                # print(result.inserted_id)
