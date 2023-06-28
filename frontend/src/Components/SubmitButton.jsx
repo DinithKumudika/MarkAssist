@@ -1,6 +1,6 @@
-function SubmitButton({children,type}) {
+function SubmitButton({children,type,classes}) {
   return (
-    <button className="rounded rounded-sm bg-sky-600 w-full h-9  text-white" type={type}>{children}</button>
+    <button className={`w-full bg-[#4457FF] text-white font-bold p-1 px-4 cursor-pointer ${classes} `} type={type}>{children}</button>
   )
 }
 
