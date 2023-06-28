@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from typing import List
 from bson.objectid import ObjectId
 import httpx
+from datetime import datetime
 
 import os
 
@@ -80,6 +81,8 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     year=year,
                     subjectId=subjectId,
                     markingUrl=marking_url,
+                    createdAt =  datetime.now(),
+                    updatedAt = datetime.now()
                )
                # print(marking_scheme);
 
@@ -134,7 +137,18 @@ async def download_paper(request: Request, scheme_id : str):
 async def update_marking(request:Request,file: UploadFile = File(...),subjectCode: str = Form(...),year: int = Form(...),subjectId: str = Form(...)):
      pass
 
-
-# @router.get("/{marking_id}", response_description="Get a marking scheme id")
-# async def get_by_id(marking_id):
-#      pass
+# get marking scheme by  subjectId
+@router.get("/{year}/{subjectId}", response_description="Get a marking scheme subjectId and year", response_model = MarkingScheme)
+async def get_by_subjectId_year(request:Request,year:int,subjectId:str):
+     insertedYear = int(year)
+     subject_id = subjectId
+     print(insertedYear,subject_id)
+     marking= marking_scheme_model.get_marking_scheme_by_year_subjectId(request,insertedYear,subject_id)
+     print(marking)
+     if marking:
+          return marking
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail=f"There is no paper with the id of {subjectId}"
+     )
+     

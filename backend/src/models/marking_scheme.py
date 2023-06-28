@@ -50,6 +50,7 @@ class MarkingSchemeModel():
                marking_scheme["subjectId"] = str(marking_scheme["subjectId"]) 
           return marking_schemes
      
+     # get marking scheme by year and subjectId
      def get_marking_scheme_by_year_subjectId(self, request:Request, year:int, subjectId:str)->MarkingScheme:
           marking_scheme = self.get_collection(request).find_one({'year': year, 'subjectId': subjectId})
           if marking_scheme:

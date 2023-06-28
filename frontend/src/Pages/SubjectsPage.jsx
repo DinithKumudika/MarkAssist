@@ -40,7 +40,7 @@ function SubjectsPage() {
         response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`, {headers});
       }
       const data = response.data;
-      // console.log(data);
+      console.log("HELLO:",data);
       setSubjects(data);
     }catch(error){
       console.log(error);
