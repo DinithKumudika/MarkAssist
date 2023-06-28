@@ -22,6 +22,12 @@ k = 1
 distances, indices = index.search(marking_vector, k)
 print(indices)
 
+faiss.write_index(index, "my_index.index")
+index = faiss.read_index("my_index.index")
+
+
+
+
 
 
 

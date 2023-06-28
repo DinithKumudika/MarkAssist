@@ -3,6 +3,7 @@ import SideBar from '../Components/SideBar'
 import Subjects from '../Components/Subjects/Subjects'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
+
 function SubjectsPage() {
   const allItems=JSON.parse(localStorage.getItem('token'));
   if(!allItems){
@@ -20,19 +21,22 @@ function SubjectsPage() {
 
   const fetchSubjects = async () =>{
     try{
-      console.log(accessToken)
-      const config = {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${accessToken}`,
+      //   },
+      // }
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      };
       //****Methana subjects code eken group karaganna oona
       let response = {}
       if(userType==="admin"){
-        response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`, config);
+        console.log(headers)
+        response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`, {headers});
       }else if(userType==="teacher"){
-        console.log(user_id);
-        response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`, config);
+        console.log(headers);
+        response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`, {headers});
       }
       const data = response.data;
       // console.log(data);

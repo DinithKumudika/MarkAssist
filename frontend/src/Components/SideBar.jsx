@@ -11,7 +11,7 @@ import AdminSidebar from './Sidebar/AdminSidebar';
 import TeacherSidebar from './Sidebar/TeacherSidebar';
 function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onClickFunc}) {
   //Gets details from local storage
-  const allItems=JSON.parse(localStorage.getItem('token'));
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
   const userType=allItems['user_role'];
   // console.log(userType);
   

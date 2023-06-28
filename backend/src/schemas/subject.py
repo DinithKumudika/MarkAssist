@@ -22,5 +22,15 @@ class Subject(BaseModel):
             "academicYear":2,
             }
         }
+        
+class SubjectYearsByCode(BaseModel):
+    year:int
+
+    class Config:
+        schema_extra = {
+        "example": {
+            "year": 2022,
+        }
+    }
 
 

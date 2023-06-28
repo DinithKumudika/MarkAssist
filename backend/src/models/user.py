@@ -1,7 +1,6 @@
 from fastapi import Request
 from bson.objectid import ObjectId
 from typing import Optional
-from beanie import Document, Indexed
 from uuid import UUID, uuid4
 from pydantic import Field, EmailStr
 
@@ -34,8 +33,8 @@ from schemas.user import User, UserCreate
 #      async def by_id(self, id: str) -> User:
 #           return await self.find_one(self.id  == ObjectId(id))
      
-#      class Collection:
-#           name = "users"
+     # class Collection:
+     #      name = "users"
 
 class UserModel():
      collection: str = "users"

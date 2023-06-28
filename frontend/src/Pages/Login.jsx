@@ -5,8 +5,8 @@ import Logo from '../photos/loginLogo.png'
 import InputField from '../Components/InputField';
 import SubmitButton from '../Components/SubmitButton';
 import classnames from 'classnames';
+// import { AuthContext } from '../Contexts/AuthContext';
 import axios from 'axios';
-// import jwt_decode from "jsonwebtoken";
 import jwt_decode from "jwt-decode";
 function Login(){
     const navigate = useNavigate();
@@ -16,6 +16,8 @@ function Login(){
     const handleClick=()=>{
         alert("clicked");
     }
+
+    // const {auth, setAuth} = useContext(AuthContext)
 
     const [formData , setFormData] = useState({
         username: '',
@@ -36,25 +38,33 @@ function Login(){
     const handleSubmit = async (event)=>{
         event.preventDefault();
         // console.log(formData);
-        const formdata = new FormData();
-        formdata.append('username', formData.username);
-        formdata.append('password', formData.password);
+        const loginData = new FormData();
+        loginData.append('username', formData.username);
+        loginData.append('password', formData.password);
+        console.log(formData)
         try{
-            const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/token',formdata);
+            const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/token',loginData);
             
-            const allItems=jwt_decode(response.data.token);
-            localStorage.setItem('accessToken', response.data.token)
-            localStorage.setItem('token', JSON.stringify(allItems));
-            // console.log(localStorage.getItem('token'));
-            if(allItems['user_role']==="student"){
-                navigate('/subjects');
-            }else if(allItems['user_role']==="teacher"){
-                navigate('/subjects');
-            }else if(allItems['user_role']==="admin"){
-                navigate('/admin/dashboard');
-            }
+            const allItems = jwt_decode(response.data.access_token);
+            localStorage.setItem('accessToken', response.data.access_token)
+            localStorage.setItem('tokenData', JSON.stringify(allItems));
 
-            // navigate('/subjects');
+            console.log(localStorage.getItem('tokenData'));
+            console.log(localStorage.getItem('accessToken'));
+
+            switch (allItems['user_role']) {
+                case "student":
+                    navigate('/subjects');
+                    break;
+                case "teacher":
+                    navigate('/subjects');
+                    break;
+                case "admin":
+                    navigate('/admin/dashboard');
+                    break;
+                default:
+                    break;
+            }
         }catch(error){
             // console.log("error:"+error.response.data.message);
             if(error.response && error.response.status >=400 && error.response.status <500){
@@ -74,9 +84,9 @@ function Login(){
                     Continue with Google</button>
                 </div>
                 <div className="w-full my-5" style={{ display: 'flex', alignItems: 'center' }}>
-                  <div style={{ flex: '1', borderTop: '1px solid black' }}></div>
-                  <span style={{ margin: '0 10px' }}>or</span>
-                  <div style={{ flex: '1', borderTop: '1px solid black' }}></div>
+                    <div style={{ flex: '1', borderTop: '1px solid black' }}></div>
+                    <span style={{ margin: '0 10px' }}>or</span>
+                    <div style={{ flex: '1', borderTop: '1px solid black' }}></div>
                 </div>
                 <div className="w-full">
                     <form className="flex flex-col items-center justify-center w-full" onSubmit={handleSubmit}>
