@@ -6,7 +6,7 @@ import axios from 'axios'
 
 function SubjectsPage() {
   const allItems=JSON.parse(localStorage.getItem('tokenData'));
-  const user_id=allItems['id'];
+  const user_id=allItems['user_id'];
   const userType = allItems['user_role'];
   const accessToken = localStorage.getItem('accessToken')
   const [isClicked,setClick] = useState("outer");
@@ -36,7 +36,7 @@ function SubjectsPage() {
         response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`, {headers});
       }
       const data = response.data;
-      console.log(data);
+      console.log("HELLO:",data);
       setSubjects(data);
     }catch(error){
       console.log(error);

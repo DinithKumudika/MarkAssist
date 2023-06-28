@@ -6,6 +6,20 @@ import { useState } from 'react'
 function MarkingSchemes({clicked, data}) {
   const classes = classnames('sidebar static max-sm:ml-16');
   const [show, setShow] = useState(false);
+  // console.log("DATA;"+data)
+  const markingschemes = data.map((item) => {
+    return (
+    <tr key={item.id}>
+      <td>{item.id}</td>
+      <td>{item.name}</td>
+      <td>{item.age}</td>
+      <td className='text-lg px-4 max-sm:px-1 h-10 border-y-2 border-x-2 font-medium opacity-60'>{item.subjectCode}-{item.subjectName}-{item.year}</td>
+      <td className='text-lg px-4 max-sm:px-1 h-10 border-y-2 border-x-4 font-medium opacity-60'>10/06/2023</td>
+      <td className='flex justify-center text-sm px-4 h-10 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-[#4457FF] w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row"><div className='ml-2'>Select</div></button></td>
+    </tr>
+  )})
+
+
 
   const handleCKick = () => {
     setShow((prev)=>!prev);
@@ -41,13 +55,7 @@ function MarkingSchemes({clicked, data}) {
                 </tr>
                 </thead>
                 <tbody>
-                {/* {data.map((item) => (
-                      <tr key={item.id}>
-                        <td>{item.id}</td>
-                        <td>{item.name}</td>
-                        <td>{item.age}</td>
-                      </tr>
-                    ))} */}
+                {markingschemes}
                     <tr>
                       <td className='text-lg px-4 max-sm:px-1 h-10 border-y-2 border-x-2 font-medium opacity-60'>SCS2213-DSA-2023</td>
                       <td className='text-lg px-4 max-sm:px-1 h-10 border-y-2 border-x-4 font-medium opacity-60'>10/06/2023</td>
