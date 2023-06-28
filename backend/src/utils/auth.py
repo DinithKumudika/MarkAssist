@@ -49,6 +49,7 @@ async def get_current_user(request: Request, token: str = Depends(oauth2_scheme)
           detail="Could not validate credentials",
           headers={"WWW-Authenticate": "Bearer"},
      )
+     print(token)
      token_data = verify_token(token, credentials_exception)
      user_model = UserModel()
      user = user_model.by_id(request, token_data.user_id)
