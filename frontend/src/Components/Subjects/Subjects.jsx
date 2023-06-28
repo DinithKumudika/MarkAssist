@@ -6,7 +6,7 @@ import SubjectAddBox from './SubjectAddBox';
 import Button from '../Button';
 function Subjects({clicked,data}) {
   const length = data.length;
-  const allItems=JSON.parse(localStorage.getItem('token'));
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
   if(!allItems){
     window.location.href="/";
   }

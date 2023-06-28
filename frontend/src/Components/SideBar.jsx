@@ -5,6 +5,7 @@ import { BiAlarmOff,BiLogOut } from "react-icons/bi";
 import { MdSubject,MdSettings } from "react-icons/md";
 import { IoNewspaperOutline } from "react-icons/io5";
 import { TiThMenu } from "react-icons/ti";
+import { HiMenuAlt2 } from "react-icons/hi";
 import { CgProfile } from "react-icons/cg";
 import {useState} from 'react';
 import AdminSidebar from './Sidebar/AdminSidebar';  
@@ -45,7 +46,7 @@ function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onC
 
   //When logout button clicked
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('tokenData');
     window.location.href = '/';
   }
 
@@ -53,7 +54,7 @@ function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onC
   return (
     <div className={navbarclasses}>
       <div className="text-left">
-        <TiThMenu className='-ml-2 text-6xl flex flex-col cursor-pointer py-3' onClick={onClickFunc}/>
+        <HiMenuAlt2 className='-ml-2 text-6xl flex flex-col cursor-pointer py-3' onClick={onClickFunc}/>
         {sidebarComponent}
       </div>
       <div className={bottomclasses}>

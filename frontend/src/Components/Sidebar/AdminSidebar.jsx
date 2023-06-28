@@ -4,7 +4,7 @@ import { GiTeacher } from "react-icons/gi";
 import classnames from 'classnames';
 import { Link ,useLocation } from 'react-router-dom';
 function AdminSidebar({clicked}) {
-  const allItems=JSON.parse(localStorage.getItem('token'));
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
   if(allItems){
     const userType = allItems['user_role'];
     if(userType!=="admin"){

@@ -5,7 +5,7 @@ import { IoNewspaperOutline ,IoStatsChart } from "react-icons/io5";
 import classnames from 'classnames';
 import { Link ,useLocation } from 'react-router-dom';
 function TeacherSidebar({clicked}) {
-  const allItems=JSON.parse(localStorage.getItem('token'));
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
   // console.log(allItems);
   if(allItems){
     const userType = allItems['user_role'];

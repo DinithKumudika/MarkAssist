@@ -5,10 +5,11 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 
 function SubjectsPage() {
-  const allItems=JSON.parse(localStorage.getItem('token'));
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
   if(!allItems){
     window.location.href="/";
   }
+  console.log(allItems);
   const user_id=allItems['user_id'];
   const userType = allItems['user_role'];
   const accessToken = localStorage.getItem('accessToken')
@@ -31,8 +32,8 @@ function SubjectsPage() {
       };
       //****Methana subjects code eken group karaganna oona
       let response = {}
+      console.log(headers)
       if(userType==="admin"){
-        console.log(headers)
         response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`, {headers});
       }else if(userType==="teacher"){
         console.log(headers);

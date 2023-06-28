@@ -5,7 +5,7 @@ import {useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom'
 import axios from 'axios'
 function MarksPage() {
-  const allItems=JSON.parse(localStorage.getItem('token'));
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
   console.log(allItems);
   if(!allItems){
     window.location.href="/";

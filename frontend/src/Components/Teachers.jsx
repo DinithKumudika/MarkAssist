@@ -7,7 +7,7 @@ import TeacherAddBox from './TeacherAddBox';
 import Button from './Button';
 function Teachers({clicked,data}) {
     const length = data.length;
-    const allItems=JSON.parse(localStorage.getItem('token'));
+    const allItems=JSON.parse(localStorage.getItem('tokenData'));
     if(!allItems){
       window.location.href="/";
     }

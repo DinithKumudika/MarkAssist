@@ -6,7 +6,7 @@ import {useParams} from 'react-router-dom'
 import axios from 'axios'
 function MarkingSchemesPage() {
   const { year,subjectId} = useParams()
-  const allItems=JSON.parse(localStorage.getItem('token'));
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
   console.log(allItems);
   if(!allItems){
     window.location.href="/";
@@ -16,15 +16,15 @@ function MarkingSchemesPage() {
   const [markingScheme,setMarkingScheme] = useState([]);
 
   const name=`${subjectId}---- ${year} ---Marking Scheme`
-  // useEffect(()=>{
-  //   try{
-  //     const response = axios.get(`http://localhost:5000/api/markingschemes/${year}/${subjectId}`);
-  //     const data = response.data;
-  //     setMarkingScheme(data);
-  //   }catch(error){
-  //     console.log(error);
-  //   }
-  // },[]);
+  useEffect(()=>{
+    try{
+      const response = axios.get(`http://localhost:5000/api/markingschemes/${year}/${subjectId}`);
+      const data = response.data;
+      setMarkingScheme(data);
+    }catch(error){
+      console.log(error);
+    }
+  },[]);
 
   // //Function to handle the click of the hamburger menu
   const handleClick = () => {

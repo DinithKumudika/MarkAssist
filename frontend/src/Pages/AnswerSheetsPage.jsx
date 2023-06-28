@@ -6,7 +6,7 @@ import {useParams} from 'react-router-dom'
 import axios from 'axios'
 function AnswerSheetsPage() {
   const { year,subjectId} = useParams()
-  const allItems=JSON.parse(localStorage.getItem('token'));
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
   if(!allItems){
     window.location.href="/";
   }

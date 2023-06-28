@@ -60,6 +60,7 @@ function Login(){
                     navigate('/subjects');
                     break;
                 case "admin":
+                    console.log(response.data.access_token);
                     navigate('/admin/dashboard');
                     break;
                 default:

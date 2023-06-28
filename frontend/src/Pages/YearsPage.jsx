@@ -7,7 +7,7 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 function YearsPage() {
   const { subjectCode } = useParams()
-  const allItems=JSON.parse(localStorage.getItem('token'));
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
   if(!allItems){
     window.location.href="/";
   }
@@ -23,7 +23,7 @@ function YearsPage() {
     try{
       const config = {
         headers: {
-          Authorization: `Bearer ${allItems['token']}`,
+          Authorization: `Bearer ${allItems['tokenData']}`,
         },
       }
       const response = await axios.get(`http://localhost:8000/api_v1/subjects/years/${user_id}/${subjectCode}`,config);

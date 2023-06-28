@@ -5,7 +5,7 @@ import Teachers from '../Components/Teachers'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 function TeachersPage() {
-  const allItems=JSON.parse(localStorage.getItem('token'));
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
   if(!allItems){
     window.location.href="/";
   }
@@ -22,7 +22,7 @@ function TeachersPage() {
     try{
       const config = {
         headers: {
-          Authorization: `Bearer ${allItems['token']}`,
+          Authorization: `Bearer ${allItems['tokenData']}`,
         },
       }
       //****Methana subjects code eken group karaganna oona
