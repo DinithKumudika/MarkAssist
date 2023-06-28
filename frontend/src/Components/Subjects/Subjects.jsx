@@ -7,6 +7,7 @@ import Button from '../Button';
 function Subjects({clicked,data}) {
   const length = data.length;
   const allItems=JSON.parse(localStorage.getItem('tokenData'));
+  console.log("DATA:",data);
   if(!allItems){
     window.location.href="/";
   }

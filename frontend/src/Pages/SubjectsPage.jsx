@@ -9,7 +9,7 @@ function SubjectsPage() {
   if(!allItems){
     window.location.href="/";
   }
-  console.log(allItems);
+  // console.log(allItems);
   const user_id=allItems['user_id'];
   const userType = allItems['user_role'];
   const accessToken = localStorage.getItem('accessToken')
@@ -32,20 +32,21 @@ function SubjectsPage() {
       };
       //****Methana subjects code eken group karaganna oona
       let response = {}
-      console.log(headers)
+      // console.log(headers)
       if(userType==="admin"){
         response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`, {headers});
       }else if(userType==="teacher"){
-        console.log(headers);
+        // console.log(headers);
         response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`, {headers});
       }
       const data = response.data;
-      console.log("HELLO:",data);
+      // console.log("HELLO:",data);
       setSubjects(data);
     }catch(error){
       console.log(error);
     }
   }
+  // console.log("Subjects:",subjects)
   //Function to handle the click of the hamburger menu
   const handleClick = () => {
     if(isClicked==="outer"){

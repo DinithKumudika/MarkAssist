@@ -3,7 +3,7 @@ import { MdEdit } from "react-icons/md";
 function SubjectBox({subjectName,subjectCode,year,onClick,userType}) {
   const location = useLocation();
   const pathName = location.pathname.split('/').filter((path) => path !== '')
-  console.log("Hello::"+userType);
+  // console.log("Hello::"+userType);
   var formattedString="";
   if(year){
     formattedString = year;

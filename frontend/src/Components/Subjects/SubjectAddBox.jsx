@@ -45,7 +45,7 @@ function SubjectAddBox({closeFunc}) {
 
     const handleSubmit = async (event)=>{
         event.preventDefault();
-        console.log(formData);
+        // console.log(formData);
         if(!formData.subjectCode || !formData.subjectStream || !formData.subjectName || !formData.subjectYear || !formData.assignmentMarks || !formData.semester || !formData.paperMarks || !formData.editingTeacher || !formData.nonEditingTeacher){
             setError("Please fill all the fields");
             console.log("error");
