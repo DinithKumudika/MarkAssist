@@ -19,16 +19,19 @@ function YearsPage() {
   },[]);
 
   const fetchYears = async () =>{
-    try{
       const headers = {
         Authorization: `Bearer ${accessToken}`,
       };
-      const response = await axios.get(`http://localhost:8000/api_v1/subjects/years/${user_id}/${subjectCode}`,{headers});
-      const data = response.data;
-      setYears(data);
-    }catch(error){
-      console.log(error);
-    }
+
+      axios
+      .get(`http://localhost:8000/api_v1/subjects/years/${user_id}/${subjectCode}`,{headers})
+      .then((response) => {
+        const data = response.data;
+        setYears(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   //Function to handle the click of the hamburger menu

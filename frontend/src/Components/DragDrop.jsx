@@ -3,6 +3,7 @@ import {useDropzone} from 'react-dropzone';
 import { AiOutlinePlus, AiOutlineClose,AiOutlineUpload} from "react-icons/ai";
 import  ReactDOM  from 'react-dom';
 import { Link ,useLocation, useParams } from 'react-router-dom';
+import { BarLoader } from 'react-spinners';
 import axios from 'axios'
 function DragDrop({children,closeFunc}) {
   const location = useLocation();
@@ -14,6 +15,8 @@ function DragDrop({children,closeFunc}) {
   console.log(subjectId);
   console.log(pathName[0]);
   const [files ,setFiles] =useState([]);
+
+  const [uploading, setUploading] = useState(false);
 
   const onDrop = useCallback(acceptedFiles => {
     // Do something with the files
@@ -46,28 +49,42 @@ function DragDrop({children,closeFunc}) {
     if(!files?.length) return
     const formData = new FormData()
     files.forEach(file => formData.append('file', file))
+    formData.append('year', year);
+    formData.append('subjectId',subjectId);
     console.log(formData)
-    
-
-    let response = []
-    try{
-      if(pathName[0]==="markingschemes"){
-        formData.append('year', year);
-        formData.append('subjectId',subjectId);
-        response = axios.post(`http://127.0.0.1:8000/api_v1/markings`,formData);
-      }else if(pathName[0]==="answersheets"){
-        formData.append('year', year);
-        formData.append('subjectId',subjectId);
-        response = axios.post(`http://127.0.0.1:8000/api_v1/papers/upload/file`,formData);
-      }
-      console.log(response);
-    }catch(error){
-      // console.log("error:"+error.response.data.message);
-      if(error.response && error.response.status >=400 && error.response.status <500){
+    setUploading(true);
+    if(pathName[0]==="markingschemes"){
+      axios
+      .post(`http://127.0.0.1:8000/api_v1/markings`,formData)
+      .then((response) => {
+      // console.log("Hello:",response);
+      setUploading(false);
+      closeFunc()
+      })
+      .catch((error) => {
+        if(error.response && error.response.status >=400 && error.response.status <500){
           // console.log(error.response.data.message);
           console.log(error.response.data.detail);
       }
-  }
+      });
+    }else if(pathName[0]==="answersheets"){
+      axios
+      .post(`http://127.0.0.1:8000/api_v1/papers/upload/file`,formData)
+      .then((response) => {
+      // console.log("Hello:",response);
+      setUploading(false);
+      closeFunc()
+      })
+      .catch((error) => {
+        if(error.response && error.response.status >=400 && error.response.status <500){
+          // console.log(error.response.data.message);
+          console.log(error.response.data.detail);
+      }
+      });
+    }
+    // console.log("error:"+error.response.data.message);
+      
+  
 
   
   }
@@ -108,7 +125,8 @@ function DragDrop({children,closeFunc}) {
                   </div>
               </div>
             </div>
-          <button type='submit' className="mb-4 w-40 max-sm:w-24 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded flex justify-center text-center items-center" ><AiOutlineUpload/>Upload</button>
+            {uploading && <BarLoader color="#00ADEF" height={6} width={128} />}
+          <button type='submit' className="my-4 w-40 max-sm:w-24 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded flex justify-center text-center items-center " ><AiOutlineUpload/>Upload</button>
         </form>  
             <ul className='list-disc w-fit'>
               {files.map(file => (

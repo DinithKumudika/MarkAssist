@@ -12,13 +12,13 @@ function TeachersPage() {
   const user_id=allItems['user_id'];
   const userType = allItems['user_role'];
   const [isClicked,setClick] = useState("outer");
-  const [subjects,setSubjects] = useState([]);
+  const [teachers,setTeachers] = useState([]);
 
   useEffect(()=>{
-    fetchSubjects();
+    fetchTeachers();
   },[]);
 
-  const fetchSubjects = async () =>{
+  const fetchTeachers = async () =>{
     try{
       const config = {
         headers: {
@@ -26,14 +26,14 @@ function TeachersPage() {
         },
       }
       //****Methana subjects code eken group karaganna oona
-      const response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`);
+      const response = await axios.get(`http://127.0.0.1:8000/api_v1/admins/teachers`);
       const data = response.data;
-      // console.log(data);
-      setSubjects(data);
+      setTeachers(data);
     }catch(error){
       console.log(error);
     }
   }
+  // console.log(teachers);
   //Function to handle the click of the hamburger menu
   const handleClick = () => {
     if(isClicked==="outer"){
@@ -48,7 +48,7 @@ function TeachersPage() {
     <div>
       <NavBar black onClickFunc={handleClick}/>
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
-      <Teachers clicked={isClicked} data={subjects}/>
+      <Teachers clicked={isClicked} data={teachers}/>
     </div>
   )
 }

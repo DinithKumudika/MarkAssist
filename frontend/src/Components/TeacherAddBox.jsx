@@ -6,21 +6,27 @@ import { Link ,useLocation, useParams } from 'react-router-dom';
 import axios from 'axios'
 import Button from './Button';
 import SubmitButton from './SubmitButton';
+import { BarLoader } from 'react-spinners';
 function TeacherAddBox({closeFunc}) {
     
     const currentYear = new Date().getFullYear();
 
     const [error, setError] = useState();
+    const [adding, setadding] = useState(false);
     const [formData , setFormData] = useState({
-        role : 'Lecturer',
-        title : 'Mr.',
         firstName : '',
         lastName : '',
         email : '',
-        telephoneNumber : '',
+        userType : 'teacher',
+        emailActive : false,
+        isDeleted : false,
+        title : 'Mr.',
+        role : 'Lecturer',
+        // telephoneNumber : '',
     });
 
-    const { role, title , firstName , lastName , email , telephoneNumber } = formData;
+    const { firstName,lastName,email,userType,emailActive,isDeleted,title,role } = formData;
+    const telephoneNumber = ''
 
     const handleSelectChange = (event) =>{
         setFormData((prevState)=>({
@@ -42,16 +48,30 @@ function TeacherAddBox({closeFunc}) {
     const handleSubmit = async (event)=>{
         event.preventDefault();
         console.log(formData);
-        if(!formData.role || !formData.title || !formData.firstName || !formData.lastName || !formData.email || !formData.telephoneNumber){
+        if(!formData.role || !formData.title || !formData.firstName || !formData.lastName || !formData.email ){
             setError("Please fill all the fields");
             console.log("error");
             return;
         }else{
             console.log("no error");
+            console.log(formData);
+            const formdata = new FormData();
+            formdata.append('subjectCode', formData.subjectCode);
+            axios
+            .post('http://127.0.0.1:8000/api_v1/admins/teachers/new',formdata)
+            .then((response) => {
+                // console.log("Hello:",response);
+                setadding(false);
+                closeFunc()
+                })
+                .catch((error) => {
+                  if(error.response && error.response.status >=400 && error.response.status <500){
+                    // console.log(error.response.data.message);
+                    console.log(error.response.data.detail);
+                }
+                });
             setError("");
         }
-        const formdata = new FormData();
-        formdata.append('subjectCode', formData.subjectCode);
         // try{
         //     // const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/token',formdata);
            
@@ -94,7 +114,7 @@ function TeacherAddBox({closeFunc}) {
                                       <option value="Mrs" className='font-bold items-center w-[15%] h-8 text-center shadow shadow-gray-500 hover:text-black '>Mrs</option>
                                       <option value="Ms" className='font-bold items-center w-[15%] h-8 text-center shadow shadow-gray-500 hover:text-black '>Ms</option>
                                     </select>
-                                    <input type="text" onChange={onChange} name="firstName" placeholder="First Name" className='ml-[1%] w-[49%] h-8  p-2 shadow shadow-gray-500 rounded'/>
+                                    <input type="text" value={firstName} onChange={onChange} name="firstName" placeholder="First Name" className='ml-[1%] w-[49%] h-8  p-2 shadow shadow-gray-500 rounded'/>
                                 </div>
                                 <div className='max-md:mr-0 max-md:w-[85%] mr-8 w-[45%] flex flex-row items-center mb-8'>
                                     <label className='mr-4 font-sans w-36'>Last Name</label>
@@ -108,11 +128,11 @@ function TeacherAddBox({closeFunc}) {
                             <div className=' flex flex-row items-center justify-between max-md:flex-col'>
                                 <div className='max-md:ml-0 max-md:w-[85%] ml-8 w-[45%] flex flex-row items-center mb-8 '>
                                     <label className='mr-4 font-sans w-24 max-md:w-36'>Email</label>
-                                    <input type="text" value={email} onChange={onChange} name="email" placeholder="Subject Code" className='w-[65%] h-8  p-2 shadow shadow-gray-500 rounded'/>
+                                    <input type="email" value={email} onChange={onChange} name="email" placeholder="Email" className='w-[65%] h-8  p-2 shadow shadow-gray-500 rounded'/>
                                 </div>
                                 <div className='max-md:mr-0 max-md:w-[85%] mr-8 w-[45%] flex flex-row items-center mb-8'>
                                     <label className='mr-4 font-sans w-36'>Telephone No.</label>
-                                    <input type="text" pattern="[0][0-9]{9}" value={telephoneNumber} onChange={onChange} name="telephoneNumber" placeholder="0123456789" className='w-[65%] h-8  p-2 shadow shadow-gray-500 rounded'/>
+                                    <input type="text" pattern="[0][0-9]{9}" value={telephoneNumber} onChange={onChange} name="telephoneNumber" placeholder="0123456789" className='w-[65%] h-8  p-2 shadow shadow-gray-500 rounded' disabled/>
                                 </div>
                             </div>
                             <div className='flex flex-row items-center justify-between max-md:flex-col '>
@@ -130,6 +150,8 @@ function TeacherAddBox({closeFunc}) {
                 <div className='w-full'>
                     <p className='font-bold text-blue-950 text-xl my-4 '>Other Information</p>
                 </div>
+                {adding && <BarLoader color="#00ADEF" height={6} width={128} />}
+
             </form>
         </div>
 
