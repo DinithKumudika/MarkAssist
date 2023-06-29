@@ -5,15 +5,18 @@ from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
 from datetime import datetime
 import httpx
+import requests
 
 import os
 
 from models.paper import PaperModel
-from schemas.user import User
 from schemas.paper import Paper,PaperCreate,PaperForm
+
+from models.user import UserModel
+from schemas.user import User
+
 from models.subject import SubjectModel;
 
-from schemas.user import User
 from utils.auth import get_current_active_user
 
 from utils.firebase_storage import upload_file 
@@ -22,6 +25,7 @@ import helpers
 router = APIRouter()
 paper_model = PaperModel()
 subject_model = SubjectModel()
+user_model = UserModel()
 
 @router.get("/", response_description="Get all papers", response_model=List[Paper])
 async def get_all_papers(request: Request, current_user: User = Depends(get_current_active_user)):
@@ -65,10 +69,11 @@ async def download_paper(request: Request, paper_id):
                images = helpers.convert_to_images(save_path, dir_path)
                
                return JSONResponse({
-                    "status": status.HTTP_200_OK, 
-                    "paper_path": document_url,
-                    "images_created": len(images)
-               }) 
+                         "paper_path": document_url,
+                         "images_created": len(images)
+                    },
+                    status_code=status.HTTP_200_OK
+               ) 
           except OSError:
                return {"error": OSError}
      raise HTTPException(
@@ -104,7 +109,7 @@ async def create_images(request:Request, payload: dict = Body(...)):
 async def create_images(request:Request, paper_id):
      # paper = await paperEntity(request.app.mongodb["tickets"].find_one({"_id": ObjectId(paper_id)}))
      paper_id =  ObjectId(paper_id)
-     paper = await paper_model.paper_by_id(request, paper_id)
+     paper = await paper_model.by_id(request, paper_id)
      paper_path = paper["paper"]
      
 # @router.post('/upload/file/')
@@ -123,7 +128,7 @@ async def create_images(request:Request, paper_id):
 @router.post('/upload/file/',response_description="Add a new paper", response_model = Paper, status_code= status.HTTP_201_CREATED)
 async def upload_files(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...)):     
      # get the subjectCode and subjectName using subjectId
-     subject = subject_model.subject_by_id(request, subjectId);
+     subject = subject_model.subject_by_id(request, subjectId)
      if(subject):
           # print("There is subject")
           # print(subject['subjectName'])
@@ -131,7 +136,7 @@ async def upload_files(request: Request, file: UploadFile = File(...), year: str
           # print(file.filename)
 
           # Upload the file and get the file URL
-          paper_url_up = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
+          paper_url_up = await upload_file(file,file.filename)
           print(paper_url_up)
 
           # Create a new paper object with the provided data and file URL
@@ -150,7 +155,22 @@ async def upload_files(request: Request, file: UploadFile = File(...), year: str
           # Save the paper to the database using your model
           new_paper = await paper_model.add_new_paper(request, paper)
           if new_paper:
-               return new_paper
+               response = requests.get('http://localhost:8000/papers/download/' + new_paper["id"])
+               if response.status_code == status.HTTP_200_OK:
+                    response2 = requests.get('http://localhost:8000/answers/image/' + new_paper["id"])
+                    if response2.status_code == status.HTTP_201_CREATED:
+                         response3 = requests.get('http://localhost:8000/answers/text/' + new_paper["id"])
+                         if response3.status_code == status.HTTP_200_OK:
+                              studentIndex = file.filename.split(".")[-1]
+                              student = user_model.get_student_by_index(int(studentIndex))
+                              
+                              params = {
+                                   "sub": new_paper["subjectId"], 
+                                   "stu": student["id"]
+                              }
+                              response4 = requests.get('http://localhost:8000/answers/save/' + new_paper["id"], params=params)
+                              if response4.status_code == status.HTTP_201_CREATED:
+                                   return new_paper
 
           raise HTTPException(
                status_code=status.HTTP_404_NOT_FOUND,
