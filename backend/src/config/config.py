@@ -25,7 +25,7 @@ class ServerSettings(BaseSettings):
           case_sensitive = True
 
 class GoogleServiceSettings(BaseSettings):
-     GOOGLE_APPLICATION_CREDENTIALS: str = './../venv/service_account.json'
+     GOOGLE_APPLICATION_CREDENTIALS: str = '../service_account.json'
      FIREBASE_API_KEY: str = env.get('API_KEY')
      FIREBASE_AUTH_DOMAIN: str = env.get('AUTH_DOMAIN')
      FIREBASE_PROJECT_ID: str = env.get('PROJECT_ID')

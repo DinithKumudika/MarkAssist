@@ -42,7 +42,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
      # print("This is subjectId", subjectId)
      
      # get the subjectCode and subjectName using subjectId
-     subject = subject_model.subject_by_id(request, subjectId);
+     subject = subject_model.subject_by_id(request, subjectId)
      if(subject):
           
           # print("There is subject")

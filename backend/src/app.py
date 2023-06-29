@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from models.user import User
+import os
+
 from config.config import settings
 from config.database import Database
 from api.api_v1.router import router
@@ -26,6 +27,8 @@ app.add_middleware(
 
 # register routes
 app.include_router(router, prefix=settings.API_VERSION_STR)
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = settings.GOOGLE_APPLICATION_CREDENTIALS
 
 @app.on_event("startup")
 async def app_init():

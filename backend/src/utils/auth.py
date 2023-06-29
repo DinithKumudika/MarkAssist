@@ -57,6 +57,7 @@ async def get_current_user(request: Request, token: str = Depends(oauth2_scheme)
      )
      try:
           token_data = verify_token(token, credentials_exception)
+          print("token data: " + str(token_data.user_id))
      except JWTError:
           print("authorization error")
      

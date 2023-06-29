@@ -1,3 +1,5 @@
+from fastapi import Request
+from bson.objectid import ObjectId
 from pydantic import BaseModel
 
 import cv2
@@ -6,48 +8,54 @@ from google.cloud import vision
 
 import os
 
+from schemas.answer import Answer, AnswerCreate
 from config.config import settings
 import helpers
 
-class Answer(BaseModel):
-     pass
-
 def extract_answers(paper_no):
-     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = settings.GOOGLE_APPLICATION_CREDENTIALS
-     count = 0
-     
      try:
-          images = helpers.get_images(os.path.join('./../data/images/', paper_no))
-          save_path = os.path.join('./../data/answers/', paper_no)
+          images = helpers.get_images(os.path.join('../data/images/paper/', paper_no))
+          save_path = os.path.join('../data/answers/', paper_no)
           os.mkdir(save_path)
+          
+          answers = []
+          answer_count = 0
      
           for img_idx, image in enumerate(images):
                src_image = cv2.imread(image)
                screen_width = helpers.get_screen_width()
                screen_height = helpers.get_screen_height() 
                sized_image = helpers.resize(src_image, screen_height, screen_width)
-          
                contours = helpers.detect_edges(sized_image)
-               answers = []
+               
+               answers.append({
+                    "img_no": img_idx + 1,
+                    "questions": []
+               })
           
                for i, contour in enumerate(contours):
                     # precision for approximation
                     epsilon = 0.01 * cv2.arcLength(contour, True)
                     approx = cv2.approxPolyDP(contour, epsilon, True)
-                         
                     x, y, w, h = cv2.boundingRect(approx)
                     aspect_ratio = w / h
                
                     if aspect_ratio > 1 and w > 50 and h > 20 and cv2.contourArea(contour) > 100:
                          if w > 700:
                               cropped_answer = sized_image[y:y+h, x:x+w]
-                              answers.append(cropped_answer)
-                              
-          for ans_idx, answer in enumerate(answers):
-               helpers.save_image(answer, save_path, ans_idx, img_idx)
-               count = count + 1
-          return str(count)
+                              questions_on_page = answers[img_idx]["questions"]
+                              questions_on_page.append({
+                                   "answer": cropped_answer
+                              })
+                              answer_count += 1
+          for page in answers:
+               questions = page["questions"]
+               questions.reverse()
+               for i, question in enumerate(questions):
+                    cv2.imwrite(f"{save_path}/{page['img_no']}_{i+1}.jpg", question['answer'])
+          return str(answer_count)
      except OSError:
+          print("Error")
           return None
 
 def read_answers(paper_no):
@@ -60,7 +68,37 @@ def read_answers(paper_no):
           scanned_text = helpers.read_text(client, image)
           answers.append({
                "question no": i+1, 
-               "answer": scanned_text
+               "text": scanned_text
           })
           
      return answers
+
+class AnswerModel():
+     collection: str = "answers"
+     
+     def get_collection(self, request: Request):
+          return request.app.db[self.collection]
+     
+     def save_answer(self, request: Request, answer: AnswerCreate):
+          answer = self.get_collection(request).insert_one(answer.dict())
+          
+          if answer:
+               return answer.inserted_id
+     
+     def get_by_id(self, request: Request, id: str)->Answer:
+          answer = self.get_collection(request).find_one({"_id": ObjectId(id)})
+          if answer:
+               answer["id"] = str(answer["_id"])
+               return answer
+     
+     def get_by_student(self, request: Request, student_id: str)->list:
+          answers = list(self.get_collection(request).find({"studentId": student_id}))
+          for answer in answers:
+               answer["id"] = str(answer["_id"]) 
+          return answers
+     
+     def get_by_paper(self, request: Request, paper_id: str)->list:
+          answers = list(self.get_collection(request).find({}))
+          for answer in answers:
+               answer["id"] = str(answer["_id"]) 
+          return answers

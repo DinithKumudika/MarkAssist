@@ -55,7 +55,6 @@ class UserLogin(BaseModel):
                }
           }
 
-
 class UserCreate(UserBase):
      password: str
      userType: str
