@@ -47,6 +47,13 @@ class UserModel():
           for user in users:
                user["id"] = str(user["_id"]) 
           return users
+
+# list of teachers
+     def list_teachers(self, request: Request) -> list:
+          users = list(self.get_collection(request).find({'userType':'teacher'}))
+          for user in users:
+               user["id"] = str(user["_id"]) 
+          return users
      
      def create_user(self, request: Request, user: UserCreate):
           new_user = self.get_collection(request).insert_one(user.dict())

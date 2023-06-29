@@ -10,6 +10,10 @@ class Subject(BaseModel):
     teacherId:str
     semester:int
     academicYear:int
+    assignmentMarks:int
+    paperMarks:int
+    editingTeacher:str
+    nonEditingTeaacher:str
     
 
     class Config:
@@ -22,6 +26,10 @@ class Subject(BaseModel):
             "teacherId": "64873b4029eb156b34979ab0",
             "semester":2 ,
             "academicYear":2,
+            "assignmentMarks":30,
+            "paperMarks":70,
+            "editingTeacher":"Saman",
+            "nonEditingTeaacher":"Chaminda",
             }
         }
         
@@ -48,19 +56,26 @@ class SubjectCreate(BaseModel):
     teacherId:str
     semester:int
     academicYear:int
+    assignmentMarks:int
+    paperMarks:int
+    editingTeacher:str
+    nonEditingTeaacher:str
     createdAt: Optional[datetime] = Field(default_factory=datetime.now)
     updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
 
     class Config:
         schema_extra = {
         "example": {
-            "id": "64882f6c32d15c1d89f06cdf",
             "subjectCode": "SCS2213",
             "subjectName":"DSA",
             "year": 2022,
             "teacherId": "64873b4029eb156b34979ab0",
             "semester":2 ,
             "academicYear":2,
+            "assignmentMarks":30,
+            "paperMarks":70,
+            "editingTeacher":"Saman",
+            "nonEditingTeaacher":"Chaminda",
             "createdAt": "2023-06-27T10:00:00",
             "updatedAt": "2023-06-27T10:00:00"
             }
