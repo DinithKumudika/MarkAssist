@@ -12,7 +12,6 @@ class SubjectModel():
           return request.app.db[self.collection]
      
      def list_subjects_by_user_id(self, request: Request,user_id:str) -> list:
-          user_id = ObjectId(user_id);
           subjects = list(self.get_collection(request).find({'teacherId':user_id}))
           for subject in subjects:
                subject["id"] = str(subject["_id"]) 

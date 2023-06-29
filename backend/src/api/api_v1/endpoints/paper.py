@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from typing import List
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
+from datetime import datetime
 import httpx
 
 import os
@@ -141,6 +142,8 @@ async def upload_files(request: Request, file: UploadFile = File(...), year: str
                subjectName=subject['subjectName'],
                paper = file.filename,
                paperUrl= paper_url_up,
+               createdAt =  datetime.now(),
+               updatedAt = datetime.now()
           )
           # print(paper);
 

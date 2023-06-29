@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field
 from fastapi import UploadFile,File
 from typing import Optional
+from datetime import datetime
 
 class Paper(BaseModel):
      id: str
@@ -32,6 +33,8 @@ class PaperCreate(BaseModel):
      subjectName:str
      paper:str
      paperUrl:str
+     createdAt: Optional[datetime] = Field(default_factory=datetime.now)
+     updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
      
      class Config:
           schema_extra = {

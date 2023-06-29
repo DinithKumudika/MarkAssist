@@ -80,11 +80,11 @@ async def get_subjects_by_teacher_id(request: Request, id: str):
      
 # Add a new subject
 @router.post('/', response_description="Add a new subject", response_model= Subject, status_code= status.HTTP_201_CREATED)
-async def add_a_subject(request:Request, payload: dict = Body(...)):
+async def add_a_subject(request:Request, payload: SubjectCreate = Body(...)):
      # print(payload)
      
      # check if subject is existing in db by, subjectCode and year
-     current_subject = subject_model.get_subject_by_year_subjectCode(request,int(payload['year']), payload['subjectCode'])
+     current_subject = subject_model.get_subject_by_year_subjectCode(request,int(payload.year), payload.subjectCode)
      
      if current_subject:
           # There is a subject
@@ -97,12 +97,16 @@ async def add_a_subject(request:Request, payload: dict = Body(...)):
           
           
           subject = SubjectCreate(
-               subjectCode = payload['subjectCode'],
-               subjectName = payload['subjectName'],
-               year = int(payload['year']),
-               teacherId = payload['teacherId'],
-               semester = int(payload['semester']) ,
-               academicYear = int(payload['academicYear']),
+               subjectCode = payload.subjectCode,
+               subjectName = payload.subjectName,
+               year = int(payload.year),
+               teacherId = payload.teacherId,
+               semester = int(payload.semester) ,
+               academicYear = int(payload.academicYear),
+               assignmentMarks =int(payload.assignmentMarks),
+               paperMarks = int(payload.paperMarks),
+               editingTeacher = payload.editingTeacher,
+               nonEditingTeaacher =payload.nonEditingTeaacher,
                createdAt =  datetime.now(),
                updatedAt = datetime.now()
           )

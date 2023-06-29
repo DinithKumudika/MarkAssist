@@ -34,7 +34,7 @@ function SubjectsPage() {
       let response = {}
       // console.log(headers)
       if(userType==="admin"){
-        response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects`, {headers});
+        response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects/${user_id}`, {headers});
       }else if(userType==="teacher"){
         // console.log(headers);
         response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects/${user_id}`, {headers});
