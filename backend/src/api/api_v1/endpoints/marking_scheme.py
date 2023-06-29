@@ -39,7 +39,7 @@ async def get_All(request: Request):
 @router.post("/", response_description="Add a marking scheme")
 async def add_marking(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...) ):
      # get the subjectCode and subjectName using subjectId
-     subject = subject_model.subject_by_id(request, subjectId);
+     subject = subject_model.subject_by_id(request, subjectId)
      if(subject):
           # print("There is subject")
           # print(subject['subjectName'])

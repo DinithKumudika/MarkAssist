@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, HTTPException, Request, status, UploadFile
 from fastapi.responses import JSONResponse
 from fastapi.params import Body
@@ -6,7 +7,7 @@ from bson.objectid import ObjectId
 import os
 from helpers import get_images
 
-from schemas.answer import AnswerCreate
+from schemas.answer import AnswerCreate, Answer
 from models.answer import AnswerModel, extract_answers, read_answers
 from helpers import get_images
 from utils.firebase_storage import upload_file2
@@ -14,10 +15,16 @@ from utils.firebase_storage import upload_file2
 router = APIRouter()
 answer_model = AnswerModel()
 
-@router.get('/{paper_no}', response_description="get answers")
-async def get_answers(paper_no):
-     answer_images = get_images(os.path.join('../data/answers/', paper_no))
-     return answer_images
+@router.get('/{paper_no}', response_description="get answer images from database", response_model=List[Answer])
+async def get_answers_by_paper(request: Request, paper_no)->list:
+     answers = answer_model.get_by_paper(request, paper_no)
+     
+     if answers:
+          return answers 
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail=f"No answers for paper with id of {paper_no}"
+     )
 
 
 @router.get("/image/{paper_no}", response_description="extract answers as images")

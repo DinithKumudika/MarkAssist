@@ -96,3 +96,9 @@ class AnswerModel():
           for answer in answers:
                answer["id"] = str(answer["_id"]) 
           return answers
+     
+     def get_by_paper(self, request: Request, paper_id: str)->list:
+          answers = list(self.get_collection(request).find({}))
+          for answer in answers:
+               answer["id"] = str(answer["_id"]) 
+          return answers
