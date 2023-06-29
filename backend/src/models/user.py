@@ -34,8 +34,8 @@ from schemas.user import User, UserCreate
 #      async def by_id(self, id: str) -> User:
 #           return await self.find_one(self.id  == ObjectId(id))
      
-     # class Collection:
-     #      name = "users"
+#      class Collection:
+#           name = "users"
 
 class UserModel():
      collection: str = "users"

@@ -1,9 +1,20 @@
-def answerEntity(item) -> dict:
-     return {
-          "paper_no": str(item["paperNo"]),
-          "question_no": int(item["questionNo"]),
-          "text": item["text"]
-     }
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
+
+class Answer(BaseModel):
+     id: str
+     paperNo: str
+     subjectId: str
+     userId: str
+     questionNo: str
+     text: str
+     uploadUrl: str
      
-def answersEntity(entity) -> list:
-     return [answerEntity(item) for item in entity]
+class AnswerCreate(BaseModel):
+     paperNo: str
+     subjectId: str
+     userId: str
+     questionNo: str
+     text: str
+     uploadUrl: str
+

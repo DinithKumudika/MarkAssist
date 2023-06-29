@@ -1,42 +1,90 @@
-from fastapi import APIRouter, HTTPException, Request, status
+from fastapi import APIRouter, HTTPException, Request, status, UploadFile
 from fastapi.responses import JSONResponse
 from fastapi.params import Body
 from bson.objectid import ObjectId
 
-from config.database import Database
-from models.answer import Answer, extract_answers, read_answers
-from schemas.answer import answerEntity, answersEntity
+import os
+from helpers import get_images
+
+from schemas.answer import AnswerCreate
+from models.answer import AnswerModel, extract_answers, read_answers
+from helpers import get_images
+from utils.firebase_storage import upload_file2
 
 router = APIRouter()
+answer_model = AnswerModel()
 
-@router.post("/text/{paper_no}", response_description="extract answers as text")
-async def answer_to_text(request: Request, paper_no):
-     try:
-          no_of_answers = extract_answers(paper_no)
+@router.get('/{paper_no}', response_description="get answers")
+async def get_answers(paper_no):
+     answer_images = get_images(os.path.join('../data/answers/', paper_no))
+     return answer_images
+
+
+@router.get("/image/{paper_no}", response_description="extract answers as images")
+async def answer_to_text(paper_no):
+     no_of_answers = extract_answers(paper_no)
+     if no_of_answers:
           return JSONResponse({
-               "status": status.HTTP_201_CREATED, 
                "message": f"{no_of_answers} answers saved"
-          }) 
-     except OSError:
-          return JSONResponse({
-               "status": status.HTTP_500_INTERNAL_SERVER_ERROR, 
-               "message": "couldn't extract answers"
-          }) 
-
-          
-@router.get('/text/{paper_no}', response_description="save extracted answers to the database")
-async def save_answers(request: Request, paper_no):
-     answers = read_answers(paper_no)
-     if answers:
-          return JSONResponse({
-               "status": status.HTTP_200_OK, 
-               "answers": answers
-          }) 
+               }, 
+               status_code=status.HTTP_201_CREATED
+          )
      else:
           return JSONResponse({
-               "status": status.HTTP_500_INTERNAL_SERVER_ERROR, 
+               "message": "couldn't extract answers"
+               },
+               status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+          )
+
+
+@router.get("/text/{paper_no}", response_description="get extracted answer text")
+async def get_text(paper_no):
+     answers = read_answers(paper_no)
+     
+     if answers:
+          return JSONResponse({
+               "data": answers
+               }, 
+               status_code=status.HTTP_200_OK
+          )
+     else:
+          return JSONResponse({
                "message": "error getting answers"
-          }) 
+               },
+               status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+          )
+
+
+@router.post('/save/{paper_no}',response_description="save extracted answers to the db and cloud")
+async def save_answers(request: Request, paper_no, sub: str, stu: str):
+     answers = read_answers(paper_no)
+     answer_images = get_images(os.path.join('../data/answers/', paper_no))
+     urls = []
+     
+     for i, image in enumerate(answer_images):
+          with open(image, "rb") as file:
+               upload = UploadFile(filename=image, file=file)
+               filename = f"Q_{i+1}"
+               file_url = await upload_file2(upload, "uploads/images/answers", paper_no, filename)
+               urls.append(file_url)
+          question_no = answers[i]["question no"]
+          answer_text = answers[i]["text"]
+          answer = AnswerCreate(
+               paperNo=paper_no, 
+               subjectId= sub, 
+               userId=stu, 
+               questionNo=question_no, 
+               text=answer_text,
+               uploadUrl= file_url
+          )
+          answer_id = answer_model.save_answer(request, answer)
+          
+     return JSONResponse({
+               "detail": "answers saved",
+               "data": urls
+          }, 
+          status_code=status.HTTP_201_CREATED
+     )
 
           
 @router.post('/compare', response_description="compare between question text and marking scheme then returns similarity")
