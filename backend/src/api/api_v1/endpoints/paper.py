@@ -168,9 +168,9 @@ async def upload_files(request: Request, file: UploadFile = File(...), year: str
           new_paper = await paper_model.add_new_paper(request, paper)
           if new_paper:
                return JSONResponse({
-                    "detail": "new paper added", 
-                    "data": new_paper["id"],
-                    "indexNo": file.filename.split(".")[0]
+                         "detail": "new paper added", 
+                         "data": new_paper["id"],
+                         "indexNo": file.filename.split(".")[0]
                     }, 
                     status_code=status.HTTP_200_OK
                )
