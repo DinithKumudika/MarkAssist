@@ -34,6 +34,7 @@ async def register(request: Request, payload: TeacherCreate = Body()) -> User:
                status_code=status.HTTP_400_BAD_REQUEST, 
                detail="user already exists"
           )
+     payload.password = "123456";  #hard code the value
      payload.password = Hasher.get_password_hash(payload.password)
      new_user_id = user_model.create_user(request,payload)
      user = user_model.by_id(request,new_user_id)

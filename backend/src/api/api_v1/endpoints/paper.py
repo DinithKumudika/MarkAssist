@@ -81,7 +81,19 @@ async def download_paper(request: Request, paper_id: str):
           detail=f"There is no paper with the id of{paper_id}"
      )
 
+# get papers list according to subject id
+@router.get("/subjects/{subject_id}", response_description="Get papers by subject id",response_model=List[Paper])
+async def get_paper_by_subjectId(request: Request, subject_id:str):
 
+     papers = paper_model.papers_by_subjectId(request,subject_id)
+     if papers:
+          return papers 
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail=f"No papers related to subject id {subject_id}"
+     )
+     
+     
 @router.get("/user/{user_id}", response_description="Get papers by user id",response_model=List[Paper])
 async def get_paper_by_uid(request: Request, user_id):
      uid = ObjectId(user_id)
