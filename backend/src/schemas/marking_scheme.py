@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from fastapi import UploadFile,File
 from typing import Optional
+from datetime import datetime
 
 class MarkingScheme(BaseModel):
      id: str
@@ -29,6 +30,8 @@ class MarkingSchemeCreate(BaseModel):
      year:int
      subjectId:str
      markingUrl:str
+     createdAt: Optional[datetime] = Field(default_factory=datetime.now)
+     updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
 
      class Config:
           schema_extra = {
@@ -38,6 +41,8 @@ class MarkingSchemeCreate(BaseModel):
                     "year": 2022,
                     "subjectId": "64873b4029eb156b34979ab0",
                     "markingUrl":"https://firebasestorage.googleapis.com/v0/b/papermarkin.appspot.com/o/",
+                    "createdAt": "2023-06-27T10:00:00",
+                    "updatedAt": "2023-06-27T10:00:00"
                }
           }
 

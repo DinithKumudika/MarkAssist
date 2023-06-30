@@ -29,7 +29,9 @@ async def get_answers_by_paper(request: Request, paper_no)->list:
 
 @router.get("/image/{paper_no}", response_description="extract answers as images")
 async def answer_to_text(paper_no):
+     print(paper_no)
      no_of_answers = extract_answers(paper_no)
+     print(no_of_answers)
      if no_of_answers:
           return JSONResponse({
                "message": f"{no_of_answers} answers saved"
@@ -63,7 +65,7 @@ async def get_text(paper_no):
 
 
 @router.post('/save/{paper_no}',response_description="save extracted answers to the db and cloud")
-async def save_answers(request: Request, paper_no, sub: str, stu: str):
+async def save_answers(request: Request, paper_no, sub, stu):
      answers = read_answers(paper_no)
      answer_images = get_images(os.path.join('../data/answers/', paper_no))
      urls = []

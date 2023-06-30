@@ -8,8 +8,8 @@ function Years({clicked,data}) {
   const pathName = location.pathname.split('/').filter((path) => path !== '')
   // console.log(pathName[0]);
   const subjects = data.map((subject,index)=>{
-    // console.log(subject.year);
-    return <Link key={index} to={"/"+pathName[0]+"/"+subject.year+"/"+subject._id}><SubjectBox key={index} subjectCode={subject.subjectCode} subjectName={subject.subjectName} year={subject.year}/></Link>
+    // console.log(subject);
+    return <Link key={index} to={"/"+pathName[0]+"/"+subject.year+"/"+subject.id}><SubjectBox key={index} subjectCode={subject.subjectCode} subjectName={subject.subjectName} year={subject.year}/></Link>
   })
   console.log("Years::"+clicked);
   return (

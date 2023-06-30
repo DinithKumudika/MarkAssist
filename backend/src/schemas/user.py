@@ -7,7 +7,11 @@ class User(BaseModel):
      lastName: str
      email: EmailStr
      userType: str
+     emailActive: bool
      isDeleted: bool
+     title:str|None
+     role:str|None
+     
      
      class Config:
           schema_extra = {
@@ -16,7 +20,10 @@ class User(BaseModel):
                     "lastName": "Kumudika",
                     "email": "dinith1999@gmail.com",
                     "userType": "student",
-                    "isDeleted": False
+                    "emailActive": False,
+                    "isDeleted": False,
+                    "title": "Dr",
+                    "role": "Lecturer"
                }
           }
 
@@ -53,6 +60,8 @@ class UserCreate(UserBase):
      userType: str
      emailActive: bool
      isDeleted: bool
+     title:str|None
+     role:str|None
      class Config:
           schema_extra = {
                "example": {
@@ -62,7 +71,32 @@ class UserCreate(UserBase):
                     "password": "$2a$10$8KkORxP4/YpPBarYGKd6VO6aohKYAaDQC/9ZYZImj0Yf71VHGfGEG",
                     "userType": "student",
                     "emailActive": False,
-                    "isDeleted": False
+                    "isDeleted": False,
+                    "title": "",
+                    "role": ""
+               }
+          }
+
+class TeacherCreate(UserBase):
+     password: str|None
+     userType: str
+     emailActive: bool
+     isDeleted: bool
+     title:str
+     role:str
+     class Config:
+          schema_extra = {
+               "example": {
+                    "firstName": "Dinith",
+                    "lastName": "Kumudika",
+                    "email": "dinith1999@gmail.com",
+                    "password": "123456",
+                    "userType": "student",
+                    "emailActive": False,
+                    "isDeleted": False,
+                    "title": "Dr",
+                    "role": "Lecturer"
+                    
                }
           }
 

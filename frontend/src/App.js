@@ -9,6 +9,9 @@ import YearsPage from './Pages/YearsPage';
 import MarkingSchemesPage from './Pages/MarkingSchemesPage';
 import AnswerSheetsPage from './Pages/AnswerSheetsPage';
 import TopBar from './Components/TopBar';
+import TeachersPage from './Pages/TeachersPage';
+import MarksPage from './Pages/MarksPage';
+import PapersPage from './Pages/PapersPage';
 import './Components/TopBar.css';
 
 function App(){
@@ -25,7 +28,7 @@ function App(){
         <Route path="/subjects" element={<SubjectsPage />} />
         <Route path="/subjects/:subjectId" element={<SubjectPage />} />
         <Route path="/subjects/years/:subjectCode" element={<YearsPage />} />
-        <Route path="/subjects/:year/:subjectId" element={<MarkingSchemesPage />} />
+        <Route path="/subjects/:year/:subjectId" element={<PapersPage />} />
 
 
         <Route path="/markingschemes" element={<SubjectsPage />} />
@@ -38,6 +41,10 @@ function App(){
 
         
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/teachers" element={<TeachersPage />} />
+
+        <Route path="/subjects/marks/:year/:subjectCode" element={<MarksPage />} />
+
       </Routes>
     </div>
   );

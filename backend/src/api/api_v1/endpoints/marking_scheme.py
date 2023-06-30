@@ -8,6 +8,11 @@ from fastapi.responses import JSONResponse
 from typing import List
 from bson.objectid import ObjectId
 import httpx
+from datetime import datetime
+
+import cv2
+import numpy as np
+from google.cloud import vision
 
 import cv2
 import numpy as np
@@ -42,16 +47,22 @@ async def get_All(request: Request):
           detail="No marking schemes to show"
      )
      
-@router.post("/", response_description="Add a marking scheme")
+@router.post("/", response_description="Add a marking scheme", response_model = MarkingScheme, status_code= status.HTTP_201_CREATED)
 async def add_marking(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...) ):
+     # print("This is subjectId", subjectId)
+     
      # get the subjectCode and subjectName using subjectId
      subject = subject_model.subject_by_id(request, subjectId)
      if(subject):
+          
           # print("There is subject")
-          # print(subject['subjectName'])
           # print(subject['subjectCode'])
           # print(file.filename)
-
+          
+          # check if there any current marking scheme for this subject
+          current_marking = marking_scheme_model.get_marking_scheme_by_year_subjectId(request, int(year), subject['id'])
+          print("This is current_marking",current_marking)
+          
           # Upload the file and get the file URL
           marking_url = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
 
@@ -153,11 +164,12 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     return {"error": OSError}
                
 
-          raise HTTPException(
-               status_code=status.HTTP_404_NOT_FOUND,
-               detail="No marking schemes to show"
-          )
+               raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="No marking schemes to show"
+               )
      else:
+          # no subject
           raise HTTPException(
                status_code=status.HTTP_404_NOT_FOUND,
                detail="Add subject First"
@@ -200,7 +212,18 @@ async def download_paper(request: Request, scheme_id : str):
 async def update_marking(request:Request,file: UploadFile = File(...),subjectCode: str = Form(...),year: int = Form(...),subjectId: str = Form(...)):
      pass
 
-
-# @router.get("/{marking_id}", response_description="Get a marking scheme id")
-# async def get_by_id(marking_id):
-#      pass
+# get marking scheme by  subjectId
+@router.get("/{year}/{subjectId}", response_description="Get a marking scheme subjectId and year", response_model = MarkingScheme)
+async def get_by_subjectId_year(request:Request,year:int,subjectId:str):
+     insertedYear = int(year)
+     subject_id = subjectId
+     print(insertedYear,subject_id)
+     marking= marking_scheme_model.get_marking_scheme_by_year_subjectId(request,insertedYear,subject_id)
+     print(marking)
+     if marking:
+          return marking
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail=f"There is no paper with the id of {subjectId}"
+     )
+     
