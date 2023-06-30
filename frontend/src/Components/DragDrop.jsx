@@ -57,74 +57,11 @@ function DragDrop({children,closeFunc}) {
     console.log(formData)
     setUploading(true);
     if(pathName[0]==="markingschemes"){
-      
       axios
-      .post(`http://127.0.0.1:8000/api_v1/papers/upload/file`,formData)
+      .post(`http://127.0.0.1:8000/api_v1/markings`,formData)
       .then((response) => {
-        console.log("Hello:",response.data.indexNo);
-        paper = response.data.data;
-        index = response.data.indexNo;
-        console.log(index)
-        console.log(paper)
-        axios.get(`http://127.0.0.1:8000/api_v1/papers/download/${paper}`)
-        .then((response) => {
-          console.log("Hiiii:",response.status);
-          if(response.status===200){
-            axios
-            .get(`http://127.0.0.1:8000/api_v1/answers/image/${paper}`)
-            .then((response) => {
-              console.log("Heyyyy:",response);
-              if(response.status===201){
-                axios
-                .get(`http://127.0.0.1:8000/api_v1/answers/text/${paper}`)
-                .then((response) => {
-                  console.log("Howaya:",response)
-                  if(response.status===200){
-                    axios
-                    .post(`http://127.0.0.1:8000/api_v1/answers/save/${paper}?sub=${subjectId}&stu=${index}`)
-                    .then((response) => {
-                      console.log("Dinesh:",response)
-                      localStorage.setItem('answers', JSON.stringify(response.data));
-                      setUploading(false);
-                      closeFunc()
-                    })
-                    .catch((error) => {
-                      if(error.response && error.response.status >=400 && error.response.status <500){
-                        // console.log(error.response.data.message);
-                        console.log(error.response.data.detail);
-                    }
-                    });
-                  }
-                })
-                .catch((error) => {
-                  if(error.response && error.response.status >=400 && error.response.status <500){
-                    // console.log(error.response.data.message);
-                    console.log(error.response.data.detail);
-                }
-                });
-              }
-            })
-            .catch((error) => {
-              if(error.response && error.response.status >=400 && error.response.status <500){
-                // console.log(error.response.data.message);
-                console.log(error.response.data.detail);
-            }
-            });
-          }
-        })
-        .catch((error) => {
-          if(error.response && error.response.status >=400 && error.response.status <500){
-            // console.log(error.response.data.message);
-            console.log(error.response.data.detail);
-        }
-        });
+        console.log("Dinith:",response);
       })
-      .catch((error) => {
-        if(error.response && error.response.status >=400 && error.response.status <500){
-          // console.log(error.response.data.message);
-          console.log(error.response.data.detail);
-      }
-      });
     }else if(pathName[0]==="answersheets"){
       axios
       .post(`http://127.0.0.1:8000/api_v1/papers/upload/file`,formData)

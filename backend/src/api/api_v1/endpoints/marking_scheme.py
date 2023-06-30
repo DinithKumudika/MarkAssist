@@ -127,7 +127,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     
                     answers = []
                     client = vision.ImageAnnotatorClient()
-                    answer_path = os.path.join('./../data/answers/', marking_id)
+                    answer_path = os.path.join('./../data/markings/', marking_id)
                     answer_images = helpers.get_images(answer_path)
      
                     for i, image in enumerate(answer_images):
