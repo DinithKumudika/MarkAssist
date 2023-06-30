@@ -17,7 +17,7 @@ import os
 
 from models.marking_scheme import MarkingSchemeModel
 from schemas.marking_scheme import MarkingScheme,MarkingSchemeCreate,MarkingSchemeForm
-
+from models.marking import MarkingModel
 from models.subject import SubjectModel;
 
 from schemas.user import User
@@ -29,6 +29,7 @@ import helpers
 router = APIRouter()
 marking_scheme_model = MarkingSchemeModel()
 subject_model = SubjectModel()
+marking_model = MarkingModel()
 
 @router.get("/", response_description="Get all marking schemes",response_model=List[MarkingScheme])
 async def get_All(request: Request):
@@ -133,7 +134,21 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                               urls.append(file_url)
                          question_no = answers[i]["question no"]
                          answer_text = answers[i]["text"]
-                         answer = MarkingCreate()
+                         marking = MarkingCreate(
+                              subjectId=new_marking_scheme["subjectId"],
+                              questionNo=question_no,
+                              text=answer_text,
+                              uploadUrl=file_url
+                         )
+                         
+                         new_marking = marking_model.save_marking(request, marking)
+                         
+                    return JSONResponse({
+                         "marking urls": urls
+                         }, 
+                         status_code=status.HTTP_200_OK
+                    )
+                         
                except OSError:
                     return {"error": OSError}
                
