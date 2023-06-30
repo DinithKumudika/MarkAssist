@@ -54,13 +54,16 @@ function DragDrop({children,closeFunc}) {
     files.forEach(file => formData.append('file', file))
     formData.append('year', year);
     formData.append('subjectId',subjectId);
-    console.log(formData)
+    // console.log("form data",formData)
     setUploading(true);
     if(pathName[0]==="markingschemes"){
       axios
       .post(`http://127.0.0.1:8000/api_v1/markings`,formData)
       .then((response) => {
         console.log("Dinith:",response);
+        localStorage.setItem('markingSceme', JSON.stringify(response.data));
+        setUploading(false);
+        closeFunc()
       })
     }else if(pathName[0]==="answersheets"){
       axios

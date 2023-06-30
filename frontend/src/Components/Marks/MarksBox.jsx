@@ -1,7 +1,11 @@
-function MarksBox() {
-  const markingScheme_URL= "https://firebasestorage.googleapis.com/v0/b/papermarkin.appspot.com/o/uploads%2Fpdf%2F7a48e8d4-fd37-42ab-82a6-8ff1d5402cf5_cropped_2-1.jpg.jpg?alt=media"
-  const answersheet_URL =  "https://firebasestorage.googleapis.com/v0/b/papermarkin.appspot.com/o/uploads%2Fpdf%2F633d6cde-f9a8-4892-a1d1-9573d4ce52cd_cropped_2-2.jpg.jpg?alt=media"
+function MarksBox({markingScheme_URL,answersheet_URL}) {
+  // const markingScheme_URL= "https://firebasestorage.googleapis.com/v0/b/papermarkin.appspot.com/o/uploads%2Fpdf%2F7a48e8d4-fd37-42ab-82a6-8ff1d5402cf5_cropped_2-1.jpg.jpg?alt=media"
+  // const answersheet_URL =  "https://firebasestorage.googleapis.com/v0/b/papermarkin.appspot.com/o/uploads%2Fpdf%2F633d6cde-f9a8-4892-a1d1-9573d4ce52cd_cropped_2-2.jpg.jpg?alt=media"
+  const answersheets = JSON.parse(localStorage.getItem('answers'));
+  const markingschemes = JSON.parse(localStorage.getItem('markingSceme'));
+  
   return (
+    
     <div className="flex flex-col my-6 p-6">
       <p className="font-bold mb-1">Q1</p>
       <div className="bg-[#D4D4D4] rounded rounded-xl">
