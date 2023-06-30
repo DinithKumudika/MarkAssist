@@ -10,6 +10,14 @@ from bson.objectid import ObjectId
 import httpx
 from datetime import datetime
 
+import cv2
+import numpy as np
+from google.cloud import vision
+
+import cv2
+import numpy as np
+from google.cloud import vision
+
 import os
 
 from models.marking_scheme import MarkingSchemeModel
@@ -18,8 +26,9 @@ from schemas.marking_scheme import MarkingScheme,MarkingSchemeCreate,MarkingSche
 from models.subject import SubjectModel;
 
 from schemas.user import User
+from schemas.marking import Marking, MarkingCreate
 from utils.auth import get_current_active_user
-from utils.firebase_storage import upload_file 
+from utils.firebase_storage import upload_file, upload_file2 
 import helpers
 
 router = APIRouter()
@@ -54,42 +63,91 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
           print("This is current_marking",current_marking)
           
           # Upload the file and get the file URL
-          marking_url = await upload_file(file,file.filename) 
-          
-          if current_marking:
-               # There is a marking for this subject
-               # create MarkingSchemeUpdate obj
-               marking_update_obj = MarkingSchemeUpdate(
-                    markingUrl= marking_url,
-               )
-               update_current_marking = marking_scheme_model.update_existing_marking(request,current_marking['id'], marking_update_obj )
-               
-               if update_current_marking:
-                    return update_current_marking
-               else:
-                    raise HTTPException(
-                         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, # should change to correct code
-                         detail="Marking scheme failed"
-                    )
-               
-          else:
-               # no existing marking for subject 
-               # Create a new MarkingScheme object with the provided data and file URL
-               marking_scheme = MarkingSchemeCreate(
-                    subjectCode=subject['subjectCode'],
-                    subjectName=subject['subjectName'],
-                    year=year,
-                    subjectId=subjectId,
-                    markingUrl=marking_url,
-                    createdAt =  datetime.now(),
-                    updatedAt = datetime.now()
-               )
-               # print(marking_scheme);
+          marking_url = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
 
-               # Save the marking scheme to the database using your model
-               new_marking_scheme = await marking_scheme_model.add_new_marking(request, marking_scheme)
-               if new_marking_scheme:
-                    return new_marking_scheme
+          # Create a new MarkingScheme object with the provided data and file URL
+          marking_scheme = MarkingSchemeCreate(
+               subjectCode=subject['subjectCode'],
+               subjectName=subject['subjectName'],
+               year=year,
+               subjectId=subjectId,
+               markingUrl=marking_url,
+          )
+          # print(marking_scheme);
+          new_marking_scheme = await marking_scheme_model.add_new_marking(request, marking_scheme)
+          if new_marking_scheme:
+               marking_id = new_marking_scheme['id']
+               async with httpx.AsyncClient() as client:
+                    response = await client.get(marking_url)
+                    response.raise_for_status()
+                    save_path = f"./../data/marking_schemes/{marking_id}.pdf"
+                    with open(save_path, "wb") as file:
+                         file.write(response.content)
+               try:
+                    dir_path = os.path.join('./../data/images/marking_scheme', marking_id)
+                    os.mkdir(dir_path)
+                    images = helpers.convert_to_images(save_path, dir_path)
+                    answers = []
+                    answer_count = 0
+                    
+                    for img_idx,image in enumerate(images):
+                         src_image = cv2.imread(image)
+                         screen_width = helpers.get_screen_width()
+                         screen_height = helpers.get_screen_height() 
+                         sized_image = helpers.resize(src_image, screen_height, screen_width)
+                         contours = helpers.detect_edges(sized_image)
+                         
+                         answers.append({
+                              "img_no": img_idx + 1,
+                              "questions": []
+                         })
+                         
+                         for i, contour in enumerate(contours):
+                              # precision for approximation
+                              epsilon = 0.01 * cv2.arcLength(contour, True)
+                              approx = cv2.approxPolyDP(contour, epsilon, True)
+                              x, y, w, h = cv2.boundingRect(approx)
+                              aspect_ratio = w / h
+               
+                              if aspect_ratio > 1 and w > 50 and h > 20 and cv2.contourArea(contour) > 100:
+                                   if w > 700:
+                                        cropped_answer = sized_image[y:y+h, x:x+w]
+                                        questions_on_page = answers[img_idx]["questions"]
+                                        questions_on_page.append({
+                                             "answer": cropped_answer
+                                        })
+                                        answer_count += 1
+                    urls =[]
+                    for page in answers:
+                         questions = page["questions"]
+                         questions.reverse()
+                    for i, question in enumerate(questions):
+                         cv2.imwrite(f"{save_path}/{page['img_no']}_{i+1}.jpg", question['answer'])
+                    
+                    answers = []
+                    client = vision.ImageAnnotatorClient()
+                    answer_path = os.path.join('./../data/answers/', marking_id)
+                    answer_images = helpers.get_images(answer_path)
+     
+                    for i, image in enumerate(answer_images):
+                         scanned_text = helpers.read_text(client, image)
+                         answers.append({
+                              "question no": i+1, 
+                              "text": scanned_text
+                         })
+                    
+                    for i, image in enumerate(images):
+                         with open(image, "rb") as file:
+                              upload = UploadFile(filename=image, file=file)
+                              filename = f"Q_{i+1}"
+                              file_url = await upload_file2(upload, "uploads/images/answers/marking_schemes", marking_id, filename)
+                              urls.append(file_url)
+                         question_no = answers[i]["question no"]
+                         answer_text = answers[i]["text"]
+                         answer = MarkingCreate()
+               except OSError:
+                    return {"error": OSError}
+               
 
                raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -101,6 +159,8 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                status_code=status.HTTP_404_NOT_FOUND,
                detail="Add subject First"
           )
+          
+
 
 @router.get("/download/{scheme_id}", response_description="Download marking scheme from cloud storage")
 async def download_paper(request: Request, scheme_id : str):
