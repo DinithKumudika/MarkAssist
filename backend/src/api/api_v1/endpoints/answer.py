@@ -72,7 +72,7 @@ async def save_answers(request: Request, paper_no, sub: str, stu: str):
           with open(image, "rb") as file:
                upload = UploadFile(filename=image, file=file)
                filename = f"Q_{i+1}"
-               file_url = await upload_file2(upload, "uploads/images/answers", paper_no, filename)
+               file_url = await upload_file2(upload, "uploads/images/answers/papers", paper_no, filename)
                urls.append(file_url)
           question_no = answers[i]["question no"]
           answer_text = answers[i]["text"]

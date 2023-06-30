@@ -50,7 +50,7 @@ async def get_by_id(request: Request, paper_id, current_user: User = Depends(get
 
 
 @router.get("/download/{paper_id}", response_description="Download paper from cloud storage")
-async def download_paper(request: Request, paper_id):
+async def download_paper(request: Request, paper_id: str):
      paper = paper_model.by_id(request, paper_id)
      
      if paper:
@@ -152,26 +152,16 @@ async def upload_files(request: Request, file: UploadFile = File(...), year: str
           # Save the paper to the database using your model
           new_paper = await paper_model.add_new_paper(request, paper)
           if new_paper:
-               response = requests.get('http://localhost:8000/papers/download/' + new_paper["id"])
-               if response.status_code == status.HTTP_200_OK:
-                    response2 = requests.get('http://localhost:8000/answers/image/' + new_paper["id"])
-                    if response2.status_code == status.HTTP_201_CREATED:
-                         response3 = requests.get('http://localhost:8000/answers/text/' + new_paper["id"])
-                         if response3.status_code == status.HTTP_200_OK:
-                              studentIndex = file.filename.split(".")[-1]
-                              student = user_model.get_student_by_index(int(studentIndex))
-                              
-                              params = {
-                                   "sub": new_paper["subjectId"], 
-                                   "stu": student["id"]
-                              }
-                              response4 = requests.get('http://localhost:8000/answers/save/' + new_paper["id"], params=params)
-                              if response4.status_code == status.HTTP_201_CREATED:
-                                   return new_paper
+               return JSONResponse({
+                    "detail": "new paper added", 
+                    "data": new_paper
+                    }, 
+                    status_code=status.HTTP_200_OK
+               )
 
           raise HTTPException(
                status_code=status.HTTP_404_NOT_FOUND,
-               detail="No marking schemes to show"
+               detail="error in file upload"
           )
      else:
           raise HTTPException(
