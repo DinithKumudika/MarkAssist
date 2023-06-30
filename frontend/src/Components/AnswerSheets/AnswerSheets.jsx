@@ -32,7 +32,7 @@ function AnswerSheets({clicked, data}) {
                 <input className="rounded shadow shadow-gray-600 w-full h-9 p-2 mb-4" type="text" placeholder='Search'/>
               </form>
             </div>
-            <Table name={true} date={true} select={true} AnswerSheets="hello"/>
+            <Table name={true} date={true} select={true} AnswerSheets={data}/>
         </div>
       ): ( 
         "<DragDrop/>"
