@@ -1,19 +1,20 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, Request, status, UploadFile
 from fastapi.responses import JSONResponse
-from fastapi.params import Body
-from bson.objectid import ObjectId
 
 import os
 from helpers import get_images
 
+from config.config import settings
 from schemas.answer import AnswerCreate, Answer
 from models.answer import AnswerModel, extract_answers, read_answers
-from helpers import get_images
+from models.marking import MarkingModel
+from helpers import get_images, text_similarity
 from utils.firebase_storage import upload_file2
 
 router = APIRouter()
 answer_model = AnswerModel()
+marking_model = MarkingModel()
 
 @router.get('/{paper_no}', response_description="get answer images from database", response_model=List[Answer])
 async def get_answers_by_paper(request: Request, paper_no)->list:
@@ -96,6 +97,28 @@ async def save_answers(request: Request, paper_no, sub, stu):
      )
 
           
-@router.post('/compare', response_description="compare between question text and marking scheme then returns similarity")
-async def check_similarity():
-     pass
+@router.get('/compare/{markingSchemeId}', response_description="compare between question text and marking scheme then returns similarity")
+async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu: str):
+     answers_by_student = answer_model.get_by_subject_student(request, stu, sub)
+     # sorting student answers by question no's
+     answers_by_student = sorted(answers_by_student, key=lambda x:int(x["questionNo"]))
+     
+     markings_by_scheme_id = marking_model.get_by_marking_scheme(request, markingSchemeId)
+     # sorting marking scheme answers by question no's
+     markings_by_scheme_id = sorted(markings_by_scheme_id, key=lambda x:int(x["questionNo"]))
+     
+     print("no of student answers",len(answers_by_student))
+     print("no of marking answers", len(markings_by_scheme_id))
+     
+     percentages = []
+     for i, el in enumerate(answers_by_student):
+          percentage = text_similarity(markings_by_scheme_id[i]["text"], answers_by_student[i]["text"])
+          percentages.append({
+               "question": i+1, 
+               "percentage": percentage
+          })
+     return JSONResponse({
+          "similarity percentages": percentages
+          },
+          status_code=status.HTTP_200_OK
+     )

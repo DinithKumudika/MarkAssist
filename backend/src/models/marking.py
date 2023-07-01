@@ -21,14 +21,10 @@ class MarkingModel():
                answer["id"] = str(answer["_id"])
                return answer
      
-     def get_by_student(self, request: Request, student_id: str)->list:
-          answers = list(self.get_collection(request).find({"studentId": student_id}))
-          for answer in answers:
-               answer["id"] = str(answer["_id"]) 
-          return answers
-     
-     def get_by_paper(self, request: Request, paper_id: str)->list:
-          answers = list(self.get_collection(request).find({}))
-          for answer in answers:
-               answer["id"] = str(answer["_id"]) 
-          return answers
+     def get_by_marking_scheme(self, request: Request, schemeId: str)->list:
+          markings = list(self.get_collection(request).find({"markingScheme": schemeId}))
+          if markings:
+               for marking in markings:
+                    marking["id"] = str(marking["_id"])
+               return markings
+          return None

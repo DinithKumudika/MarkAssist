@@ -61,6 +61,8 @@ function DragDrop({children,closeFunc}) {
       .post(`http://127.0.0.1:8000/api_v1/markings`,formData)
       .then((response) => {
         console.log("Dinith:",response);
+        setUploading(false);
+        closeFunc()
       })
     }else if(pathName[0]==="answersheets"){
       axios
