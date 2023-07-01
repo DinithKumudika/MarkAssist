@@ -115,7 +115,7 @@ async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu:
           percentage = text_similarity(markings_by_scheme_id[i]["text"], answers_by_student[i]["text"])
           percentages.append({
                "question": i+1, 
-               "percentage": percentage
+               "percentage": percentage.split(": ")[-1]
           })
      return JSONResponse({
           "similarity percentages": percentages

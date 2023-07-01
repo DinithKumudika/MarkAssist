@@ -126,10 +126,14 @@ def show_text(image, options):
      cv2.waitKey(0)
      
 
-def text_similarity(text1, text2):
+def text_similarity(text1: str, text2: str)->str:
      openai.api_key = settings.OPENAI_API_KEY
      # Prepare the prompt
-     prompt = f"Text 1: {text1}\nText 2: {text2}\nGive a similarity percentage for Text 1 and Text 2:"
+     prompt = f"""Text 1: {text1}\nText 2: {text2}\n
+               You are a marker who mark exam papers by comparing student answer and marking scheme answer. 
+               Text 1 is the answer of the marking scheme and Text 2 is the answer written by the student for a question.
+               Compare both Text 1 and Text 2 using both cosine similarity and semantic analysis techniques together with the context. 
+               then provide me a score as a percentage between 0 and 1 in below format. Overall score is: score after comparison"""
 
      # Make an API request
      response = openai.Completion.create(
@@ -140,8 +144,6 @@ def text_similarity(text1, text2):
           stop=None,
           temperature=0,
      )
-     # Print the response
-     #print(response)
 
      # Retrieve and process the response
      completion_text = response['choices'][0]['text'].strip()

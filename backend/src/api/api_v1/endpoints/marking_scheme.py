@@ -8,7 +8,6 @@ from fastapi.responses import JSONResponse
 from typing import List
 from bson.objectid import ObjectId
 import httpx
-from datetime import datetime
 
 import cv2
 import numpy as np
@@ -53,24 +52,21 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
      
      # get the subjectCode and subjectName using subjectId
      subject = subject_model.subject_by_id(request, subjectId)
+     print(subject)
      if(subject):
           
           # check if there any current marking scheme for this subject
           current_marking = marking_scheme_model.get_marking_scheme_by_year_subjectId(request, int(year), subject['id'])
-          print("This is current_marking",current_marking)
-          
           # Upload the file and get the file URL
           marking_url = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
-
           # Create a new MarkingScheme object with the provided data and file URL
           marking_scheme = MarkingSchemeCreate(
                subjectCode=subject['subjectCode'],
                subjectName=subject['subjectName'],
-               year=year,
+               year= int(year),
                subjectId=subjectId,
                markingUrl=marking_url,
           )
-          # print(marking_scheme);
           new_marking_scheme = await marking_scheme_model.add_new_marking(request, marking_scheme)
           if new_marking_scheme:
                marking_id = new_marking_scheme['id']
@@ -88,6 +84,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     images = helpers.convert_to_images(save_path, dir_path)
                     answers = []
                     answer_count = 0
+                    # identify answer areas of marking scheme
                     
                     # identify answer areas of marking scheme
                     for img_idx,image in enumerate(images):
@@ -96,12 +93,10 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                          screen_height = helpers.get_screen_height() 
                          sized_image = helpers.resize(src_image, screen_height, screen_width)
                          contours = helpers.detect_edges(sized_image)
-                         
                          answers.append({
                               "img_no": img_idx + 1,
                               "questions": []
                          })
-                         
                          for i, contour in enumerate(contours):
                               # precision for approximation
                               epsilon = 0.01 * cv2.arcLength(contour, True)
@@ -120,7 +115,9 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     save_path = os.path.join("../data/markings", marking_id)
                     os.mkdir(save_path)
                     for page in answers:
+                         # print(page)
                          questions = page["questions"]
+                         # print(questions)
                          questions.reverse()
                          for i, question in enumerate(questions):
                               cv2.imwrite(f"{save_path}/{page['img_no']}_{i+1}.jpg", question['answer'])
@@ -129,7 +126,6 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     client = vision.ImageAnnotatorClient()
                     answer_path = os.path.join('./../data/markings/', marking_id)
                     answer_images = helpers.get_images(answer_path)
-     
                     for i, image in enumerate(answer_images):
                          scanned_text = helpers.read_text(client, image)
                          answers.append({
@@ -160,12 +156,11 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                          markings.append(str(new_marking_id))
                          
                     return JSONResponse({
-                         "marking urls": urls,
-                         "marking ids": markings
+                              "marking_urls": urls,
+                              "marking_ids": markings
                          }, 
                          status_code=status.HTTP_200_OK
                     )
-                         
                except OSError:
                     return {"error": OSError}
                
