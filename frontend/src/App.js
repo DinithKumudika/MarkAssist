@@ -11,6 +11,7 @@ import AnswerSheetsPage from './Pages/AnswerSheetsPage';
 import TopBar from './Components/TopBar';
 import TeachersPage from './Pages/TeachersPage';
 import MarksPage from './Pages/MarksPage';
+import PapersPage from './Pages/PapersPage';
 import './Components/TopBar.css';
 
 function App(){
@@ -27,7 +28,7 @@ function App(){
         <Route path="/subjects" element={<SubjectsPage />} />
         <Route path="/subjects/:subjectId" element={<SubjectPage />} />
         <Route path="/subjects/years/:subjectCode" element={<YearsPage />} />
-        <Route path="/subjects/:year/:subjectId" element={<MarkingSchemesPage />} />
+        <Route path="/subjects/:year/:subjectId" element={<PapersPage />} />
 
 
         <Route path="/markingschemes" element={<SubjectsPage />} />

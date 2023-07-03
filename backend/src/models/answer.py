@@ -97,6 +97,18 @@ class AnswerModel():
                answer["id"] = str(answer["_id"]) 
           return answers
      
+     def get_by_indexNo(self, request: Request, indexNo: str)->list:
+          answers = list(self.get_collection(request).find({"userId": indexNo}))
+          for answer in answers:
+               answer["id"] = str(answer["_id"]) 
+          return answers
+     
+     def get_by_subject_student(self, request: Request, indexNo: str, subjectId: str)->list:
+          answers = list(self.get_collection(request).find({"userId": indexNo,"subjectId": subjectId}))
+          for answer in answers:
+               answer["id"] = str(answer["_id"]) 
+          return answers
+     
      def get_by_paper(self, request: Request, paper_id: str)->list:
           answers = list(self.get_collection(request).find({}))
           for answer in answers:

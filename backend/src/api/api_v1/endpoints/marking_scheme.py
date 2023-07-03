@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from typing import List
 from bson.objectid import ObjectId
 import httpx
+from datetime import datetime
 
 import cv2
 import numpy as np
@@ -42,37 +43,31 @@ async def get_All(request: Request):
           detail="No marking schemes to show"
      )
      
+     
 @router.post("/", response_description="Add a marking scheme", response_model = MarkingScheme, status_code= status.HTTP_201_CREATED)
 async def add_marking(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...) ):
-     # print("This is subjectId", subjectId)
      
      # get the subjectCode and subjectName using subjectId
      subject = subject_model.subject_by_id(request, subjectId)
+     print(subject)
      if(subject):
-          
-          # print("There is subject")
-          # print(subject['subjectCode'])
-          # print(file.filename)
           
           # check if there any current marking scheme for this subject
           current_marking = marking_scheme_model.get_marking_scheme_by_year_subjectId(request, int(year), subject['id'])
-          print("This is current_marking",current_marking)
-          
           # Upload the file and get the file URL
           marking_url = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
-
           # Create a new MarkingScheme object with the provided data and file URL
           marking_scheme = MarkingSchemeCreate(
                subjectCode=subject['subjectCode'],
                subjectName=subject['subjectName'],
-               year=year,
+               year= int(year),
                subjectId=subjectId,
                markingUrl=marking_url,
           )
-          # print(marking_scheme);
           new_marking_scheme = await marking_scheme_model.add_new_marking(request, marking_scheme)
           if new_marking_scheme:
                marking_id = new_marking_scheme['id']
+               # save marking scheme from cloud storage to local storage
                async with httpx.AsyncClient() as client:
                     response = await client.get(marking_url)
                     response.raise_for_status()
@@ -80,24 +75,25 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     with open(save_path, "wb") as file:
                          file.write(response.content)
                try:
+                    # convert marking scheme to images
                     dir_path = os.path.join('./../data/images/marking_scheme', marking_id)
                     os.mkdir(dir_path)
                     images = helpers.convert_to_images(save_path, dir_path)
                     answers = []
                     answer_count = 0
+                    # identify answer areas of marking scheme
                     
+                    # identify answer areas of marking scheme
                     for img_idx,image in enumerate(images):
                          src_image = cv2.imread(image)
                          screen_width = helpers.get_screen_width()
                          screen_height = helpers.get_screen_height() 
                          sized_image = helpers.resize(src_image, screen_height, screen_width)
                          contours = helpers.detect_edges(sized_image)
-                         
                          answers.append({
                               "img_no": img_idx + 1,
                               "questions": []
                          })
-                         
                          for i, contour in enumerate(contours):
                               # precision for approximation
                               epsilon = 0.01 * cv2.arcLength(contour, True)
@@ -113,26 +109,31 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                                              "answer": cropped_answer
                                         })
                                         answer_count += 1
-                    urls =[]
+                    save_path = os.path.join("../data/markings", marking_id)
+                    os.mkdir(save_path)
                     for page in answers:
+                         # print(page)
                          questions = page["questions"]
+                         # print(questions)
                          questions.reverse()
-                    for i, question in enumerate(questions):
-                         cv2.imwrite(f"{save_path}/{page['img_no']}_{i+1}.jpg", question['answer'])
+                         for i, question in enumerate(questions):
+                              cv2.imwrite(f"{save_path}/{page['img_no']}_{i+1}.jpg", question['answer'])
                     
                     answers = []
                     client = vision.ImageAnnotatorClient()
-                    answer_path = os.path.join('./../data/answers/', marking_id)
+                    answer_path = os.path.join('./../data/markings/', marking_id)
                     answer_images = helpers.get_images(answer_path)
-     
                     for i, image in enumerate(answer_images):
                          scanned_text = helpers.read_text(client, image)
                          answers.append({
                               "question no": i+1, 
                               "text": scanned_text
                          })
+                         
+                    urls = []
+                    markings = []
                     
-                    for i, image in enumerate(images):
+                    for i, image in enumerate(answer_images):
                          with open(image, "rb") as file:
                               upload = UploadFile(filename=image, file=file)
                               filename = f"Q_{i+1}"
@@ -144,25 +145,27 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                               subjectId=new_marking_scheme["subjectId"],
                               questionNo=question_no,
                               text=answer_text,
-                              uploadUrl=file_url
+                              uploadUrl=file_url,
+                              markingScheme=marking_id
                          )
                          
-                         new_marking = marking_model.save_marking(request, marking)
+                         new_marking_id = marking_model.save_marking(request, marking)
+                         markings.append(str(new_marking_id))
                          
                     return JSONResponse({
-                         "marking urls": urls
+                              "marking_urls": urls,
+                              "marking_ids": markings
                          }, 
                          status_code=status.HTTP_200_OK
                     )
-                         
                except OSError:
                     return {"error": OSError}
                
 
-               raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="No marking schemes to show"
-               )
+          raise HTTPException(
+               status_code=status.HTTP_404_NOT_FOUND,
+               detail="No marking schemes to show"
+          )
      else:
           # no subject
           raise HTTPException(

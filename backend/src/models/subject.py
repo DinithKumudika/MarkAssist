@@ -20,6 +20,8 @@ class SubjectModel():
      
      # get subject by subjectCode and user id as a list
      def get_subject_by_subjectCode_userId(self,request:Request,user_id:str, subjectCode:str) -> list:
+          print("This is user id",user_id)
+          print("This is subjectCode",subjectCode)
           subjects = list(self.get_collection(request).find({"teacherId": user_id, "subjectCode":subjectCode}).sort("year", -1))
           if subjects:               
                print("No subjects",subjects)
@@ -30,7 +32,7 @@ class SubjectModel():
                return subjects
           else:
                print("There are no subjects")
-               return None;
+               return None
      
      
      def subject_by_id(self, request: Request, id: str) -> Subject:

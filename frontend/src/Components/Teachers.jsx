@@ -4,16 +4,18 @@ import {Link, useLocation} from 'react-router-dom';
 import {useState} from 'react';
 // import SubjectAddBox from './Subjects/SubjectAddBox';
 import TeacherAddBox from './TeacherAddBox';
+import Table from './Table';
 import Button from './Button';
 function Teachers({clicked,data}) {
     const length = data.length;
+    console.log("H:",data)
     const allItems=JSON.parse(localStorage.getItem('tokenData'));
     if(!allItems){
       window.location.href="/";
     }
     const userType = allItems['user_role'];
   
-    const classes = classnames('sidebar static max-sm:ml-16');
+    const classes = classnames('sidebar static max-sm:ml-16 pt-[80px]');
   
     const location = useLocation();
     const pathName = location.pathname.split('/').filter((path) => path !== '')
@@ -48,9 +50,7 @@ function Teachers({clicked,data}) {
                 <Button onClick={handleClick}> Add a Person</Button>
               }
             </div>
-            <div className='h-custom-94% py-2 flex flex-wrap overflow-auto'>
-              
-            </div>
+            <Table name={true} role={true} date={true} subjects={true} teachers={data}/>
           </div>
       </div>
       {show && <TeacherAddBox closeFunc={closeModal}/>}

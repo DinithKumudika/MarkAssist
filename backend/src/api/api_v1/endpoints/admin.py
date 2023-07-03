@@ -26,7 +26,7 @@ async def get_all_teachers(request:Request):
     
 @router.post("/teachers/new", response_description="Create new teacher", response_model=User)
 async def register(request: Request, payload: TeacherCreate = Body()) -> User:
-     print("Data:",payload.password)
+     print("Data:",payload)
      user = user_model.by_email(request, payload.email)
      print("Hello")
      if user:

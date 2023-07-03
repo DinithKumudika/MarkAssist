@@ -1,6 +1,7 @@
 import pdf2image as p2i
 import cv2
 import numpy as np
+import openai
 import screeninfo
 from google.cloud import vision
 import pandas as pd
@@ -9,6 +10,8 @@ from pytesseract import Output
 
 import os
 import io
+
+from config.config import settings
 
 def get_screen_width():
      screen = screeninfo.get_monitors()[0]
@@ -121,3 +124,27 @@ def show_text(image, options):
                
      cv2.imshow("question no", image)
      cv2.waitKey(0)
+     
+
+def text_similarity(text1: str, text2: str)->str:
+     openai.api_key = settings.OPENAI_API_KEY
+     # Prepare the prompt
+     prompt = f"""Text 1: {text1}\nText 2: {text2}\n
+               You are a marker who mark exam papers by comparing student answer and marking scheme answer. 
+               Text 1 is the answer of the marking scheme and Text 2 is the answer written by the student for a question.
+               Compare both Text 1 and Text 2 using both cosine similarity and semantic analysis techniques together with the context. 
+               then provide me a score as a percentage between 0 and 1 in below format. Overall score is: score after comparison"""
+
+     # Make an API request
+     response = openai.Completion.create(
+          engine='text-davinci-003',
+          prompt=prompt,
+          max_tokens=200,
+          n=1,
+          stop=None,
+          temperature=0,
+     )
+
+     # Retrieve and process the response
+     completion_text = response['choices'][0]['text'].strip()
+     return completion_text

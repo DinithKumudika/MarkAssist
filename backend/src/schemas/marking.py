@@ -7,6 +7,7 @@ class Marking(BaseModel):
      questionNo: str
      text: str
      uploadUrl: str
+     markingScheme: str
      
      # class Config:
      #      schema_extra = {
@@ -24,3 +25,4 @@ class MarkingCreate(BaseModel):
      questionNo: str
      text: str
      uploadUrl: str
+     markingScheme: str

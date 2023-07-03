@@ -142,10 +142,10 @@ async def upload_files(request: Request, file: UploadFile = File(...), year: str
      # get the subjectCode and subjectName using subjectId
      subject = subject_model.subject_by_id(request, subjectId)
      if(subject):
-          # print("There is subject")
+          print("There is subject")
           # print(subject['subjectName'])
           # print(subject['subjectCode'])
-          # print(file.filename)
+          print(file.filename)
 
           # Upload the file and get the file URL
           paper_url_up = await upload_file(file,file.filename)

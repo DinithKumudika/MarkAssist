@@ -21,30 +21,34 @@ function SubjectsPage() {
   },[]);
 
   const fetchSubjects = async () =>{
-    try{
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${accessToken}`,
-      //   },
-      // }
       const headers = {
         Authorization: `Bearer ${accessToken}`,
       };
       //****Methana subjects code eken group karaganna oona
-      let response = {}
       // console.log(headers)
       if(userType==="admin"){
-        response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects/${user_id}`, {headers});
+        axios
+        .get(`http://127.0.0.1:8000/api_v1/subjects/${user_id}`, {headers})
+        .then((response) => {
+          const data = response.data;
+          setSubjects(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
       }else if(userType==="teacher"){
         // console.log(headers);
-        response = await axios.get(`http://127.0.0.1:8000/api_v1/subjects/${user_id}`, {headers});
+        axios
+        .get(`http://127.0.0.1:8000/api_v1/subjects/${user_id}`, {headers})
+        .then((response) => {
+          const data = response.data;
+          setSubjects(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
       }
-      const data = response.data;
-      // console.log("HELLO:",data);
-      setSubjects(data);
-    }catch(error){
-      console.log(error);
-    }
+    
   }
   // console.log("Subjects:",subjects)
   //Function to handle the click of the hamburger menu
