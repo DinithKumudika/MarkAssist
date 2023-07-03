@@ -33,6 +33,7 @@ function MarkingSchemesPage() {
     })
     .catch((error) => {
       console.error(error);
+      setMarkingScheme(null)
       // Handle the error, e.g., display an error message to the user
     });
   }

@@ -1,8 +1,12 @@
-import {Link, useLocation} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 function Table({name, role, date, subjects, select, index, fileName, overallMark, MarkingSchemes,teachers, AnswerSheets, papers}) {
+  const navigate = useNavigate();
   console.log("teacher:",teachers)
   const handleSelect = () =>{
-    console.log({select});
+    // console.log(select.link);
+    // const link = JSON.stringify({select})
+    // console.log(link.link);
+    navigate(select.link);
   }
 
   let teacher =""

@@ -7,6 +7,7 @@ import SubjectsPage from './Pages/SubjectsPage';
 import SubjectPage from './Pages/SubjectPage';
 import YearsPage from './Pages/YearsPage';
 import MarkingSchemesPage from './Pages/MarkingSchemesPage';
+import MarkingSchemeConfigurePage from './Pages/MarkingSchemeConfigurePage';
 import AnswerSheetsPage from './Pages/AnswerSheetsPage';
 import TopBar from './Components/TopBar';
 import TeachersPage from './Pages/TeachersPage';
@@ -34,6 +35,7 @@ function App(){
         <Route path="/markingschemes" element={<SubjectsPage />} />
         <Route path="/markingschemes/years/:subjectCode" element={<YearsPage />} />
         <Route path="/markingschemes/:year/:subjectId" element={<MarkingSchemesPage />} />
+        <Route path="/markingschemes/:markingschemeId" element={<MarkingSchemeConfigurePage />} />
 
         <Route path="/answersheets" element={<SubjectsPage />} />
         <Route path="/answersheets/years/:subjectCode" element={<YearsPage />} />

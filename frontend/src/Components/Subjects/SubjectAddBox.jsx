@@ -87,7 +87,7 @@ function SubjectAddBox({closeFunc}) {
                     <p className='font-bold text-[#191854] text-2xl'>Add a Subject</p>
                     <div className='flex flex-row'>
                         {/* <Button classNames="" onClick={handleSave}></Button> */}
-                        <SubmitButton type="submit">Save</SubmitButton>
+                        <SubmitButton type="submit"  classes="rounded-[5px]">Save</SubmitButton>
                         <Button classNames="ml-4" onClick={closeFunc}>Close</Button>
                     </div>
                 </div>
