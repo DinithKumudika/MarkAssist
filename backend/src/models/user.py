@@ -1,7 +1,6 @@
 from fastapi import Request
 from bson.objectid import ObjectId
 from typing import Optional
-from beanie import Document, Indexed
 from uuid import UUID, uuid4
 from pydantic import Field, EmailStr
 
@@ -46,6 +45,13 @@ class UserModel():
      
      def list_users(self, request: Request) -> list:
           users = list(self.get_collection(request).find())
+          for user in users:
+               user["id"] = str(user["_id"]) 
+          return users
+
+# list of teachers
+     def list_teachers(self, request: Request) -> list:
+          users = list(self.get_collection(request).find({'userType':'teacher'}))
           for user in users:
                user["id"] = str(user["_id"]) 
           return users

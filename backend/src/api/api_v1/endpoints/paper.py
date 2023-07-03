@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from typing import List
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
+from datetime import datetime
 import httpx
 import requests
 
@@ -80,7 +81,19 @@ async def download_paper(request: Request, paper_id: str):
           detail=f"There is no paper with the id of{paper_id}"
      )
 
+# get papers list according to subject id
+@router.get("/subjects/{subject_id}", response_description="Get papers by subject id",response_model=List[Paper])
+async def get_paper_by_subjectId(request: Request, subject_id:str):
 
+     papers = paper_model.papers_by_subjectId(request,subject_id)
+     if papers:
+          return papers 
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail=f"No papers related to subject id {subject_id}"
+     )
+     
+     
 @router.get("/user/{user_id}", response_description="Get papers by user id",response_model=List[Paper])
 async def get_paper_by_uid(request: Request, user_id):
      uid = ObjectId(user_id)
@@ -124,7 +137,7 @@ async def create_images(request:Request, paper_id):
           
 #      return "File upload success";
 
-@router.post('/upload/file/')
+@router.post('/upload/file/',response_description="Add a new paper", response_model = Paper, status_code= status.HTTP_201_CREATED)
 async def upload_files(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...)):     
      # get the subjectCode and subjectName using subjectId
      subject = subject_model.subject_by_id(request, subjectId)
@@ -146,6 +159,8 @@ async def upload_files(request: Request, file: UploadFile = File(...), year: str
                subjectName=subject['subjectName'],
                paper = file.filename,
                paperUrl= paper_url_up,
+               createdAt =  datetime.now(),
+               updatedAt = datetime.now()
           )
           # print(paper);
 

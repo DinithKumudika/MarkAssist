@@ -8,7 +8,10 @@ import axios from 'axios'
 function YearsPage() {
   const { subjectCode } = useParams()
   const allItems=JSON.parse(localStorage.getItem('tokenData'));
-  const user_id=allItems['id'];
+  if(!allItems){
+    window.location.href="/";
+  }
+  const user_id=allItems['user_id'];
   const [isClicked,setClick] = useState("outer");
   const [years,setYears] = useState([]);
 
@@ -20,7 +23,7 @@ function YearsPage() {
     try{
       const config = {
         headers: {
-          Authorization: `Bearer ${allItems['token']}`,
+          Authorization: `Bearer ${allItems['tokenData']}`,
         },
       }
       const response = await axios.get(`http://localhost:8000/api_v1/subjects/years/${user_id}/${subjectCode}`,config);

@@ -38,7 +38,7 @@ async def login(request: Request, payload: OAuth2PasswordRequestForm = Depends()
 
 @router.post("/register", response_description="Create new user", response_model=User)
 async def register(request: Request, payload: UserCreate = Body()) -> User:
-     print("Data:",payload.password)
+     print("Data:",payload)
      user = user_model.by_email(request, payload.email)
      print("Hello")
      if user:

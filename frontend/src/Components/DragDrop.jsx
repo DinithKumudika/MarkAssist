@@ -65,7 +65,7 @@ function DragDrop({children,closeFunc}) {
       // console.log("error:"+error.response.data.message);
       if(error.response && error.response.status >=400 && error.response.status <500){
           // console.log(error.response.data.message);
-          console.log(error.response.data.message);
+          console.log(error.response.data.detail);
       }
   }
 

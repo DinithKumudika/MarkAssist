@@ -9,6 +9,8 @@ import YearsPage from './Pages/YearsPage';
 import MarkingSchemesPage from './Pages/MarkingSchemesPage';
 import AnswerSheetsPage from './Pages/AnswerSheetsPage';
 import TopBar from './Components/TopBar';
+import TeachersPage from './Pages/TeachersPage';
+import MarksPage from './Pages/MarksPage';
 import './Components/TopBar.css';
 
 function App(){
@@ -38,6 +40,10 @@ function App(){
 
         
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/teachers" element={<TeachersPage />} />
+
+        <Route path="/subjects/marks/:year/:subjectCode" element={<MarksPage />} />
+
       </Routes>
     </div>
   );

@@ -32,6 +32,14 @@ class PaperModel():
                paper["subjectId"] = str(paper["subjectId"]) 
           return papers
      
+     def papers_by_subjectId(self,request:Request,subject_id:str) -> list:
+          papers = list(self.get_collection(request).find({"subjectId": subject_id}))
+
+          for paper in papers:
+               paper["id"] = str(paper["_id"])
+               paper["subjectId"] = str(paper["subjectId"]) 
+          return papers
+     
      async def add_new_paper(self, request: Request, paper: PaperCreate) -> Paper:
           new_paper = self.get_collection(request).insert_one(paper.dict())
           inserted_id = new_paper.inserted_id
