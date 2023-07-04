@@ -1,24 +1,23 @@
 from sentence_transformers import SentenceTransformer, util
 
 answer = '''
-Handling Big Data, enterprices deal amount da fa.
-real with 
-High Scalability and performance -
-Real-time Analytics.- Nosql databases provide buit
-time analytics.
-Distributed Architectures.
-large'''
+●
+Confidentiality: Provides protection from unauthorized access
+Sensitive data.
+for
+• Integrity: Ensures the accuracy, consistency and
+reliability of data.
+Availability
+-
+when needed, database is accessible and
+usable.'''
 
-scheme = '''Handling Big Data Enterprises deal with vast amounts of data generated from
-various sources.
-• Flexibility with Data Models - NoSQL databases offer flexible data models, allowing
-enterprises to store and manipulate different types of data.
-• High Scalability and Performance NoSQL databases provide horizontal scalability,
-enabling enterprises to handle massive data growth and increased workloads.
-Distributed Architectures Enterprises increasingly adopt distributed and cloud-based
-architectures.
-Real-time Analytics Many NoSQL databases provide built-in capabilities for real-time
-analytics and processing.'''
+scheme = '''Confidentiality Confidentiality ensures that sensitive data remains protected from
+unauthorized access or disclosure.
+• Integrity Integrity ensures the accuracy, consistency, and reliability of data stored
+in the database.
+Availability - Availability ensures that the database and its data are accessible and
+usable when needed.'''
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
