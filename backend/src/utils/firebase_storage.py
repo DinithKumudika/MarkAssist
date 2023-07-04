@@ -42,3 +42,6 @@ async def upload_file2(image: UploadFile, path: str, folder: str, image_name: st
     fb_storage.child(upload_path).put(renamed_file.file)
     download_url = fb_storage.child(upload_path).get_url(None)
     return download_url
+  
+async def save_file_to_local():
+  pass

@@ -1,15 +1,12 @@
 from fastapi import Request
 from bson.objectid import ObjectId
-from pydantic import BaseModel
 
 import cv2
-import numpy as np
 from google.cloud import vision
 
 import os
 
 from schemas.answer import Answer, AnswerCreate
-from config.config import settings
 import helpers
 
 def extract_answers(paper_no):

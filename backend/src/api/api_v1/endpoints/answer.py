@@ -3,9 +3,7 @@ from fastapi import APIRouter, HTTPException, Request, status, UploadFile
 from fastapi.responses import JSONResponse
 
 import os
-from helpers import get_images
 
-from config.config import settings
 from schemas.answer import AnswerCreate, Answer
 from models.answer import AnswerModel, extract_answers, read_answers
 from models.marking import MarkingModel
@@ -15,6 +13,7 @@ from utils.firebase_storage import upload_file2
 router = APIRouter()
 answer_model = AnswerModel()
 marking_model = MarkingModel()
+
 
 @router.get('/{paper_no}', response_description="get answer images from database", response_model=List[Answer])
 async def get_answers_by_paper(request: Request, paper_no)->list:

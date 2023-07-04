@@ -11,7 +11,7 @@ class CommonSettings(BaseSettings):
      JWT_SECRET_KEY: str = env.get("JWT_SECRET_KEY")
      ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
      REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
-     OPENAI_API_KEY = env.get('OPENAI_API_KEY')
+     OPENAI_API_KEY: str = env.get('OPENAI_API_KEY')
      
      class Config:
           case_sensitive = True

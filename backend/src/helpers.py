@@ -139,7 +139,7 @@ def text_similarity(text1: str, text2: str)->str:
      response = openai.Completion.create(
           engine='text-davinci-003',
           prompt=prompt,
-          max_tokens=200,
+          max_tokens=256,
           n=1,
           stop=None,
           temperature=0,
