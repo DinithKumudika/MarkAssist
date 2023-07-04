@@ -8,7 +8,7 @@ function Marks({clicked}) {
   console.log(markingschemes)
 
   return (
-    <div className={`${classes} ${clicked === 'outer' ? 'ml-16 outer' : 'ml-64 inner'}`}>
+    <div className={`${classes} ${clicked === 'outer' ? ' ml-16 outer w-[calc(100vw-64px)]' : 'ml-64 w-[calc(100vw-256px)] inner'} max-sm:16 max-sm:w-[calc(100vw-64px)]`}>
       <p className="text-center text-[#191854] text-xl font-bold">Marking Scheme</p>
       <p className="text-center font-medium">Check your marking scheme and deselect the unnecessary selections</p>
       <MarksBox data="hello" markingScheme_URL={markingschemes.marking_urls[0]} answersheet_URL={answersheets.data[0]} />

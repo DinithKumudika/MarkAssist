@@ -36,7 +36,7 @@ function Subjects({clicked,data}) {
   })
 
   return (
-    <div className={`${classes} ${clicked === 'outer' ? 'ml-16 outer' : 'ml-64 inner'}`}>
+    <div className={`${classes} ${clicked === 'outer' ? ' ml-16 outer w-[calc(100vw-64px)]' : 'ml-64 w-[calc(100vw-256px)] inner'} max-sm:16 max-sm:w-[calc(100vw-64px)]`}>
       <div className='flex justify-center items-center sidebar'>
           <div className='mt-[8%] h-[85%] w-11/12'>
             <div className='flex flex-row justify-between items-center mb-4'>

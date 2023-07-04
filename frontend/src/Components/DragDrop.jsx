@@ -146,7 +146,7 @@ function DragDrop({children,closeFunc}) {
   return ReactDOM.createPortal(
     <div className='flex justify-center items-center'>
       <div className='z-30 fixed inset-0 bg-gray-300 opacity-80 flex items-center justify-center' onClick={closeFunc}></div>
-      <div className='z-30 absolute top-[20%] h-fit w-fit p-5 bg-white  flex flex-col items-center max-sm:top-[10%]'>
+      <div className='z-30 absolute top-[10%] h-fit w-fit p-5 bg-white  flex flex-col items-center max-sm:top-[10%]'>
           <div className='w-full flex justify-end'>
             <AiOutlineClose onClick={closeFunc} className='cursor-pointer -mb-12 text-white text-center text-3xl bg-red-400 rounded-xl p-1 hover:bg-red-500'/>
           </div>

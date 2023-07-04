@@ -1,3 +1,4 @@
+data/
 venv/
 src/models/__pycache__
 src/routes/__pycache__

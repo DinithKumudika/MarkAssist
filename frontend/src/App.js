@@ -45,7 +45,7 @@ function App(){
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/teachers" element={<TeachersPage />} />
 
-        <Route path="/subjects/marks/:year/:subjectCode" element={<MarksPage />} />
+        <Route path="/subjects/marks/:year/:subjectId" element={<MarksPage />} />
 
       </Routes>
     </div>
