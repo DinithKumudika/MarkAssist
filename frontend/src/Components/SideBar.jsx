@@ -27,9 +27,9 @@ function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onC
   let navbarclasses;
   // console.log("clicked::"+clicked)
   if(clicked==="outer"){
-    navbarclasses = classnames('h-full z-20 fixed px-2 text-white font-bold text-center flex flex-col justify-between sidebar w-16 bg-[#00ADEF] outer pt-1')
+    navbarclasses = classnames('h-full z-20 fixed px-2 text-white font-bold text-center flex flex-col justify-between sidebar w-16 bg-custom-blue-2 outer pt-1')
   }else if(clicked==="inner"){
-    navbarclasses = classnames('h-full z-20 fixed px-2 text-white font-bold text-center flex flex-col justify-between sidebar w-64 bg-[#00ADEF] inner pt-1 max-sm:w-14')
+    navbarclasses = classnames('h-full z-20 fixed px-2 text-white font-bold text-center flex flex-col justify-between sidebar w-64 bg-custom-blue-2 inner pt-1 max-sm:w-14')
   }
 
   let sidebarComponent;

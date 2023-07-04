@@ -10,31 +10,32 @@ function MarkingSchemeConfigurePage() {
   if(!allItems){
     window.location.href="/";
   }
+  const {markingschemeId} = useParams();
   const user_id=allItems['user_id'];
   const [isClicked,setClick] = useState("outer");
-  const [markingScheme,setMarkingScheme] = useState({});
+  const [markings,setMarkings] = useState([]);
 
-//   useEffect(()=>{
-//     // console.log("DATA:");
-//     fetchSubjects();
-//   },[]);
+  useEffect(()=>{
+    // console.log("DATA:");
+    fetchMarkings();
+  },[]);
 
-//   const fetchSubjects = async () =>{
-//     axios
-//     .get(`http://127.0.0.1:8000/api_v1/markings/${year}/${subjectId}`)
-//     .then((response) => {
-//       const data = response.data
-//       setMarkingScheme(data)
-//       console.log("Data:",response.data)
-//       // Process the response data or update your React component state
-//     })
-//     .catch((error) => {
-//       console.error(error);
-//       setMarkingScheme(null)
-//       // Handle the error, e.g., display an error message to the user
-//     });
-//   }
-//   console.log("Marking scheme:",markingScheme)
+  const fetchMarkings = async () =>{
+    axios
+    .get(`http://127.0.0.1:8000/api_v1/markings/questions?scheme=${markingschemeId}`)
+    .then((response) => {
+      const data = response.data
+      setMarkings(data)
+      // console.log("Markings:",data)
+      // Process the response data or update your React component state
+    })
+    .catch((error) => {
+      console.error(error);
+      setMarkings(null)
+      // Handle the error, e.g., display an error message to the user
+    });
+  }
+  // console.log("Marking scheme:",markings)
 
 
   // //Function to handle the click of the hamburger menu
@@ -52,7 +53,7 @@ function MarkingSchemeConfigurePage() {
     <div>
       <NavBar />
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
-      <MarkingSchemeConfigure clicked={isClicked} data={markingScheme}/>
+      <MarkingSchemeConfigure clicked={isClicked} data={markings}/>
       
     </div>
   )

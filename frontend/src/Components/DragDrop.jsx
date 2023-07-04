@@ -5,7 +5,7 @@ import  ReactDOM  from 'react-dom';
 import { Link ,useLocation, useParams ,useNavigate} from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
 import axios from 'axios'
-function DragDrop({children,closeFunc}) {
+function DragDrop({children,closeFunc,data}) {
   const navigate = useNavigate();
   const location = useLocation();
   const pathName = location.pathname.split('/').filter((path) => path !== '')
@@ -152,6 +152,13 @@ function DragDrop({children,closeFunc}) {
           </div>
           <p className= "flex items-center justify-center ml-8 mt-11 text-2xl font-bold text-#2e1065 md:text-2xl dark:text-#2e1065 pt-10 " >{children}</p>
           <p className="flex items-center justify-center mt-2 ml-8 text-lg font-semibold text-inherit md:text-lg dark:text-inherit ">Upload your {children} (Paper should be according to our structure)</p>
+          {
+            pathName[0]==="markingschemes" ?
+              data!==null ?
+                <p className="text-center text-lg font-semibold text-red-600">*Previous marking scheme will replaced</p>
+              : ''
+            : ''
+          }
       <div className="flex flex-col w-[90%] justify-center items-center">
       {/* Drop Box */}
         <form onSubmit={handleSubmit} className=' flex flex-col items-center justify-center w-[95%]'>  
@@ -170,6 +177,7 @@ function DragDrop({children,closeFunc}) {
                           <p>Drop the files here ...</p> :
                           <p>Drag 'n' drop some files here, or click to select files</p>
                         }
+                        
                       </div>
                       <div className="mt-4 flex flex-col items-center justify-center ">
                         <button className="mb-4 w-40 max-sm:w-24 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center" ><AiOutlinePlus/>Choose Files</button>

@@ -12,7 +12,7 @@ function AnswerSheetsPage() {
   }
   const user_id=allItems['user_id'];
   const [isClicked,setClick] = useState("outer");
-  const [markingScheme,setMarkingScheme] = useState([]);
+  const [answerSheet,setAnswerSheet] = useState([]);
 
   const name=`${subjectId}---- ${year} ---Marking Scheme`
 
@@ -21,10 +21,11 @@ function AnswerSheetsPage() {
     .get(`http://127.0.0.1:8000/api_v1/papers/subjects/${subjectId}`)
     .then((response)=>{
       console.log(response.data);
-      setMarkingScheme(response.data);
+      setAnswerSheet(response.data);
     })
     .catch((error)=>{
       console.log(error);
+      setAnswerSheet(null)
     })
   },[]);
 
@@ -41,7 +42,7 @@ function AnswerSheetsPage() {
     <div>
       <NavBar />
       <SideBar mcq subjects markingSchemes answerPapers onClickFunc={handleClick} clicked={isClicked}/>
-      <AnswerSheets clicked={isClicked} data={markingScheme}/>
+      <AnswerSheets clicked={isClicked} data={answerSheet}/>
       
     </div>
   )
