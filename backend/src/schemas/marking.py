@@ -23,6 +23,11 @@ class Marking(BaseModel):
 class MarkingCreate(BaseModel):
      subjectId: str
      questionNo: str
+     subQuestionNo: str
+     partNo: str
+     noOfPoints: str
+     marks: str
      text: str
      uploadUrl: str
      markingScheme: str
+     selected: bool

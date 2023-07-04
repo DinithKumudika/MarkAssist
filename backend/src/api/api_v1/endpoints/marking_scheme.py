@@ -54,8 +54,15 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
           
           # check if there any current marking scheme for this subject
           current_marking = marking_scheme_model.get_marking_scheme_by_year_subjectId(request, int(year), subject['id'])
-          # Upload the file and get the file URL
+          print("This is current_marking",current_marking)
+          
+          if current_marking: 
+               marking_scheme_model.delete_by_subject(request, subjectId)
+               marking_model.delete_by_subject(request, subjectId)
+          
+          
           marking_url = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
+          
           # Create a new MarkingScheme object with the provided data and file URL
           marking_scheme = MarkingSchemeCreate(
                subjectCode=subject['subjectCode'],
@@ -64,6 +71,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                subjectId=subjectId,
                markingUrl=marking_url,
           )
+          
           new_marking_scheme = await marking_scheme_model.add_new_marking(request, marking_scheme)
           if new_marking_scheme:
                marking_id = new_marking_scheme['id']
@@ -141,12 +149,18 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                               urls.append(file_url)
                          question_no = answers[i]["question no"]
                          answer_text = answers[i]["text"]
+                         
                          marking = MarkingCreate(
                               subjectId=new_marking_scheme["subjectId"],
                               questionNo=question_no,
+                              subQuestionNo='',
+                              partNo='',
+                              noOfPoints='',
+                              marks='',
                               text=answer_text,
                               uploadUrl=file_url,
-                              markingScheme=marking_id
+                              markingScheme=marking_id,
+                              selected=False
                          )
                          
                          new_marking_id = marking_model.save_marking(request, marking)
@@ -172,7 +186,33 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                status_code=status.HTTP_404_NOT_FOUND,
                detail="Add subject First"
           )
-          
+
+
+@router.get("/questions", response_description="get questions of a marking scheme by marking scheme id or subject id", response_model= List[Marking])
+async def get_marking_content(request: Request, sub: str = None, scheme: str = None):
+     if(sub):
+          marking_questions = marking_model.get_by_subject(request, sub)
+     
+     if(scheme):
+          marking_questions = marking_model.get_by_marking_scheme(request, scheme)
+     
+     if marking_questions:     
+          return marking_questions
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail=f"there is no paper with given id"
+     )
+
+# @router.get("/{schemeId}/questions", response_description="get questions of a marking scheme by marking scheme id", response_model= List[Marking])
+# async def get_marking_content(request: Request, schemeId: str):
+#      marking_questions = marking_model.get_by_marking_scheme(request, schemeId)
+#      print(schemeId)
+#      if marking_questions:
+#           return marking_questions
+#      raise HTTPException(
+#           status_code=status.HTTP_404_NOT_FOUND, 
+#           detail=f"there is no paper with id of {schemeId}"
+#      )          
 
 
 @router.get("/download/{scheme_id}", response_description="Download marking scheme from cloud storage")
@@ -224,4 +264,3 @@ async def get_by_subjectId_year(request:Request,year:int,subjectId:str):
           status_code=status.HTTP_404_NOT_FOUND, 
           detail=f"There is no paper with the id of {subjectId}"
      )
-     

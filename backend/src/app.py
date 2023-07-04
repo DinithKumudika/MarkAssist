@@ -58,5 +58,5 @@ async def shutdown_db_client():
 @app.get("/", tags=["Root"])
 async def read_root():
      return {
-          "message": "welcome to markAssist API"
+          "message": "welcome to markAssist API v1"
      }

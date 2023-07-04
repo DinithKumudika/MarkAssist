@@ -13,6 +13,7 @@ from utils.hashing import Hasher
 router = APIRouter()
 user_model = UserModel()
 
+# login user
 @router.post("/token", response_description="get OAuth2 Token", response_model=Token)
 async def login(request: Request, payload: OAuth2PasswordRequestForm = Depends()):
      user = user_model.by_email(request, payload.username)
@@ -35,10 +36,10 @@ async def login(request: Request, payload: OAuth2PasswordRequestForm = Depends()
      
      return Token(access_token=token, token_type="bearer")
 
-
+# register new user
 @router.post("/register", response_description="Create new user", response_model=User)
 async def register(request: Request, payload: UserCreate = Body()) -> User:
-     print("Data:",payload)
+     print("Data:", payload.dict())
      user = user_model.by_email(request, payload.email)
      print("Hello")
      if user:

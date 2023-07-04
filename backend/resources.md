@@ -13,3 +13,9 @@ https://medium.com/ai-techsystems/automated-marking-of-exam-papers-using-machine
 https://www.researchgate.net/publication/221297165_Information_Extraction_and_Machine_Learning_Auto-Marking_Short_Free_Text_Responses_to_Science_Questions
 
 https://www.analyticsvidhya.com/blog/2019/07/how-get-started-nlp-6-unique-ways-perform-tokenization/
+
+https://medium.com/analytics-vidhya/semantic-search-engine-using-nlp-cec19e8cfa7e
+
+https://www.pinecone.io/learn/vector-embeddings
+
+https://www.freecodecamp.org/news/rest-api-design-best-practices-build-a-rest-api/

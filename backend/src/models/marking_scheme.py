@@ -88,4 +88,21 @@ class MarkingSchemeModel():
                updated_marking["subjectId"] = str(updated_marking["subjectId"])
                return updated_marking
           return None
-
+     
+     def delete(self, request: Request, schemeId: str):
+          self.get_collection(request).delete_one({"_id": ObjectId(schemeId)})
+          deleted_scheme = self.get_collection(request).find_one({"_id": ObjectId(schemeId)})
+          
+          if deleted_scheme:
+               return False
+          else:
+               return True
+     
+     def delete_by_subject(self, request: Request, subjectId: str):
+          self.get_collection(request).delete_one({"subjectId": subjectId})
+          deleted_scheme = self.get_collection(request).find_one({"subjectId": subjectId})
+          
+          if deleted_scheme:
+               return False
+          else:
+               return True
