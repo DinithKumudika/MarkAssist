@@ -264,7 +264,8 @@ async def update_marking(request: Request, subjectId: str, payload: Body()):
                               "subQuestionNo": data["subQuestionNo"],
                               "partNo": data["partNo"],
                               "noOfPoints": data["noOfPoints"],
-                              "marks": data["marks"]
+                              "marks": data["marks"],
+                              "selected": data["selected"]
                          }
                     }
                }
@@ -272,6 +273,7 @@ async def update_marking(request: Request, subjectId: str, payload: Body()):
      update_count = marking_model.update_multiple(request, updates)
      
      if update_count:
+          # TODO: return updated answer entries
           return JSONResponse(
                {
                     "detail": f"{update_count} answers updated"
