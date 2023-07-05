@@ -246,9 +246,37 @@ async def download_paper(request: Request, scheme_id : str):
      )
      
      
-@router.put('/update', response_description="Update an existing marking scheme")
-async def update_marking(request:Request,file: UploadFile = File(...),subjectCode: str = Form(...),year: int = Form(...),subjectId: str = Form(...)):
-     pass
+@router.put('/update/{subjectId}', response_description="Update an existing marking scheme questions")
+async def update_marking(request: Request, subjectId: str, payload: Body()):
+     updates = []
+     for data in payload:
+          updates.append(
+               {
+                    "filter": {"_id": ObjectId(data["id"]), "subjectId": subjectId}, 
+                    "update": {
+                         "$set": {
+                              "questionNo": data["questionNo"], 
+                              "subQuestionNo": data["subQuestionNo"],
+                              "partNo": data["partNo"],
+                              "noOfPoints": data["noOfPoints"],
+                              "marks": data["marks"]
+                         }
+                    }
+               }
+          )
+     update_count = marking_model.update_multiple(request, updates)
+     
+     if update_count:
+          return JSONResponse(
+               {
+                    "detail": f"{update_count} answers updated"
+               }, 
+               status_code=status.HTTP_200_OK
+          )
+     raise HTTPException(
+          status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+          detail="update failed"
+     )
 
 # get marking scheme by  subjectId
 @router.get("/{year}/{subjectId}", response_description="Get a marking scheme subjectId and year", response_model = MarkingScheme)
