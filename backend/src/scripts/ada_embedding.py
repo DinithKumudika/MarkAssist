@@ -2,27 +2,23 @@ import openai
 import numpy as np
 
 answer = '''
-Handling Big Data, enterprices deal amount da fa.
-real with 
-High Scalability and performance -
-Real-time Analytics.- Nosql databases provide buit
-time analytics.
-Distributed Architectures.
-large'''
+• Load balancing.
+•Improved
+query Performance.
+Horizontal scalability
+distribution
+•Data
+6'''
 
-scheme = '''Handling Big Data Enterprises deal with vast amounts of data generated from
-various sources.
-• Flexibility with Data Models - NoSQL databases offer flexible data models, allowing
-enterprises to store and manipulate different types of data.
-• High Scalability and Performance NoSQL databases provide horizontal scalability,
-enabling enterprises to handle massive data growth and increased workloads.
-Distributed Architectures Enterprises increasingly adopt distributed and cloud-based
-architectures.
-Real-time Analytics Many NoSQL databases provide built-in capabilities for real-time
-analytics and processing.'''
+scheme = '''Sharding in NoSQL databases plays a crucial role in achieving scalability and
+performance by distributing data across multiple nodes or servers.
+Horizontal scalability
+• Data distribution
+Load balancing
+• Improved query performance'''
 
 model = 'text-embedding-ada-002'
-OPENAI_KEY = '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'
+OPENAI_KEY = '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'
 
 vectors = []
 
