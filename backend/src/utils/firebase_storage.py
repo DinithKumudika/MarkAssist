@@ -32,7 +32,6 @@ async def upload_file(file: UploadFile, file_name: str):
     download_url = fb_storage.child(upload_path).get_url(None)
     return download_url
 
-# TODO: remove this and update upload_file above
 async def upload_file2(image: UploadFile, path: str, folder: str, image_name: str):
     file_extension = image.filename.split(".")[-1]  # Get the file extension
     unique_filename = f"{uuid.uuid4()}_{image_name}.{file_extension}"  # Generate a unique file name

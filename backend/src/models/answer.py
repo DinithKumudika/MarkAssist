@@ -9,7 +9,6 @@ import os
 from schemas.answer import Answer, AnswerCreate
 import helpers
 
-# TODO: move to helpers
 def extract_answers(paper_no):
      try:
           images = helpers.get_images(os.path.join('../data/images/paper/', paper_no))
@@ -56,7 +55,6 @@ def extract_answers(paper_no):
           print("Error")
           return None
 
-# TODO: move to helpers
 def read_answers(paper_no):
      answers = []
      client = vision.ImageAnnotatorClient()
@@ -113,6 +111,3 @@ class AnswerModel():
           for answer in answers:
                answer["id"] = str(answer["_id"]) 
           return answers
-     
-     def update():
-          pass 
