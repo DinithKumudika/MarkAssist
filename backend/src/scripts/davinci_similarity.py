@@ -20,7 +20,7 @@ in the database.
 Availability - Availability ensures that the database and its data are accessible and
 usable when needed.'''
 
-model = 'text-embedding-ada-002'
+model = 'text-similarity-davinci-001'
 OPENAI_KEY = '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'
 
 vectors = []
@@ -38,15 +38,3 @@ vectors.append(scheme_vector)
 cosine_similarity = np.dot(vectors[0], vectors[1]) / (np.linalg.norm(vectors[0]) * np.linalg.norm(vectors[1]))
 
 print("similarity using np:", cosine_similarity)
-
-
-# from openai.embeddings_utils import get_embedding, cosine_similarity
-
-# def search_reviews(df, product_description, n=3, pprint=True):
-#    embedding = get_embedding(product_description, model='text-embedding-ada-002')
-#    df['similarities'] = df.ada_embedding.apply(lambda x: cosine_similarity(x, embedding))
-#    res = df.sort_values('similarities', ascending=False).head(n)
-#    return res
-
-# res = search_reviews(df, 'delicious beans', n=3)
-
