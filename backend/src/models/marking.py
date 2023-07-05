@@ -1,6 +1,5 @@
 from fastapi import Request
 from bson.objectid import ObjectId
-from pymongo import UpdateMany
 
 from schemas.marking import Marking, MarkingCreate
 
@@ -43,41 +42,20 @@ class MarkingModel():
                return markings
           return None
      
-     
-     def update():
-          pass
-     
-     
-     def update_single():
-          pass
-     
-     def update_multiple(self, request: Request, update_data: list):
-          updated_schemes = self.get_collection(request).bulk_write([
-               UpdateMany(update["filter"], update["update"]) for update in update_data
-          ])
+     def delete(self, request: Request, questionId: str):
+          self.get_collection(request).delete_one({"_id": ObjectId(questionId)})
+          markings = self.get_collection(request).find_one({"subjectId": ObjectId(questionId)})
           
-          if updated_schemes:
-               if updated_schemes.matched_count == updated_schemes.modified_count:
-                    return updated_schemes.modified_count
-               else:
-                    return False
-          return False
-     
-     def delete_single(self, request: Request, field: str, value: str):
-          if field == "_id":
-               deleted_marking = self.get_collection(request).delete_one({field: ObjectId(value)})
+          if markings:
+               return False
           else:
-               deleted_marking = self.get_collection(request).delete_one({field: value})
-          
-          if deleted_marking.deleted_count == 1:
                return True
-          
-          return False
      
-     
-     def delete(self, request: Request, field: str, value: str):
-          deleted_markings = self.get_collection(request).delete_many({field: value})
+     def delete_by_subject(self, request: Request, subjectId: str):
+          self.get_collection(request).delete_many({"subjectId": subjectId})
+          markings = self.get_collection(request).find({"subjectId": subjectId})
           
-          if deleted_markings:
-               return deleted_markings.deleted_count
-          return False
+          if markings:
+               return False
+          else:
+               return True

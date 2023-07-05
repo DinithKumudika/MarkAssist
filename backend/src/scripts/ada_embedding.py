@@ -2,26 +2,27 @@ import openai
 import numpy as np
 
 answer = '''
-●
-Confidentiality: Provides protection from unauthorized access
-Sensitive data.
-for
-• Integrity: Ensures the accuracy, consistency and
-reliability of data.
-Availability
--
-when needed, database is accessible and
-usable.'''
+Handling Big Data, enterprices deal amount da fa.
+real with 
+High Scalability and performance -
+Real-time Analytics.- Nosql databases provide buit
+time analytics.
+Distributed Architectures.
+large'''
 
-scheme = '''Confidentiality Confidentiality ensures that sensitive data remains protected from
-unauthorized access or disclosure.
-• Integrity Integrity ensures the accuracy, consistency, and reliability of data stored
-in the database.
-Availability - Availability ensures that the database and its data are accessible and
-usable when needed.'''
+scheme = '''Handling Big Data Enterprises deal with vast amounts of data generated from
+various sources.
+• Flexibility with Data Models - NoSQL databases offer flexible data models, allowing
+enterprises to store and manipulate different types of data.
+• High Scalability and Performance NoSQL databases provide horizontal scalability,
+enabling enterprises to handle massive data growth and increased workloads.
+Distributed Architectures Enterprises increasingly adopt distributed and cloud-based
+architectures.
+Real-time Analytics Many NoSQL databases provide built-in capabilities for real-time
+analytics and processing.'''
 
 model = 'text-embedding-ada-002'
-OPENAI_KEY = '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'
+OPENAI_KEY = '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'
 
 vectors = []
 
