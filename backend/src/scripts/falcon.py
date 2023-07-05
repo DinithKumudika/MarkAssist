@@ -5,23 +5,19 @@ import torch
 model = "tiiuae/falcon-7b-instruct"
 
 answer = '''
-●
-Confidentiality: Provides protection from unauthorized access
-Sensitive data.
-for
-• Integrity: Ensures the accuracy, consistency and
-reliability of data.
-Availability
--
-when needed, database is accessible and
-usable.'''
+• ACID
+Atomicity
+• Durability
+Consistency
+Isolation
+6'''
 
-scheme = '''Confidentiality Confidentiality ensures that sensitive data remains protected from
-unauthorized access or disclosure.
-• Integrity Integrity ensures the accuracy, consistency, and reliability of data stored
-in the database.
-Availability - Availability ensures that the database and its data are accessible and
-usable when needed.'''
+scheme = '''• ACID (Atomicity, Consistency, Isolation, Durability) is a set of properties that
+guarantee reliable processing of database transactions.
+Atomicity
+Consistency
+Isolation
+Durability'''
 
 prompt = f"""Think yourself as a marker who mark exam papers by comparing student answer and marking scheme answer. Below is two sentences named as Text 1 and Text 2.
 Text 1 is the answer of the marking scheme and Text 2 is the answer written by the student for a question.

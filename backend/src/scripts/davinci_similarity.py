@@ -2,26 +2,23 @@ import openai
 import numpy as np
 
 answer = '''
-●
-Confidentiality: Provides protection from unauthorized access
-Sensitive data.
-for
-• Integrity: Ensures the accuracy, consistency and
-reliability of data.
-Availability
--
-when needed, database is accessible and
-usable.'''
+• Load balancing.
+•Improved
+query Performance.
+Horizontal scalability
+distribution
+•Data
+6'''
 
-scheme = '''Confidentiality Confidentiality ensures that sensitive data remains protected from
-unauthorized access or disclosure.
-• Integrity Integrity ensures the accuracy, consistency, and reliability of data stored
-in the database.
-Availability - Availability ensures that the database and its data are accessible and
-usable when needed.'''
+scheme = '''Sharding in NoSQL databases plays a crucial role in achieving scalability and
+performance by distributing data across multiple nodes or servers.
+Horizontal scalability
+• Data distribution
+Load balancing
+• Improved query performance'''
 
 model = 'text-similarity-davinci-001'
-OPENAI_KEY = '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'
+OPENAI_KEY = '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'
 
 vectors = []
 
