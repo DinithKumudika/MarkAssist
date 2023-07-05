@@ -12,7 +12,10 @@ function MarkingSchemes({clicked, data}) {
   if(data){
     // console.log("DATA:"+data)
     // console.log("SubjectId:"+data.subjectId)
-    link = {link:"/markingschemes/"+data.id};
+    // link = {link:"/markingschemes/"+data.id};
+    // link = {link:"/markingschemes/"+data.id+"/"+data.subjectId};
+    link = {link:"/markingschemes/"+data.subjectId};
+
   }
   else{
     console.log("DATAs:"+data)

@@ -22,22 +22,27 @@ function MarksPage() {
     fetchData();
   },[]);
 
-  const fetchData = async () =>{
+  const fetchData =  () =>{
     axios
     .get(`http://127.0.0.1:8000/api_v1/answers/${paperId}`)
     .then((response) => {
       const answer = response.data
       setAnswers(answer)
       // console.log("Answers:",answer)
-      axios
-      .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${subjectId}`)
-      .then((response)=>{
-        const marking = response.data
-        setMarkings(marking)
-        // console.log("Markings:",marking)
-
-      })
       // Process the response data or update your React component state
+    })
+    .catch((error) => {
+      console.error(error);
+      setAnswers(null)
+      // Handle the error, e.g., display an error message to the user
+    });
+    axios
+    .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${subjectId}`)
+    .then((response)=>{
+      const marking = response.data
+      setMarkings(marking)
+      // console.log("Markings:",marking)
+
     })
     .catch((error) => {
       console.error(error);
@@ -81,7 +86,7 @@ function MarksPage() {
     <div>
       <NavBar />
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
-      {markings.length===answers.length ? <Marks clicked={isClicked} answers={answers} markings={markings}/> : ''}
+      {markings.length>=answers.length ? <Marks clicked={isClicked} answers={answers} markings={markings}/> : ''}
     </div>
   )
 }

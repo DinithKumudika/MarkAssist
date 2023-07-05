@@ -10,7 +10,7 @@ function MarkingSchemeConfigurePage() {
   if(!allItems){
     window.location.href="/";
   }
-  const {markingschemeId} = useParams();
+  const {markingschemeId,subjectId} = useParams();
   const user_id=allItems['user_id'];
   const [isClicked,setClick] = useState("outer");
   const [markings,setMarkings] = useState([]);
@@ -22,8 +22,8 @@ function MarkingSchemeConfigurePage() {
 
   const fetchMarkings = async () =>{
     axios
-    .get(`http://127.0.0.1:8000/api_v1/markings/questions?scheme=${markingschemeId}`)
-    .then((response) => {
+    // .get(`http://127.0.0.1:8000/api_v1/markings/questions?scheme=${markingschemeId}`)
+    .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${subjectId}`).then((response) => {
       const data = response.data
       setMarkings(data)
       // console.log("Markings:",data)

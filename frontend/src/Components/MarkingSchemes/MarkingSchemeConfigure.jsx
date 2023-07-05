@@ -3,12 +3,22 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { BiFilter } from "react-icons/bi";
 import { useState } from 'react'
 import MakingSchemeConfigureBox from './MakingSchemeConfigureBox'
-function MarkingSchemeConfigure({clicked, data}) {
+import axios from 'axios'
+function MarkingSchemeConfigure({clicked, data,subjectId}) {
   const [formData, setFormData] = useState([]);
 
   const handleFormSubmit = () => {
     // Submit the form data
     console.log(formData);
+    axios
+    .put(`http://127.0.0.1:8000/api_v1/markings/update/${subjectId}`,formData)
+    .then((response)=>{
+      console.log(response);
+    })
+    .catch((error) => {
+      console.error(error);
+      // Handle the error, e.g., display an error message to the user
+    });
   };
 
   const handleFormChange = (index, childFormData) => {

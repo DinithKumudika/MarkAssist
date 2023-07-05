@@ -35,7 +35,8 @@ function App(){
         <Route path="/markingschemes" element={<SubjectsPage />} />
         <Route path="/markingschemes/years/:subjectCode" element={<YearsPage />} />
         <Route path="/markingschemes/:year/:subjectId" element={<MarkingSchemesPage />} />
-        <Route path="/markingschemes/:markingschemeId" element={<MarkingSchemeConfigurePage />} />
+         {/* <Route path="/markingschemes/:markingschemeId/:subjectId" element={<MarkingSchemeConfigurePage />} /> */}
+         <Route path="/markingschemes/:subjectId" element={<MarkingSchemeConfigurePage />} />
 
         <Route path="/answersheets" element={<SubjectsPage />} />
         <Route path="/answersheets/years/:subjectCode" element={<YearsPage />} />
