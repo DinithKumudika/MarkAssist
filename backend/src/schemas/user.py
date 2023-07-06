@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
+from typing import Optional,List
 
 class User(BaseModel):
      id: str
@@ -104,3 +104,20 @@ class UserUpdate(UserBase):
      firsName: Optional[str] = None
      lastName: Optional[str] = None
      email: Optional[EmailStr] = None
+     
+
+# For sending mail 
+# class MailBody(BaseModel):
+#     to: List[str]
+#     subject: str
+#     body: str
+#     class Config:
+#          schema_extra = {
+#                "example": {
+#                     "to": "dinith1999@gmail.com",
+#                     "subject": "This is subject",
+#                     "body": "This is body",
+
+                         
+#                }
+#      }

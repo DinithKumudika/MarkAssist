@@ -43,6 +43,12 @@ class SubjectYearsByCode(BaseModel):
         }
     }
 
+class GroupedSubject(BaseModel):
+    subjectCode:str
+    subjects: List[Subject]
+    
+    
+
 # Add a new class for the response model
 class YearsListResponse(BaseModel):
     __root__: List[SubjectYearsByCode]

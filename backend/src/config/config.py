@@ -44,9 +44,20 @@ class DatabaseSettings(BaseSettings):
      
      class Config:
           case_sensitive = True
+          
+
+     
+class MailSettings(BaseSettings):
+     MAIL_USERNAME :str = env.get('MAIL_USERNAME')
+     MAIL_PASSWORD :str = env.get('MAIL_PASSWORD')
+     MAIL_FROM :str = env.get('MAIL_FROM')
+     MAIL_PORT :int = int(env.get('MAIL_PORT'))
+     MAIL_SERVER :str = env.get('MAIL_SERVER')
+     MAIL_FROM_NAME :str = env.get('MAIN_FROM_NAME')
 
 
-class Settings(CommonSettings, ServerSettings, DatabaseSettings, GoogleServiceSettings):
+
+class Settings(CommonSettings, ServerSettings, DatabaseSettings, GoogleServiceSettings,MailSettings):
      pass
 
 
