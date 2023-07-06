@@ -2,10 +2,11 @@ import { useState,useRef,useCallback } from 'react';
 import {useDropzone} from 'react-dropzone';
 import { AiOutlinePlus, AiOutlineClose,AiOutlineUpload} from "react-icons/ai";
 import  ReactDOM  from 'react-dom';
-import { Link ,useLocation, useParams } from 'react-router-dom';
+import { Link ,useLocation, useParams ,useNavigate} from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
 import axios from 'axios'
-function DragDrop({children,closeFunc}) {
+function DragDrop({children,closeFunc,data}) {
+  const navigate = useNavigate();
   const location = useLocation();
   const pathName = location.pathname.split('/').filter((path) => path !== '')
 
@@ -64,6 +65,8 @@ function DragDrop({children,closeFunc}) {
         localStorage.setItem('markingSceme', JSON.stringify(response.data));
         setUploading(false);
         closeFunc()
+        window.location.reload();
+
       })
     }else if(pathName[0]==="answersheets"){
       axios
@@ -95,6 +98,8 @@ function DragDrop({children,closeFunc}) {
                       localStorage.setItem('answers', JSON.stringify(response.data));
                       setUploading(false);
                       closeFunc()
+                      window.location.reload();
+                      // navigate(`/markingschemes/${year}/${subjectId}`)
                     })
                     .catch((error) => {
                       if(error.response && error.response.status >=400 && error.response.status <500){
@@ -139,14 +144,21 @@ function DragDrop({children,closeFunc}) {
 
   console.log(files);
   return ReactDOM.createPortal(
-    <div >
-      <div className='z-30 fixed inset-0 bg-gray-300 opacity-80' onClick={closeFunc}></div>
-      <div className='z-30 absolute top-[10%] left-[35%] h-fit w-fit p-5 bg-white  flex flex-col items-center max-lg:left-[20%]'>
+    <div className='flex justify-center items-center'>
+      <div className='z-30 fixed inset-0 bg-gray-300 opacity-80 flex items-center justify-center' onClick={closeFunc}></div>
+      <div className='z-30 absolute top-[10%] h-fit w-fit p-5 bg-white  flex flex-col items-center max-sm:top-[10%]'>
           <div className='w-full flex justify-end'>
             <AiOutlineClose onClick={closeFunc} className='cursor-pointer -mb-12 text-white text-center text-3xl bg-red-400 rounded-xl p-1 hover:bg-red-500'/>
           </div>
           <p className= "flex items-center justify-center ml-8 mt-11 text-2xl font-bold text-#2e1065 md:text-2xl dark:text-#2e1065 pt-10 " >{children}</p>
           <p className="flex items-center justify-center mt-2 ml-8 text-lg font-semibold text-inherit md:text-lg dark:text-inherit ">Upload your {children} (Paper should be according to our structure)</p>
+          {
+            pathName[0]==="markingschemes" ?
+              data!==null ?
+                <p className="text-center text-lg font-semibold text-red-600">*Previous marking scheme will replaced</p>
+              : ''
+            : ''
+          }
       <div className="flex flex-col w-[90%] justify-center items-center">
       {/* Drop Box */}
         <form onSubmit={handleSubmit} className=' flex flex-col items-center justify-center w-[95%]'>  
@@ -165,6 +177,7 @@ function DragDrop({children,closeFunc}) {
                           <p>Drop the files here ...</p> :
                           <p>Drag 'n' drop some files here, or click to select files</p>
                         }
+                        
                       </div>
                       <div className="mt-4 flex flex-col items-center justify-center ">
                         <button className="mb-4 w-40 max-sm:w-24 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center" ><AiOutlinePlus/>Choose Files</button>

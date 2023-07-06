@@ -1,43 +1,41 @@
 import NavBar from '../Components/NavBar'
 import SideBar from '../Components/SideBar'
-import MarkingSchemes from '../Components/MarkingSchemes/MarkingSchemes'
+import MarkingSchemeConfigure from '../Components/MarkingSchemes/MarkingSchemeConfigure'
 import {useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom'
 import axios from 'axios'
-function MarkingSchemesPage() {
-  const { year,subjectId} = useParams()
+function MarkingSchemeConfigurePage() {
   const allItems=JSON.parse(localStorage.getItem('tokenData'));
   // console.log(allItems);
   if(!allItems){
     window.location.href="/";
   }
+  const {markingschemeId,subjectId} = useParams();
   const user_id=allItems['user_id'];
   const [isClicked,setClick] = useState("outer");
-  const [markingScheme,setMarkingScheme] = useState({});
-  
-  const name=`${subjectId}---- ${year} ---Marking Scheme`
-  
+  const [markings,setMarkings] = useState([]);
+
   useEffect(()=>{
     // console.log("DATA:");
-    fetchSubjects();
+    fetchMarkings();
   },[]);
 
-  const fetchSubjects = async () =>{
+  const fetchMarkings = async () =>{
     axios
-    .get(`http://127.0.0.1:8000/api_v1/markings/${year}/${subjectId}`)
-    .then((response) => {
+    // .get(`http://127.0.0.1:8000/api_v1/markings/questions?scheme=${markingschemeId}`)
+    .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${subjectId}`).then((response) => {
       const data = response.data
-      setMarkingScheme(data)
-      console.log("Data:",response.data)
+      setMarkings(data)
+      // console.log("Markings:",data)
       // Process the response data or update your React component state
     })
     .catch((error) => {
       console.error(error);
-      setMarkingScheme(null)
+      setMarkings(null)
       // Handle the error, e.g., display an error message to the user
     });
   }
-  console.log("Marking scheme:",markingScheme)
+  // console.log("Marking scheme:",markings)
 
 
   // //Function to handle the click of the hamburger menu
@@ -55,10 +53,10 @@ function MarkingSchemesPage() {
     <div>
       <NavBar />
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
-      <MarkingSchemes clicked={isClicked} data={markingScheme}/>
+      <MarkingSchemeConfigure clicked={isClicked} data={markings}/>
       
     </div>
   )
 }
 
-export default MarkingSchemesPage
+export default MarkingSchemeConfigurePage

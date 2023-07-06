@@ -2,10 +2,6 @@ from fastapi import APIRouter, HTTPException, status, Request,Depends,UploadFile
 from fastapi.params import Body
 from fastapi.responses import JSONResponse
 from typing import List
-from fastapi import APIRouter, HTTPException, status, Request,Depends,UploadFile, File,Form
-from fastapi.params import Body
-from fastapi.responses import JSONResponse
-from typing import List
 from bson.objectid import ObjectId
 import httpx
 
@@ -20,9 +16,10 @@ from google.cloud import vision
 import os
 
 from models.marking_scheme import MarkingSchemeModel
-from schemas.marking_scheme import MarkingScheme,MarkingSchemeCreate,MarkingSchemeForm
+from schemas.marking_scheme import MarkingScheme,MarkingSchemeCreate
+from schemas.marking import MarkingUpdate
 from models.marking import MarkingModel
-from models.subject import SubjectModel;
+from models.subject import SubjectModel
 
 from schemas.user import User
 from schemas.marking import Marking, MarkingCreate
@@ -250,22 +247,23 @@ async def download_paper(request: Request, scheme_id : str):
           detail=f"There is no paper with the id of{scheme_id}"
      )
      
-     
+# TODO: fix this route 
 @router.put('/update/{subjectId}', response_description="Update an existing marking scheme questions")
-async def update_marking(request: Request, subjectId: str, payload: Body()):
+async def update_marking(request: Request, subjectId: str, payload: List[MarkingUpdate] = Body()):
      updates = []
      for data in payload:
+          print(data)
           updates.append(
                {
-                    "filter": {"_id": ObjectId(data["id"]), "subjectId": subjectId}, 
+                    "filter": {"_id": ObjectId(data.id), "subjectId": subjectId}, 
                     "update": {
                          "$set": {
-                              "questionNo": data["questionNo"], 
-                              "subQuestionNo": data["subQuestionNo"],
-                              "partNo": data["partNo"],
-                              "noOfPoints": data["noOfPoints"],
-                              "marks": data["marks"],
-                              "selected": data["selected"]
+                              "questionNo": data.questionNo, 
+                              "subQuestionNo": data.subQuestionNo,
+                              "partNo": data.partNo,
+                              "noOfPoints": data.noOfPoints,
+                              "marks": data.marks,
+                              "selected": data.selected
                          }
                     }
                }

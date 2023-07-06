@@ -57,11 +57,9 @@ class MarkingModel():
           ])
           
           if updated_schemes:
-               if updated_schemes.matched_count == updated_schemes.modified_count:
-                    return updated_schemes.modified_count
-               else:
-                    return False
-          return False
+               return updated_schemes.modified_count
+          else:
+               return False
      
      def delete_single(self, request: Request, field: str, value: str):
           if field == "_id":

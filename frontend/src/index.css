@@ -31,13 +31,13 @@ code {
   position: absolute;
   /* left: -500px; */
   transition-duration: 0.75s;
-  width: calc(100vw - 64px);
+  /* width: calc(100vw - 64px); */
 
 }
 .inner{
   position: absolute;
   transition-duration: 0.75s;
-  width: calc(100vw - 256px);
+  /* width: calc(100vw - 256px); */
   /* left: 0; */
 }
 .sidebarCollapsed{
