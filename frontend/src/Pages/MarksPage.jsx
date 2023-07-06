@@ -6,13 +6,72 @@ import {useParams} from 'react-router-dom'
 import axios from 'axios'
 function MarksPage() {
   const allItems=JSON.parse(localStorage.getItem('tokenData'));
-  console.log(allItems);
+  // console.log(allItems);
   if(!allItems){
     window.location.href="/";
   }
   const user_id=allItems['user_id'];
+  const { year,subjectId,paperId} = useParams()
   const [isClicked,setClick] = useState("outer");
-  const [markingScheme,setMarkingScheme] = useState([]);
+  const [marks,setMarks] = useState([]);
+  const [answers,setAnswers] = useState([]);
+  const [markings,setMarkings] = useState([]);
+
+  useEffect(()=>{
+    // console.log("DATA:");
+    fetchData();
+  },[]);
+
+  const fetchData =  () =>{
+    axios
+    .get(`http://127.0.0.1:8000/api_v1/answers/${paperId}`)
+    .then((response) => {
+      const answer = response.data
+      setAnswers(answer)
+      // console.log("Answers:",answer)
+      // Process the response data or update your React component state
+    })
+    .catch((error) => {
+      console.error(error);
+      setAnswers(null)
+      // Handle the error, e.g., display an error message to the user
+    });
+    axios
+    .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${subjectId}`)
+    .then((response)=>{
+      const marking = response.data
+      setMarkings(marking)
+      // console.log("Markings:",marking)
+
+    })
+    .catch((error) => {
+      console.error(error);
+      setMarks(null)
+      // Handle the error, e.g., display an error message to the user
+    });
+  }
+
+  // const fetchData = async () => {
+  //   try {
+  //     const answerResponse = await axios.get(`http://127.0.0.1:8000/api_v1/answers/${paperId}`);
+  //     const answer = answerResponse.data;
+  //     setAnswers(answer);
+  //     // console.log("Answers:", answer);
+  
+  //     const markingResponse = await axios.get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${subjectId}`);
+  //     const marking = markingResponse.data;
+  //     setMarkings(marking);
+  //     // console.log("Markings:", marking);
+  
+  //     // Both API calls have completed at this point
+  
+  //     // Proceed with any additional logic or rendering
+  //   } catch (error) {
+  //     // Handle any errors that occurred during the API calls
+  //     console.error(error);
+  //   }
+  // };
+
 
   const handleClick = () => {
     if(isClicked==="outer"){
@@ -27,7 +86,7 @@ function MarksPage() {
     <div>
       <NavBar />
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
-      <Marks clicked={isClicked} data="hello"/>
+      {markings.length>=answers.length ? <Marks clicked={isClicked} answers={answers} markings={markings}/> : ''}
     </div>
   )
 }

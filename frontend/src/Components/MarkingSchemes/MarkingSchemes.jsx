@@ -8,15 +8,19 @@ function MarkingSchemes({clicked, data}) {
   const classes = classnames('sidebar static max-sm:ml-16 pt-[80px]');
   const [show, setShow] = useState(false);
   // const markingSchemas =JSON.stringify(data);
+  var link = ''
   if(data){
-    console.log("DATA:"+data)
-    console.log("DATA:"+data.id)
+    // console.log("DATA:"+data)
+    // console.log("SubjectId:"+data.subjectId)
+    // link = {link:"/markingschemes/"+data.id};
+    // link = {link:"/markingschemes/"+data.id+"/"+data.subjectId};
+    link = {link:"/markingschemes/"+data.subjectId};
+
   }
   else{
     console.log("DATAs:"+data)
   }
 
-  const link = {link:"/markingschemes/"+data.id};
 
 
 
@@ -49,9 +53,9 @@ function MarkingSchemes({clicked, data}) {
             // <td className='text-lg px-4 max-sm:px-1 h-10 border-y-2 border-x-2 font-medium opacity-60'>{data.subjectCode}-{data.subjectName}-{data.year}</td>
 
       ): ( 
-        <DragDrop closeFunc={closeModal}>Marking Scheme</DragDrop>
+        <DragDrop closeFunc={closeModal} data={data}>Marking Scheme</DragDrop>
       )}
-      {show && <DragDrop closeFunc={closeModal}>Marking Scheme</DragDrop>}
+      {show && <DragDrop closeFunc={closeModal} data={data}>Marking Scheme</DragDrop>}
     </div>
   )
 }

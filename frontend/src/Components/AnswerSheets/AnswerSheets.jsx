@@ -7,7 +7,7 @@ import { useState } from 'react'
 function AnswerSheets({clicked, data}) {
   const classes = classnames('sidebar static max-sm:ml-16 pt-[80px]');
   const [show, setShow] = useState(false);
-
+  // console.log("DATA:"+data.id)
   const handleCKick = () => {
     setShow((prev)=>!prev);
     // console.log(show);
@@ -35,7 +35,7 @@ function AnswerSheets({clicked, data}) {
             <Table name={true} date={true} select={true} AnswerSheets={data}/>
         </div>
       ): ( 
-        "<DragDrop/>"
+        <DragDrop closeFunc={closeModal}>Marking Scheme</DragDrop>
       )}
       {show && <DragDrop closeFunc={closeModal}>Answer Sheets</DragDrop>}
     </div>
