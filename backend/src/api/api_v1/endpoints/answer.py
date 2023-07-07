@@ -95,7 +95,7 @@ async def save_answers(request: Request, paper_no, sub, stu):
           status_code=status.HTTP_201_CREATED
      )
 
-          
+
 @router.get('/compare/{markingSchemeId}', response_description="compare between question text and marking scheme then returns similarity")
 async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu: str):
      print("marking scheme id", markingSchemeId)
