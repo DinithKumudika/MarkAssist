@@ -6,7 +6,7 @@ from fastapi.encoders import jsonable_encoder
 from datetime import datetime
 
 from schemas.user import User
-from schemas.subject import Subject, SubjectYearsByCode,YearsListResponse, SubjectCreate 
+from schemas.subject import Subject, SubjectYearsByCode,YearsListResponse, SubjectCreate,GroupedSubject 
 from models.subject import SubjectModel
 from utils.auth import get_current_active_user
 
@@ -17,7 +17,7 @@ subject_model = SubjectModel()
 @router.get('/{user_id}', response_description="Get Subjects by user", response_model=List[Subject],status_code=status.HTTP_200_OK)
 async def get_subjects(request: Request, user_id:str, limit: Optional[int] = None):
      print('Called get_subjects function')
-     subjects = subject_model.list_subjects_by_user_id(request,user_id)
+     subjects = subject_model.list_subjects_by_user_id_distinct_subjectCode(request,user_id)
      
      if subjects:
           return subjects 

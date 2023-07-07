@@ -4,6 +4,7 @@ from bson.objectid import ObjectId
 from typing import Optional
 from config.database import Database
 from schemas.subject import Subject, SubjectCreate
+import itertools
 
 class SubjectModel():
      collection: str = "subjects"
@@ -17,6 +18,35 @@ class SubjectModel():
                subject["id"] = str(subject["_id"]) 
                subject["teacherId"] = str(subject["teacherId"]) 
           return subjects
+     
+     
+     # get subject by subjectCode and user id as a list
+     # def list_subjects_by_user_id(self, request: Request, user_id: str) -> list:
+     #      subjects = list(self.get_collection(request).find({'teacherId': user_id}))
+     #      subjects.sort(key=lambda x: x['subjectCode'])  # Sort the subjects by subject code
+     #      grouped_subjects = []
+     #      for subject_code, group in itertools.groupby(subjects, key=lambda x: x['subjectCode']):
+     #           subjects_list = list(group)
+     #           for subject in subjects_list:
+     #                subject["id"] = str(subject["_id"]) 
+     #                subject["teacherId"] = str(subject["teacherId"])
+     #           grouped_subjects.append({
+     #                "subjectCode": subject_code,
+     #                "subjects": subjects_list
+     #           })
+     #      return grouped_subjects
+
+     def list_subjects_by_user_id_distinct_subjectCode(self, request: Request, user_id: str) -> list:
+          subjects = self.get_collection(request).distinct("subjectCode", {"teacherId": user_id})
+          distinct_subjects = []
+          for subject in subjects:
+               subject_data = self.get_collection(request).find_one({"teacherId": user_id, "subjectCode": subject})
+               subject_data["id"] = str(subject_data["_id"])
+               subject_data["teacherId"] = str(subject_data["teacherId"])
+               distinct_subjects.append(subject_data)
+          return distinct_subjects
+
+     
      
      # get subject by subjectCode and user id as a list
      def get_subject_by_subjectCode_userId(self,request:Request,user_id:str, subjectCode:str) -> list:
