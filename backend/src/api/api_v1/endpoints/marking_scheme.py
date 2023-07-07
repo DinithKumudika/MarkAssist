@@ -8,7 +8,10 @@ from fastapi.responses import JSONResponse
 from typing import List
 from bson.objectid import ObjectId
 import httpx
-from datetime import datetime
+
+import cv2
+import numpy as np
+from google.cloud import vision
 
 import cv2
 import numpy as np
@@ -44,7 +47,7 @@ async def get_All(request: Request):
      )
      
      
-@router.post("/", response_description="Add a marking scheme", response_model = MarkingScheme, status_code= status.HTTP_201_CREATED)
+@router.post("/", response_description="upload a marking scheme", response_model = MarkingScheme, status_code= status.HTTP_201_CREATED)
 async def add_marking(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...) ):
      
      # get the subjectCode and subjectName using subjectId
@@ -53,12 +56,14 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
      if(subject):
           
           # check if there any current marking scheme for this subject
+          # TODO:update this query also to fit with a general find query
           current_marking = marking_scheme_model.get_marking_scheme_by_year_subjectId(request, int(year), subject['id'])
           print("This is current_marking",current_marking)
           
-          if current_marking: 
+          if current_marking:
+               #TODO:change update  
                marking_scheme_model.delete_by_subject(request, subjectId)
-               marking_model.delete_by_subject(request, subjectId)
+               marking_model.delete(request, "subjectId", subjectId)
           
           
           marking_url = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
@@ -246,13 +251,44 @@ async def download_paper(request: Request, scheme_id : str):
      )
      
      
-@router.put('/update', response_description="Update an existing marking scheme")
-async def update_marking(request:Request,file: UploadFile = File(...),subjectCode: str = Form(...),year: int = Form(...),subjectId: str = Form(...)):
-     pass
+# @router.put('/update/{subjectId}', response_description="Update an existing marking scheme questions", response_model=None)
+# async def update_marking(request: Request, subjectId: str, payload: Body()):
+#      pass
+#      updates = []
+#      for data in payload:
+#           updates.append(
+#                {
+#                     "filter": {"_id": ObjectId(data["id"]), "subjectId": subjectId}, 
+#                     "update": {
+#                          "$set": {
+#                               "questionNo": data["questionNo"], 
+#                               "subQuestionNo": data["subQuestionNo"],
+#                               "partNo": data["partNo"],
+#                               "noOfPoints": data["noOfPoints"],
+#                               "marks": data["marks"],
+#                               "selected": data["selected"]
+#                          }
+#                     }
+#                }
+#           )
+#      update_count = marking_model.update_multiple(request, updates)
+     
+#      if update_count:
+#           # TODO: return updated answer entries
+#           return JSONResponse(
+#                {
+#                     "detail": f"{update_count} answers updated"
+#                }, 
+#                status_code=status.HTTP_200_OK
+#           )
+#      raise HTTPException(
+#           status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+#           detail="update failed"
+#      )
 
 # get marking scheme by  subjectId
 @router.get("/{year}/{subjectId}", response_description="Get a marking scheme subjectId and year", response_model = MarkingScheme)
-async def get_by_subjectId_year(request:Request,year:int,subjectId:str):
+async def get_by_subjectId_year(request:Request, year:int, subjectId:str):
      insertedYear = int(year)
      subject_id = subjectId
      print(insertedYear,subject_id)

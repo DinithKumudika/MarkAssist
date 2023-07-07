@@ -10,15 +10,15 @@ function MarkingSchemeConfigure({clicked, data,subjectId}) {
   const handleFormSubmit = () => {
     // Submit the form data
     console.log(formData);
-    axios
-    .put(`http://127.0.0.1:8000/api_v1/markings/update/${subjectId}`,formData)
-    .then((response)=>{
-      console.log(response);
-    })
-    .catch((error) => {
-      console.error(error);
-      // Handle the error, e.g., display an error message to the user
-    });
+    // axios
+    // .put(`http://127.0.0.1:8000/api_v1/markings/update/${subjectId}`,formData)
+    // .then((response)=>{
+    //   console.log(response);
+    // })
+    // .catch((error) => {
+    //   console.error(error);
+    //   // Handle the error, e.g., display an error message to the user
+    // });
   };
 
   const handleFormChange = (index, childFormData) => {

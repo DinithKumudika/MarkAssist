@@ -16,6 +16,7 @@ function MarksPage() {
   const [marks,setMarks] = useState([]);
   const [answers,setAnswers] = useState([]);
   const [markings,setMarkings] = useState([]);
+  const [markingschemeID,setmarkingschemeID] = useState("");
 
   useEffect(()=>{
     // console.log("DATA:");
@@ -30,25 +31,42 @@ function MarksPage() {
       setAnswers(answer)
       // console.log("Answers:",answer)
       // Process the response data or update your React component state
+      axios
+      .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${subjectId}`)
+      .then((response)=>{
+        const marking = response.data
+        setMarkings(marking)
+        // console.log("Markasdfghings:",marking[0].markingScheme)
+        // setmarkingschemeID(marking[0].markingScheme) 
+        axios
+        .get(`http://127.0.0.1:8000/api_v1/answers/compare/${marking[0].markingScheme}?sub=${subjectId}&stu=${answers[0].userId}`)
+        .then((response)=>{
+          const marks = response.data
+          // setMarkings(marking)
+          // markingschemeID = marking[0].markingScheme
+          console.log("Markkkkkkssssss:",marks)
+
+        })
+        .catch((error) => {
+          console.error(error);
+          // setMarks(null)
+          // Handle the error, e.g., display an error message to the user
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        setMarks(null)
+        // Handle the error, e.g., display an error message to the user
+      });
     })
     .catch((error) => {
       console.error(error);
       setAnswers(null)
       // Handle the error, e.g., display an error message to the user
     });
-    axios
-    .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${subjectId}`)
-    .then((response)=>{
-      const marking = response.data
-      setMarkings(marking)
-      // console.log("Markings:",marking)
-
-    })
-    .catch((error) => {
-      console.error(error);
-      setMarks(null)
-      // Handle the error, e.g., display an error message to the user
-    });
+    
+    // console.log("Markingsss:",answers)
+    
   }
 
   // const fetchData = async () => {

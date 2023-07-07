@@ -13,17 +13,18 @@ class Marking(BaseModel):
      uploadUrl: str
      markingScheme: str
      selected: bool
+
      
-     # class Config:
-     #      schema_extra = {
-     #           "example": {
-     #                "firstName": "Dinith",
-     #                "lastName": "Kumudika",
-     #                "email": "dinith1999@gmail.com",
-     #                "studentIndex": "20020597",
-     #                "isDeleted": False
-     #           }
-     #      }
+     class Config:
+          schema_extra = {
+               "example": {
+                    "firstName": "Dinith",
+                    "lastName": "Kumudika",
+                    "email": "dinith1999@gmail.com",
+                    "studentIndex": "20020597",
+                    "isDeleted": False
+               }
+          }
 
 class MarkingCreate(BaseModel):
      subjectId: str

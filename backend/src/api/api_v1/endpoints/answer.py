@@ -98,6 +98,9 @@ async def save_answers(request: Request, paper_no, sub, stu):
           
 @router.get('/compare/{markingSchemeId}', response_description="compare between question text and marking scheme then returns similarity")
 async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu: str):
+     print("marking scheme id", markingSchemeId)
+     print("student id", stu)
+     print("sub id", sub)
      answers_by_student = answer_model.get_by_subject_student(request, stu, sub)
      # sorting student answers by question no's
      answers_by_student = sorted(answers_by_student, key=lambda x:int(x["questionNo"]))
@@ -106,12 +109,15 @@ async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu:
      # sorting marking scheme answers by question no's
      markings_by_scheme_id = sorted(markings_by_scheme_id, key=lambda x:int(x["questionNo"]))
      
-     print("no of student answers",len(answers_by_student))
-     print("no of marking answers", len(markings_by_scheme_id))
+     # print("no of student answers",answers_by_student)
+     # print("no of marking answers", markings_by_scheme_id)
      
      percentages = []
      for i, el in enumerate(answers_by_student):
+          print("student answer", i+1, ":", answers_by_student[i]["text"])
+          print("Marking answer", i+1, ":", markings_by_scheme_id[i]["text"])
           percentage = text_similarity(markings_by_scheme_id[i]["text"], answers_by_student[i]["text"])
+          print("Percentage:",percentage)
           percentages.append({
                "question": i+1, 
                "percentage": percentage.split(": ")[-1]
