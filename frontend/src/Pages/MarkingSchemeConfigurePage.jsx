@@ -12,7 +12,7 @@ function MarkingSchemeConfigurePage() {
   }
   const {markingschemeId,subjectId} = useParams();
   const user_id=allItems['user_id'];
-  const [isClicked,setClick] = useState("outer");
+  const [isClicked,setClick] = useState("inner");
   const [markings,setMarkings] = useState([]);
 
   useEffect(()=>{

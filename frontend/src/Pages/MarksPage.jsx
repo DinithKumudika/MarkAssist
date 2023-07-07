@@ -12,7 +12,7 @@ function MarksPage() {
   }
   const user_id=allItems['user_id'];
   const { year,subjectId,paperId} = useParams()
-  const [isClicked,setClick] = useState("outer");
+  const [isClicked,setClick] = useState("inner");
   const [marks,setMarks] = useState([]);
   const [answers,setAnswers] = useState([]);
   const [markings,setMarkings] = useState([]);

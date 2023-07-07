@@ -12,7 +12,7 @@ function YearsPage() {
     window.location.href="/";
   }
   const user_id=allItems['user_id'];
-  const [isClicked,setClick] = useState("outer");
+  const [isClicked,setClick] = useState("inner");
   const [years,setYears] = useState([]);
   useEffect(()=>{
     fetchYears();
