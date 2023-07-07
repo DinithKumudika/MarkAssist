@@ -1,8 +1,8 @@
 import classnames from 'classnames'
 import { useState } from 'react'
 import { AiFillEye ,AiFillEyeInvisible } from "react-icons/ai";
-function MakingSchemeConfigureBox({ index, formData, onChange}) {
-    const [showImages, setShowImages] = useState(false);
+function MakingSchemeConfigureBox({ index, formData, onChange,showImages}) {
+    const [showImage, setShowImages] = useState(false);
     const handleIconClick = () => {
       setShowImages((prev) => !prev);
     };
@@ -37,10 +37,14 @@ function MakingSchemeConfigureBox({ index, formData, onChange}) {
       <div className=" bg-[#D4D4D4] rounded-lg flex flex-row max-sm:flex-col">
         <div className="flex flex-row  px-2 rounded-lg p-4 basis-4/5 bg-[#EDEDED] h-auto">
           <div className='basis-[95%]'>
-             {showImages && <img  className="border-2 border-gray-500 w-fit h-full z-10" src={formData.uploadUrl} alt="Marking scheme"/>}
+              <p className="border border-gray-500 p-2 mb-1 mr-1">{formData.text}</p>
+             {showImages ? <img  className="w-full h-fit " src={formData.uploadUrl} alt="Marking scheme"/>
+                : showImage && <img  className="w-full h-fit " src={formData.uploadUrl} alt="Marking scheme"/>}
           </div>
           <div className='basis-[5%]'>
-            {showImages ? <AiFillEye onClick={handleIconClick} className='border-2 border-gray-500 text-2xl z-auto'/> : <AiFillEyeInvisible className=' text-2xl border-2 border-gray-500 z-auto' onClick={handleIconClick}/>}
+            {showImages ? <AiFillEye onClick={handleIconClick} className='hover:cursor-pointer border-2 border-gray-500 text-4xl z-auto'/> 
+              : showImage ?<AiFillEye onClick={handleIconClick} className='hover:cursor-pointer border-2 border-gray-500 text-4xl z-auto'/> 
+                  : <AiFillEyeInvisible className='hover:cursor-pointer text-4xl border-2 border-gray-500 z-auto' onClick={handleIconClick}/>}
           </div>
         </div>
         <div className=" py-4 flex flex-col justify-between basis-[20%] items-center px-2 max-md:flex-col max-md:items-center">

@@ -6,7 +6,7 @@ import { Link ,useLocation, useParams } from 'react-router-dom';
 import axios from 'axios'
 import Button from '../Button';
 import SubmitButton from '../SubmitButton';
-function SubjectAddBox({closeFunc}) {
+function SubjectAddBox({closeFunc,teachers}) {
     
     const currentYear = new Date().getFullYear();
 
@@ -15,16 +15,17 @@ function SubjectAddBox({closeFunc}) {
         subjectCode: '',
         subjectStream: 'IS',
         subjectName: '',
-        subjectYear: `${currentYear-1}/${currentYear}`,
+        year: `${currentYear}`,
         assignmentMarks: '',
         semester: 1,
+        academicYear: 1,
         paperMarks: '',
-        editingTeacher: 'saman',
-        nonEditingTeacher: 'saman',
+        editingTeacher: `${teachers[0].id}`,
+        nonEditingTeacher: `${teachers[0].id}`,
 
     });
 
-    const { subjectCode, subjectStream , subjectName, subjectYear, assignmentMarks, semester, paperMarks, editingTeacher, nonEditingTeacher } = formData;
+    const { subjectCode, subjectStream , subjectName, year, assignmentMarks, semester, academicYear, paperMarks, editingTeacher, nonEditingTeacher } = formData;
 
     const handleSelectChange = (event) =>{
         setFormData((prevState)=>({
@@ -46,7 +47,7 @@ function SubjectAddBox({closeFunc}) {
     const handleSubmit = async (event)=>{
         event.preventDefault();
         // console.log(formData);
-        if(!formData.subjectCode || !formData.subjectStream || !formData.subjectName || !formData.subjectYear || !formData.assignmentMarks || !formData.semester || !formData.paperMarks || !formData.editingTeacher || !formData.nonEditingTeacher){
+        if(!formData.subjectCode || !formData.subjectStream || !formData.subjectName || !formData.year || !formData.assignmentMarks || !formData.semester || !formData.paperMarks || !formData.editingTeacher || !formData.nonEditingTeacher){
             setError("Please fill all the fields");
             console.log("error");
             return;
@@ -58,14 +59,25 @@ function SubjectAddBox({closeFunc}) {
         formdata.append('subjectCode', formData.subjectCode);
         formdata.append('subjectStream', formData.subjectStream);
         formdata.append('subjectName', formData.subjectName);
-        formdata.append('subjectYear', formData.subjectYear);
+        formdata.append('year', formData.year);
         formdata.append('semester', formData.semester);
         formdata.append('assignmentMarks', formData.assignmentMarks);
         formdata.append('paperMarks', formData.paperMarks);
         formdata.append('editingTeacher', formData.editingTeacher);
         formdata.append('nonEditingTeacher', formData.nonEditingTeacher);
+
+        console.log("formdata:",formData);
+        axios
+        .post(`http://127.0.0.1:8000/api_v1/subjects`,formdata)
+        .then((response)=>{
+            console.log(response);
+        })
+        .catch((error) => {
+            console.error(error);
+            // Handle the error, e.g., display an error message to the user
+        });
         // try{
-        //     // const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/token',formdata);
+        //     // const response = await axios.post('http://127.0.0.1:8000/api_v1/subjects',formdata);
            
         //     // navigate('/subjects');
         // }catch(error){
@@ -76,6 +88,10 @@ function SubjectAddBox({closeFunc}) {
         //     }
         // }
     }
+
+    const teacher = teachers.map((teacher,index)=>{
+        return <option key={index} value={teacher.id} className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>{teacher.title}.{teacher.firstName} {teacher.lastName}</option>
+    })
 
     return ReactDOM.createPortal(
         <div className='w-[95%]'>
@@ -104,7 +120,7 @@ function SubjectAddBox({closeFunc}) {
                                       <option value="SCS" className='text-bold items-center w-[15%] h-8 text-center shadow shadow-gray-500 rounded '>SCS</option>
                                       <option value="CS" className='text-bold items-center w-[15%] h-8 text-center shadow shadow-gray-500 rounded '>CS</option>
                                     </select>
-                                    <input type="text" value={subjectCode}  onChange={onChange} name="subjectCode" placeholder="SCS2213" className='ml-[1%] w-[49%] h-8  p-2 shadow shadow-gray-500 rounded'/>
+                                    <input type="text" value={subjectCode}  onChange={onChange} name="subjectCode" placeholder="2213" className='ml-[1%] w-[49%] h-8  p-2 shadow shadow-gray-500 rounded'/>
                                 </div>
                                 <div className='max-md:mr-0 max-md:w-[85%] mr-8 w-[45%] flex flex-row items-center mb-8'>
                                     <label className='mr-4 font-sans w-24 max-md:w-36'>Subject Year</label>
@@ -139,6 +155,18 @@ function SubjectAddBox({closeFunc}) {
                                     <input type="text" value={paperMarks} onChange={onChange} name="paperMarks" placeholder="70" className='w-[65%] h-8  p-2 shadow shadow-gray-500 rounded'/>
                                 </div>
                             </div>
+                            <div className='flex flex-row items-center justify-between max-md:flex-col '>
+                                <div className='max-md:ml-0 max-md:w-[85%] ml-8 w-[45%] flex flex-row items-center mb-8 '>
+                                    <label className='mr-4 font-sans w-36'>Academic Year</label>
+                                    {/* <input type="text" value={academicYear} onChange={onChange} name="academicYear" placeholder="30" className='w-[65%] h-8  p-2 shadow shadow-gray-500 rounded'/> */}
+                                    <select name='academicYear' className='items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded ' value={academicYear} onChange={handleSelectChange}>
+                                      <option value="1" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>1</option>
+                                      <option value="2" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>2</option>
+                                      <option value="3" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>3</option>
+                                      <option value="4" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>4</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                 </div>
                 <div className='w-full'>
@@ -149,15 +177,13 @@ function SubjectAddBox({closeFunc}) {
                                 <div className='max-md:w-[85%] w-[50%] flex flex-row items-center mb-8 justify-between max-md:justify-start'>
                                     <label className='mr-4 font-sans w-36'>Editing Teacher</label>
                                     <select name="editingTeacher" className='items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded ' value={editingTeacher} onChange={handleSelectChange}>
-                                      <option value="saman" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>Saman Kumara</option>
-                                      <option value="kapila" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>Kapila Senadheera</option>
+                                      {teacher}
                                     </select>
                                 </div>
                                 <div className='max-md:w-[85%] w-[50%] flex flex-row items-center mb-8 justify-between max-md:justify-start'>
                                     <label className='mr-4 font-sans w-36'>Non Editing Teacher</label>
                                     <select name="nonEditingTeacher" className='items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded ' value={nonEditingTeacher} onChange={handleSelectChange}>
-                                      <option value="saman" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>Saman Kumara</option>
-                                      <option value="kapila" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>Kapila Senadheera</option>
+                                      {teacher}
                                     </select>
                                 </div>
                                 {/* <Button classNames="text-center w-[50%]">Add Controller</Button> */}

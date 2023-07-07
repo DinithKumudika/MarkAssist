@@ -250,24 +250,26 @@ async def download_paper(request: Request, scheme_id : str):
 # TODO: fix this route 
 @router.put('/update/{subjectId}', response_description="Update an existing marking scheme questions")
 async def update_marking(request: Request, subjectId: str, payload: List[MarkingUpdate] = Body()):
+     print("SubjectID:",subjectId)
      updates = []
      for data in payload:
-          print(data)
-          updates.append(
-               {
-                    "filter": {"_id": ObjectId(data.id), "subjectId": subjectId}, 
-                    "update": {
-                         "$set": {
-                              "questionNo": data.questionNo, 
-                              "subQuestionNo": data.subQuestionNo,
-                              "partNo": data.partNo,
-                              "noOfPoints": data.noOfPoints,
-                              "marks": data.marks,
-                              "selected": data.selected
+          print("datassss:",data)
+          if data is not None:
+               updates.append(
+                    {
+                         "filter": {"_id": ObjectId(data.id), "subjectId": subjectId}, 
+                         "update": {
+                              "$set": {
+                                   "questionNo": data.questionNo, 
+                                   "subQuestionNo": data.subQuestionNo,
+                                   "partNo": data.partNo,
+                                   "noOfPoints": data.noOfPoints,
+                                   "marks": data.marks,
+                                   "selected": data.selected
+                              }
                          }
                     }
-               }
-          )
+               )
      update_count = marking_model.update_multiple(request, updates)
      
      if update_count:

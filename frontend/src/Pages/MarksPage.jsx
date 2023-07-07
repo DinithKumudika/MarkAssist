@@ -37,9 +37,10 @@ function MarksPage() {
         const marking = response.data
         setMarkings(marking)
         // console.log("Markasdfghings:",marking[0].markingScheme)
+        console.log("Markasdfghings:",answers)
         // setmarkingschemeID(marking[0].markingScheme) 
         axios
-        .get(`http://127.0.0.1:8000/api_v1/answers/compare/${marking[0].markingScheme}?sub=${subjectId}&stu=${answers[0].userId}`)
+        .get(`http://127.0.0.1:8000/api_v1/answers/compare/${marking[0].markingScheme}?sub=${subjectId}&stu=${answer[0].userId}`)
         .then((response)=>{
           const marks = response.data
           // setMarkings(marking)

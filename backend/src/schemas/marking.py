@@ -5,6 +5,10 @@ class Marking(BaseModel):
      id: str
      subjectId: str
      questionNo: str
+     subQuestionNo: str
+     partNo: str
+     noOfPoints: str
+     marks: str
      text: str
      uploadUrl: str
      markingScheme: str

@@ -1,9 +1,10 @@
 import classnames from 'classnames';
 import SubjectBox from './SubjectBox';
 import {Link, useLocation} from 'react-router-dom';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import SubjectAddBox from './SubjectAddBox';
 import Button from '../Button';
+import axios from 'axios';
 function Subjects({clicked,data}) {
   const length = data.length;
   const allItems=JSON.parse(localStorage.getItem('tokenData'));
@@ -20,6 +21,7 @@ function Subjects({clicked,data}) {
   // console.log(pathName[0]);
 
   const [show, setShow] = useState(false);
+  const [teachers,setTeachers] = useState([]);
   const handleClick = (e) => {
     e.preventDefault();
     setShow((prev)=>!prev);
@@ -29,6 +31,18 @@ function Subjects({clicked,data}) {
   const closeModal = () =>{
     setShow(false);
   }
+
+  useEffect(()=>{
+    // Get all the teachers list
+    axios
+    .get(`http://127.0.0.1:8000/api_v1/admins/teachers`)
+    .then((response) => {
+      const data = response.data
+      setTeachers(data)
+      console.log("Teachers:",data)
+      // Process the response data or update your React component state
+    })
+  },[])
 
   const subjects = data.map((subject,index)=>{
     // console.log(subject);
@@ -58,7 +72,7 @@ function Subjects({clicked,data}) {
             </div>
           </div>
       </div>
-      {show && <SubjectAddBox closeFunc={closeModal}/>}
+      {show && <SubjectAddBox closeFunc={closeModal} teachers={teachers}/>}
     </div>
   )
 }
