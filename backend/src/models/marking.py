@@ -64,6 +64,16 @@ class MarkingModel():
      def delete_single(self, request: Request, field: str, value: str):
           if field == "_id":
                deleted_marking = self.get_collection(request).delete_one({field: ObjectId(value)})
+          if updated_schemes:
+               if updated_schemes.matched_count == updated_schemes.modified_count:
+                    return updated_schemes.modified_count
+               else:
+                    return False
+          return False
+     
+     def delete_single(self, request: Request, field: str, value: str):
+          if field == "_id":
+               deleted_marking = self.get_collection(request).delete_one({field: ObjectId(value)})
           else:
                deleted_marking = self.get_collection(request).delete_one({field: value})
           

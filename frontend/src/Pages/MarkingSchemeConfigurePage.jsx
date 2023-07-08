@@ -12,7 +12,7 @@ function MarkingSchemeConfigurePage() {
   }
   const {markingschemeId,subjectId} = useParams();
   const user_id=allItems['user_id'];
-  const [isClicked,setClick] = useState("outer");
+  const [isClicked,setClick] = useState("inner");
   const [markings,setMarkings] = useState([]);
 
   useEffect(()=>{
@@ -53,7 +53,7 @@ function MarkingSchemeConfigurePage() {
     <div>
       <NavBar />
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
-      <MarkingSchemeConfigure clicked={isClicked} data={markings}/>
+      <MarkingSchemeConfigure clicked={isClicked} data={markings} subjectId={subjectId}/>
       
     </div>
   )

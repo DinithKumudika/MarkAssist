@@ -13,7 +13,7 @@ function SubjectsPage() {
   const user_id=allItems['user_id'];
   const userType = allItems['user_role'];
   const accessToken = localStorage.getItem('accessToken')
-  const [isClicked,setClick] = useState("outer");
+  const [isClicked,setClick] = useState("inner");
   const [subjects,setSubjects] = useState([]);
 
   useEffect(()=>{

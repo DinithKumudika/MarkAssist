@@ -4,10 +4,11 @@ from datetime import datetime
 
 class Subject(BaseModel):
     id: str
+    subjectStream:str
     subjectCode:str
     subjectName:str
     year:int
-    teacherId:str
+    # teacherId:str
     semester:int
     academicYear:int
     assignmentMarks:int
@@ -20,10 +21,11 @@ class Subject(BaseModel):
         schema_extra = {
         "example": {
             "id": "64882f6c32d15c1d89f06cdf",
+            "subjectStream":"SCS",
             "subjectCode": "SCS2213",
             "subjectName":"DSA",
             "year": 2022,
-            "teacherId": "64873b4029eb156b34979ab0",
+            # "teacherId": "64873b4029eb156b34979ab0",
             "semester":2 ,
             "academicYear":2,
             "assignmentMarks":30,
@@ -42,6 +44,12 @@ class SubjectYearsByCode(BaseModel):
             "year": 2022,
         }
     }
+
+class GroupedSubject(BaseModel):
+    subjectCode:str
+    subjects: List[Subject]
+    
+    
 
 # Add a new class for the response model
 class YearsListResponse(BaseModel):
@@ -66,10 +74,11 @@ class SubjectCreate(BaseModel):
     class Config:
         schema_extra = {
         "example": {
+            "subjectStream":"SCS",
             "subjectCode": "SCS2213",
             "subjectName":"DSA",
             "year": 2022,
-            "teacherId": "64873b4029eb156b34979ab0",
+            # "teacherId": "64873b4029eb156b34979ab0",
             "semester":2 ,
             "academicYear":2,
             "assignmentMarks":30,

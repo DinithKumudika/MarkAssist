@@ -11,7 +11,7 @@ function AnswerSheetsPage() {
     window.location.href="/";
   }
   const user_id=allItems['user_id'];
-  const [isClicked,setClick] = useState("outer");
+  const [isClicked,setClick] = useState("inner");
   const [answerSheet,setAnswerSheet] = useState([]);
 
   const name=`${subjectId}---- ${year} ---Marking Scheme`

@@ -2,16 +2,27 @@ import classnames from 'classnames'
 import { AiOutlinePlus } from "react-icons/ai";
 import { BiFilter } from "react-icons/bi";
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import MakingSchemeConfigureBox from './MakingSchemeConfigureBox'
+import Button from '../Button';
 import axios from 'axios'
 function MarkingSchemeConfigure({clicked, data,subjectId}) {
   const [formData, setFormData] = useState([]);
+  const navigate = useNavigate();
+  const handleClose = () => {
+    navigate(-1);
+  };
+
+  const [showImages, setShowImages] = useState(false);
+  const handleIconClick = () => {
+    setShowImages((prev) => !prev);
+  };
 
   const handleFormSubmit = () => {
     // Submit the form data
     console.log(formData);
     axios
-    .put(`http://127.0.0.1:8000/api_v1/markings/update/${subjectId}`,formData)
+    .put(`http://127.0.0.1:8000/api_v1/markings/update/${subjectId}`,data)
     .then((response)=>{
       console.log(response);
     })
@@ -41,6 +52,7 @@ function MarkingSchemeConfigure({clicked, data,subjectId}) {
         index={index}
         formData={marking}
         onChange={handleFormChange}
+        showImages={showImages}
       />
     ));
   }
@@ -53,12 +65,19 @@ function MarkingSchemeConfigure({clicked, data,subjectId}) {
             <div className='mb-12 text-center  w-full'>
               <p className='text-xl font-bold text-custom-blue-3'>Marking scheme</p>
               <p className='text-lg text-black opacity-80 text-center'>Check your marcking scheme and deselect the unnecessary answers</p>
+              {
+                showImages ? <Button onClick={handleIconClick} classNames="w-24 text-center bg-custom-blue-2 absolute left-[85%] mt-2">Hide All</Button>
+                : <Button onClick={handleIconClick} classNames="w-24 text-center bg-custom-blue-2 absolute left-[85%] mt-2">View All</Button>
+              }
+
             </div>
             {/* <MakingSchemeConfigureBox key="1" index="1" formData={data1} onChange={handleFormChange}/> */}
             {markings}
         </div>
         <div className='w-full flex justify-center'>
-            <button onClick={handleFormSubmit}className='rounded-[5px] w-52 bg-[#4457FF] text-white font-bold p-1 px-4 cursor-pointer ' >Submit</button>
+            {/* <button onClick={handleFormSubmit}className='rounded-[5px] w-52 bg-[#4457FF] text-white font-bold p-1 px-4 cursor-pointer ' >Submit</button> */}
+            <Button onClick={handleFormSubmit} classNames="bg-custom-blue-2 mb-2 mr-2">Submit</Button>
+            <Button onClick={handleClose} classNames="bg-custom-blue-2 mb-2">Cancel</Button>
         </div>
     </div>
   )

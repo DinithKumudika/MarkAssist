@@ -12,7 +12,7 @@ function MarkingSchemesPage() {
     window.location.href="/";
   }
   const user_id=allItems['user_id'];
-  const [isClicked,setClick] = useState("outer");
+  const [isClicked,setClick] = useState("inner");
   const [markingScheme,setMarkingScheme] = useState({});
   
   const name=`${subjectId}---- ${year} ---Marking Scheme`
