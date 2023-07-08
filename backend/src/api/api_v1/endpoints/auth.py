@@ -58,3 +58,32 @@ async def register(request: Request, payload: UserCreate = Body()) -> User:
           status_code=status.HTTP_400_BAD_REQUEST, 
           detail="couldn't create new user"
      )
+
+
+@router.get('/logout', response_description="logout user")
+async def logout():
+     pass
+
+
+@router.post('/validate-email')
+async def validate_email(request: Request, payload: str):
+     pass
+
+
+@router.post('/accountVerification')
+async def send_verification_email(to:str):
+     print("Working 1")
+     try:
+          # send_email_verification_email(to)
+          print("Working 2")
+          return JSONResponse(
+               {'status': 'email sent'}, 
+               status_code=status.HTTP_200_OK
+          )
+     except:
+          return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@router.get('/verify-email/{token}', response_description="verify email")
+async def verify_email(request: Request, token: str):
+     pass
