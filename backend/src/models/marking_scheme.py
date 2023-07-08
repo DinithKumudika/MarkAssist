@@ -89,18 +89,14 @@ class MarkingSchemeModel():
                return updated_marking
           return None
      
-     def delete(self, request: Request, schemeId: str):
-          self.get_collection(request).delete_one({"_id": ObjectId(schemeId)})
-          deleted_scheme = self.get_collection(request).find_one({"_id": ObjectId(schemeId)})
-          
-          if deleted_scheme:
-               return False
+     def delete_single(self, request: Request, field: str, value: str):
+          if(field == "_id"):
+               self.get_collection(request).delete_one({field: ObjectId(value)})
+               deleted_scheme = self.get_collection(request).find_one({field: ObjectId(value)})
           else:
-               return True
-     
-     def delete_by_subject(self, request: Request, subjectId: str):
-          self.get_collection(request).delete_one({"subjectId": subjectId})
-          deleted_scheme = self.get_collection(request).find_one({"subjectId": subjectId})
+               self.get_collection(request).delete_one({field: value})
+               deleted_scheme = self.get_collection(request).find_one({field: value})
+          
           
           if deleted_scheme:
                return False

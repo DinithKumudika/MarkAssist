@@ -17,4 +17,7 @@ class AnswerCreate(BaseModel):
      questionNo: str
      text: str
      uploadUrl: str
+     
+class AnswerUpdate(BaseModel):
+     pass
 

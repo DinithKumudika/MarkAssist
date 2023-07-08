@@ -58,8 +58,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
           print("This is current_marking",current_marking)
           
           if current_marking:
-               #TODO:change update  
-               marking_scheme_model.delete_by_subject(request, subjectId)
+               marking_scheme_model.delete_single(request, "subjectId", subjectId)
                marking_model.delete(request, "subjectId", subjectId)
           
           
@@ -247,7 +246,6 @@ async def download_paper(request: Request, scheme_id : str):
           detail=f"There is no paper with the id of{scheme_id}"
      )
      
-# TODO: fix this route 
 @router.put('/update/{subjectId}', response_description="Update an existing marking scheme questions")
 async def update_marking(request: Request, subjectId: str, payload: List[MarkingUpdate] = Body()):
      updates = []

@@ -121,3 +121,8 @@ async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu:
           },
           status_code=status.HTTP_200_OK
      )
+     
+     
+@router.post('/similarity/{answerId}')
+async def save_similarity_percentage(request: Request):
+     pass
