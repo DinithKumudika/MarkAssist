@@ -3,6 +3,7 @@ from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
+from utils.mails import send_email_verification_email
 
 from models.user import UserModel
 from schemas.user import User, UserCreate
@@ -72,15 +73,16 @@ async def validate_email(request: Request, payload: str):
 
 @router.post('/accountVerification')
 async def send_verification_email(to:str):
-     print("Working 1")
      try:
-          # send_email_verification_email(to)
-          print("Working 2")
+          url = "http://localhost:5000/complete-account"
+          name = "Dinith"
+          send_email_verification_email(to, name=name, url=url)
           return JSONResponse(
                {'status': 'email sent'}, 
                status_code=status.HTTP_200_OK
           )
-     except:
+     except Exception as e:
+          print(str(e))
           return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

@@ -19,3 +19,13 @@ https://medium.com/analytics-vidhya/semantic-search-engine-using-nlp-cec19e8cfa7
 https://www.pinecone.io/learn/vector-embeddings
 
 https://www.freecodecamp.org/news/rest-api-design-best-practices-build-a-rest-api/
+
+https://codevoweb.com/restful-api-with-python-fastapi-access-and-refresh-tokens/
+
+https://www.mlexpert.io/prompt-engineering/what-is-a-prompt
+
+https://colab.research.google.com/drive/1-OYccyTvmfa3r7cAquw8sioFFPJcn4R9?usp=sharing
+
+https://towardsdatascience.com/sentiment-analysis-concept-analysis-and-applications-6c94d6f58c17
+
+https://towardsdatascience.com/sentence-transformer-fine-tuning-setfit-outperforms-gpt-3-on-few-shot-text-classification-while-d9a3788f0b4e
