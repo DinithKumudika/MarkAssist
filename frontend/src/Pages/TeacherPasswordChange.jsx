@@ -76,28 +76,33 @@ function Login(){
 
 
     return (
-        <div className="flex items-center justify-center h-full">
-            <div className="flex flex-col items-center px-10 py-10 rounded-sm shadow shadow-gray-400 w-96 h-fit">
+        <div className="flex items-center justify-center h-full bg-sky-100">
+            <div className="flex flex-col items-center h-screen px-10 py-10 rounded-sm shadow shadow-gray-600 w-96 bg-sky-50">
                 <div className="w-5/12 mt-10 mb-10"><img src={Logo} alt="Logo"/></div>
                 <div className="flex items-center w-3/4 rounded-sm shadow shadow-gray-300">
-                    <button className="flex items-center justify-center p-1" onClick={handleClick}><FcGoogle className=" text-xl mx-3.5"/>
-                    Continue with Google</button>
+                    {/* <button className="flex items-center justify-center p-1" onClick={handleClick}><FcGoogle className=" text-xl mx-3.5"/>
+                    Continue with Google</button> */}
                 </div>
-                <div className="w-full my-5" style={{ display: 'flex', alignItems: 'center' }}>
-                    <div style={{ flex: '1', borderTop: '1px solid black' }}></div>
+                <div className="items-center justify-center w-full my-16 font-semibold " style={{ display: 'flex', alignItems: 'center' }}>
+                    {/* <div style={{ flex: '1', borderTop: '1px solid black' }}></div>
                     <span style={{ margin: '0 10px' }}>or</span>
-                    <div style={{ flex: '1', borderTop: '1px solid black' }}></div>
+                    <div style={{ flex: '1', borderTop: '1px solid black' }}></div> */}
+                    <span style={{ margin: '0 10px' }}>Enter New Password</span>
                 </div>
                 <div className="w-full">
                     <form className="flex flex-col items-center justify-center w-full" onSubmit={handleSubmit}>
-                        {error && <div className="w-full p-2 mb-2 mb-6 text-sm text-center text-white bg-red-500 rounded">{error}</div>}
-                        <input className={classes} name="username" type="email" value={username} placeholder="E-mail address" onChange={onChange}/>
-                        <input className={classes} name="password" type="password" value={password} placeholder="Confirm password" onChange={onChange}/>
-                        <SubmitButton type="submit">Continue</SubmitButton>
+                        {error && <div className="w-full p-2 mb-6 text-sm text-center text-white bg-red-500 rounded">{error}</div>}
+                        <div className="flex flex-col w-full pb-4 font-light items-right justify-right">Enter new Password
+                            <input className={classes} name="password" type="password" value={username}  onChange={onChange}/>
+                        </div>
+                        <div className="flex flex-col w-full pb-10 font-light justify-right items-right">Confirm new Password
+                            <input className={classes} name="password" type="password" value={password} onChange={onChange}/>
+                        </div>
+                        <SubmitButton type="submit">Change Password</SubmitButton>
                     </form>
                 </div>
-                <div className="text-sm text-slate-500 mt-7">Don't have an account?</div>
-                <div className="mt-2 text-sm text-cyan-600"><Link to="/register">Create account</Link></div>
+                {/* <div className="text-sm text-slate-500 mt-7">Don't have an account?</div>
+                <div className="mt-2 text-sm text-cyan-600"><Link to="/register">Create account</Link></div> */}
             </div>
         </div>
     )
