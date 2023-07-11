@@ -1,12 +1,12 @@
 import React from 'react'
-import QuestionCompo from '../Components/QuestionCompo'
+import QuestionCompo2 from '../Components/QuestionCompo2'
 import ConfigureCompo from '../Components/ConfigureCompo'
 
 function ConfigureMarks() {
   return (
     <div>
       <ConfigureCompo />
-      <QuestionCompo />
+      <QuestionCompo2 />
     </div>
   )
 }
