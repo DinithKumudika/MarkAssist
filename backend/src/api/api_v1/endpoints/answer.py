@@ -123,7 +123,12 @@ async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu:
                "percentage": percentage.split(": ")[-1]
           })
      return JSONResponse({
-          "similarity percentages": percentages
+               "similarity percentages": percentages
           },
           status_code=status.HTTP_200_OK
      )
+     
+     
+@router.post('/similarity/{answerId}')
+async def save_similarity_percentage(request: Request):
+     pass

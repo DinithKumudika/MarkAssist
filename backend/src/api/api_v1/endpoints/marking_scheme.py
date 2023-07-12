@@ -58,8 +58,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
           print("This is current_marking",current_marking)
           
           if current_marking:
-               #TODO:change update  
-               marking_scheme_model.delete_by_subject(request, subjectId)
+               marking_scheme_model.delete_single(request, "subjectId", subjectId)
                marking_model.delete(request, "subjectId", subjectId)
           
           
@@ -91,9 +90,9 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     images = helpers.convert_to_images(save_path, dir_path)
                     answers = []
                     answer_count = 0
-                    # identify answer areas of marking scheme
+                    keywords_count = 0
                     
-                    # identify answer areas of marking scheme
+                    # identify answer areas and keyword areas of marking scheme
                     for img_idx,image in enumerate(images):
                          src_image = cv2.imread(image)
                          screen_width = helpers.get_screen_width()
@@ -110,67 +109,100 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                               approx = cv2.approxPolyDP(contour, epsilon, True)
                               x, y, w, h = cv2.boundingRect(approx)
                               aspect_ratio = w / h
+                              
+                              questions_on_page = answers[img_idx]["questions"]
+                              
+                              question = {}
                
                               if aspect_ratio > 1 and w > 50 and h > 20 and cv2.contourArea(contour) > 100:
-                                   if w > 700:
+                                   if w > 700 and h > 100:
                                         cropped_answer = sized_image[y:y+h, x:x+w]
-                                        questions_on_page = answers[img_idx]["questions"]
-                                        questions_on_page.append({
-                                             "answer": cropped_answer
-                                        })
+                                        question["answer"] = cropped_answer
                                         answer_count += 1
+                                        
+                                   elif w > 700 and h <= 100:
+                                        cropped_keywords = sized_image[y:y+h, x:x+w]
+                                        question["keywords"] = cropped_keywords
+                                        keywords_count += 1
+                                   
+                                   questions_on_page.append(question)     
                     save_path = os.path.join("../data/markings", marking_id)
+                    answer_path = os.path.join(save_path, "answers")
+                    keyword_path = os.path.join(save_path, "keywords")
+                    
                     os.mkdir(save_path)
+                    os.mkdir(answer_path)
+                    os.mkdir(keyword_path)
+                    
                     for page in answers:
                          # print(page)
                          questions = page["questions"]
                          # print(questions)
                          questions.reverse()
                          for i, question in enumerate(questions):
-                              cv2.imwrite(f"{save_path}/{page['img_no']}_{i+1}.jpg", question['answer'])
+                              cv2.imwrite(f"{answer_path}/{page['img_no']}_{i+1}_answer.jpg", question['answer'])
+                              cv2.imwrite(f"{keyword_path}/{page['img_no']}_{i+1}_keywords.jpg", question['keywords'])
                     
                     answers = []
+                    keywords = []
                     client = vision.ImageAnnotatorClient()
-                    answer_path = os.path.join('./../data/markings/', marking_id)
+                    answer_path = os.path.join(f'./../data/markings/{marking_id}', "answers")
+                    keyword_path = os.path.join(f'./../data/markings/{marking_id}', "keywords")
                     answer_images = helpers.get_images(answer_path)
+                    keyword_images = helpers.get_images(keyword_path)
+                    
                     for i, image in enumerate(answer_images):
                          scanned_text = helpers.read_text(client, image)
                          answers.append({
                               "question no": i+1, 
                               "text": scanned_text
                          })
+                    
+                    for i, image in enumerate(keyword_images):
+                         scanned_text = helpers.read_text(client, image)
+                         keywords.append({
+                              "question no": i+1, 
+                              "keywords": scanned_text
+                         })
+                    
+                    print("keywords:", keywords)
                          
                     urls = []
                     markings = []
                     
-                    for i, image in enumerate(answer_images):
-                         with open(image, "rb") as file:
-                              upload = UploadFile(filename=image, file=file)
-                              filename = f"Q_{i+1}"
-                              file_url = await upload_file2(upload, "uploads/images/answers/marking_schemes", marking_id, filename)
-                              urls.append(file_url)
-                         question_no = answers[i]["question no"]
-                         answer_text = answers[i]["text"]
+                    # for i, image in enumerate(answer_images):
+                    #      with open(image, "rb") as file:
+                    #           upload = UploadFile(filename=image, file=file)
+                    #           filename = f"Q_{i+1}"
+                    #           file_url = await upload_file2(upload, "uploads/images/answers/marking_schemes", marking_id, filename)
+                    #           urls.append(file_url)
+                    #      question_no = answers[i]["question no"]
+                    #      answer_text = answers[i]["text"]
                          
-                         marking = MarkingCreate(
-                              subjectId=new_marking_scheme["subjectId"],
-                              questionNo=question_no,
-                              subQuestionNo='',
-                              partNo='',
-                              noOfPoints='',
-                              marks='',
-                              text=answer_text,
-                              uploadUrl=file_url,
-                              markingScheme=marking_id,
-                              selected=False
-                         )
+                    #      marking = MarkingCreate(
+                    #           subjectId=new_marking_scheme["subjectId"],
+                    #           questionNo=question_no,
+                    #           subQuestionNo='',
+                    #           partNo='',
+                    #           noOfPoints='',
+                    #           marks='',
+                    #           text=answer_text,
+                    #           uploadUrl=file_url,
+                    #           markingScheme=marking_id,
+                    #           selected=False
+                    #      )
                          
-                         new_marking_id = marking_model.save_marking(request, marking)
-                         markings.append(str(new_marking_id))
+                    #      new_marking_id = marking_model.save_marking(request, marking)
+                    #      markings.append(str(new_marking_id))
                          
+                    # return JSONResponse({
+                    #           "marking_urls": urls,
+                    #           "marking_ids": markings
+                    #      }, 
+                    #      status_code=status.HTTP_200_OK
+                    # )
                     return JSONResponse({
-                              "marking_urls": urls,
-                              "marking_ids": markings
+                              "keyword": keywords
                          }, 
                          status_code=status.HTTP_200_OK
                     )
@@ -247,7 +279,6 @@ async def download_paper(request: Request, scheme_id : str):
           detail=f"There is no paper with the id of{scheme_id}"
      )
      
-# TODO: fix this route 
 @router.put('/update/{subjectId}', response_description="Update an existing marking scheme questions")
 async def update_marking(request: Request, subjectId: str, payload: List[MarkingUpdate] = Body()):
      print("SubjectID:",subjectId)

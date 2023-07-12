@@ -14,7 +14,7 @@ class Subject(BaseModel):
     assignmentMarks:int
     paperMarks:int
     editingTeacher:str
-    nonEditingTeaacher:str
+    nonEditingTeacher:str
     
 
     class Config:
@@ -31,7 +31,7 @@ class Subject(BaseModel):
             "assignmentMarks":30,
             "paperMarks":70,
             "editingTeacher":"Saman",
-            "nonEditingTeaacher":"Chaminda",
+            "nonEditingTeacher":"Chaminda",
             }
         }
         
@@ -67,7 +67,7 @@ class SubjectCreate(BaseModel):
     assignmentMarks:int
     paperMarks:int
     editingTeacher:str
-    nonEditingTeaacher:str
+    nonEditingTeacher:str
     createdAt: Optional[datetime] = Field(default_factory=datetime.now)
     updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
 
@@ -84,7 +84,7 @@ class SubjectCreate(BaseModel):
             "assignmentMarks":30,
             "paperMarks":70,
             "editingTeacher":"Saman",
-            "nonEditingTeaacher":"Chaminda",
+            "nonEditingTeacher":"Chaminda",
             "createdAt": "2023-06-27T10:00:00",
             "updatedAt": "2023-06-27T10:00:00"
             }
