@@ -33,6 +33,7 @@ class MarkingCreate(BaseModel):
      noOfPoints: str
      marks: str
      text: str
+     keywords: list
      uploadUrl: str
      markingScheme: str
      selected: bool
