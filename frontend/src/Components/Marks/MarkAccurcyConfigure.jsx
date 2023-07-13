@@ -7,8 +7,9 @@ function MarkAccurcyConfigure({marksConfigure,handleAddChild,handleRemoveChild,h
       (index!==length-1) ? 
           index===0 ? <MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus=""/> 
           :<MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus="-"/>
-        : (markConfigure.maximum==="100") ? <MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus="-"/>
-          :<MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus="+"/>
+        : length===1 ? <MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus="+"/>
+          : (markConfigure.maximum==="100") ?  <MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus=""/>
+            :<MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus="+"/>
     )
   })
   return (

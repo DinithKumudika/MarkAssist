@@ -16,10 +16,11 @@ subject_model = SubjectModel()
 # get subjects list by user id(subject of current teacher)
 @router.get('/{user_id}', response_description="Get Subjects by user", response_model=List[Subject],status_code=status.HTTP_200_OK)
 async def get_subjects(request: Request, user_id:str, limit: Optional[int] = None):
-     print('Called get_subjects function')
+     print(user_id)
      subjects = subject_model.list_subjects_by_user_id_distinct_subjectCode(request,user_id)
      
      if subjects:
+          print('Called get_subjects function',subjects)
           return subjects 
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 

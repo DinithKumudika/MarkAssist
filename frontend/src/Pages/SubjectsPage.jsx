@@ -34,6 +34,7 @@ function SubjectsPage() {
         .get(`http://127.0.0.1:8000/api_v1/subjects/${user_id}`, {headers})
         .then((response) => {
           const data = response.data;
+          console.log(data);
           setSubjects(data);
           setIsLoading(false);
         })
@@ -82,7 +83,7 @@ function SubjectsPage() {
     <div>
       <NavBar black onClickFunc={handleClick}/>
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
-      {isLoading ? <MoonLoader color="#36d7b7" height={6} width={128} className='absolute top-[30vw] left-[55%]'/> 
+      {isLoading ? <MoonLoader color="#36d7b7" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 
         :<Subjects clicked={isClicked} data={subjects}/>
       }
       
