@@ -93,7 +93,7 @@ class UserModel():
                return user
           
           
-     def update_single(self, request: Request, filter: str, value: str, data):
+     def update_single(self, request: Request, filter: str, value: str | ObjectId, data):
           updated_user = self.get_collection(request).find_one_and_update(
                {filter : value}, 
                {'$set': data},

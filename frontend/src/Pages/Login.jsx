@@ -8,13 +8,14 @@ import classnames from 'classnames';
 // import { AuthContext } from '../Contexts/AuthContext';
 import axios from 'axios';
 import jwt_decode from "jwt-decode";
+import getGoogleOAuthURL from '../utils/GoogleOAuth';
 function Login(){
     const navigate = useNavigate();
 
     const classes= classnames('rounded shadow shadow-gray-400 w-full h-9 p-2 mb-4');
 
     const handleClick=()=>{
-        alert("clicked");
+        window.location.href = getGoogleOAuthURL();
     }
 
     // const {auth, setAuth} = useContext(AuthContext)

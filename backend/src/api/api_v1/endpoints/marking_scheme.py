@@ -16,7 +16,7 @@ from google.cloud import vision
 import os
 
 from models.marking_scheme import MarkingSchemeModel
-from schemas.marking_scheme import MarkingScheme,MarkingSchemeCreate
+from schemas.marking_scheme import MarkingScheme, MarkingSchemeCreate, MarkPercentage
 from schemas.marking import MarkingUpdate
 from models.marking import MarkingModel
 from models.subject import SubjectModel
@@ -64,6 +64,23 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
           
           marking_url = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
           
+          defaultMarkConfig = [
+               {
+                    "minimum": 0,
+                    "maximum": 30,
+                    "percentageOfMarks": 30
+               },
+               {
+                    "minimum": 30,
+                    "maximum": 70,
+                    "percentageOfMarks": 70
+               },
+               {
+                    "minimum": 70,
+                    "maximum": 100,
+                    "percentageOfMarks": 100
+               }          
+          ]
           # Create a new MarkingScheme object with the provided data and file URL
           marking_scheme = MarkingSchemeCreate(
                subjectCode=subject['subjectCode'],
@@ -71,6 +88,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                year= int(year),
                subjectId=subjectId,
                markingUrl=marking_url,
+               markConfig=defaultMarkConfig
           )
           
           new_marking_scheme = await marking_scheme_model.add_new_marking(request, marking_scheme)
@@ -286,6 +304,21 @@ async def download_paper(request: Request, scheme_id : str):
           status_code=status.HTTP_404_NOT_FOUND, 
           detail=f"There is no paper with the id of{scheme_id}"
      )
+
+
+@router.put('/update/grading/{markingSchemeId}', response_description="update an marking config of a marking scheme", response_model=MarkingScheme)
+async def update_mark_config(request: Request, markingSchemeId: str, payload: List[MarkPercentage] = Body()):
+     updated_scheme = marking_scheme_model.update(request, "_id", ObjectId(markingSchemeId), payload)
+     
+     if updated_scheme:
+          return updated_scheme
+     else:
+          return JSONResponse(
+               {
+                    "message": "error updating marking scheme"
+               }, 
+               status_code=status.HTTP_304_NOT_MODIFIED
+          )
      
 @router.put('/update/{subjectId}', response_description="Update an existing marking scheme questions")
 async def update_marking(request: Request, subjectId: str, payload: List[MarkingUpdate] = Body()):
@@ -323,40 +356,7 @@ async def update_marking(request: Request, subjectId: str, payload: List[Marking
           status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
           detail="update failed"
      )
-# @router.put('/update/{subjectId}', response_description="Update an existing marking scheme questions", response_model=None)
-# async def update_marking(request: Request, subjectId: str, payload: Body()):
-#      pass
-#      updates = []
-#      for data in payload:
-#           updates.append(
-#                {
-#                     "filter": {"_id": ObjectId(data["id"]), "subjectId": subjectId}, 
-#                     "update": {
-#                          "$set": {
-#                               "questionNo": data["questionNo"], 
-#                               "subQuestionNo": data["subQuestionNo"],
-#                               "partNo": data["partNo"],
-#                               "noOfPoints": data["noOfPoints"],
-#                               "marks": data["marks"],
-#                               "selected": data["selected"]
-#                          }
-#                     }
-#                }
-#           )
-#      update_count = marking_model.update_multiple(request, updates)
      
-#      if update_count:
-#           # TODO: return updated answer entries
-#           return JSONResponse(
-#                {
-#                     "detail": f"{update_count} answers updated"
-#                }, 
-#                status_code=status.HTTP_200_OK
-#           )
-#      raise HTTPException(
-#           status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-#           detail="update failed"
-#      )
 
 # get marking scheme by  subjectId
 @router.get("/{year}/{subjectId}", response_description="Get a marking scheme subjectId and year", response_model = MarkingScheme)
