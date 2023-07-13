@@ -185,9 +185,11 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                               urls.append(file_url)
                          question_no = answers[i]["question no"]
                          answer_text = answers[i]["text"]
-                         
+                         print("keywords::",keywords)
+                         print("keywords[i]",keywords[i])
+                         print("question_no",question_no)
                          if keywords[i]["question no"] == question_no:
-                              keywords = keywords[i]["keywords"]
+                              extracted_keywords = keywords[i]["keywords"]
                          
                          marking = MarkingCreate(
                               subjectId=new_marking_scheme["subjectId"],
@@ -197,7 +199,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                               noOfPoints='',
                               marks='',
                               text=answer_text,
-                              keywords=keywords,
+                              keywords=extracted_keywords,
                               uploadUrl=file_url,
                               markingScheme=marking_id,
                               selected=False

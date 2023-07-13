@@ -17,7 +17,7 @@ function MarkAccurcyConfigureBox({handleAddChild,handleRemoveChild,index,data,ad
   };
   return (
     <div className="flex flex-row justify-between mb-2">
-      <input min="0" max="100" className="w-[150px] bg-custom-gray-1 text-center rounded py-1 mr-2 max-md:w-[60px]" type="text" name="minimum" value={`${data.minimum}`} disabled/>
+      <input min="0" max="100" className="w-[150px] bg-custom-gray-1 text-center rounded py-1 mr-2 max-md:w-[60px]" type="number" name="minimum" value={`${data.minimum}`} disabled/>
       <input min="0" max="100" onChange={handleInputChange} className="w-[150px] bg-custom-gray-1 text-center rounded py-1 mr-2 max-md:w-[75px]" type="number" name="maximum" value={`${data.maximum}`}/>
       <input min="0" max="100" onChange={handleInputChange} className="w-[150px] bg-custom-gray-1 text-center rounded py-1 mr-2 max-md:w-[60px]" type="number" name="marks" value={data.marks}/>
       <div onClick={handleClick}>
