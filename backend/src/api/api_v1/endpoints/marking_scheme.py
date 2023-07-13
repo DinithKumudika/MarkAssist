@@ -165,9 +165,10 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     
                     for i, image in enumerate(keyword_images):
                          scanned_text = helpers.read_text(client, image)
+                         keywords_arr = scanned_text.split(',')
                          keywords.append({
                               "question no": i+1, 
-                              "keywords": scanned_text
+                              "keywords": keywords_arr
                          })
                     
                     print("answers:", answers)
@@ -185,6 +186,9 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                          question_no = answers[i]["question no"]
                          answer_text = answers[i]["text"]
                          
+                         if keywords[i]["question no"] == question_no:
+                              keywords = keywords[i]["keywords"]
+                         
                          marking = MarkingCreate(
                               subjectId=new_marking_scheme["subjectId"],
                               questionNo=question_no,
@@ -193,6 +197,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                               noOfPoints='',
                               marks='',
                               text=answer_text,
+                              keywords=keywords,
                               uploadUrl=file_url,
                               markingScheme=marking_id,
                               selected=False

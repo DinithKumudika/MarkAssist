@@ -24,7 +24,10 @@ class ServerSettings(BaseSettings):
      class Config:
           case_sensitive = True
 
+
 class GoogleServiceSettings(BaseSettings):
+     OAUTH_CLIENT_ID: str = env.get('GOOGLE_CLIENT_ID')
+     OAUTH_CLIENT_SECRET: str = env.get('GOOGLE_CLIENT_SECRET')
      GOOGLE_APPLICATION_CREDENTIALS: str = '../service_account.json'
      FIREBASE_API_KEY: str = env.get('API_KEY')
      FIREBASE_AUTH_DOMAIN: str = env.get('AUTH_DOMAIN')
@@ -58,7 +61,7 @@ class MailSettings(BaseSettings):
           case_sensitive = True
 
 
-class Settings(CommonSettings, ServerSettings, DatabaseSettings, GoogleServiceSettings,MailSettings):
+class Settings(CommonSettings, ServerSettings, DatabaseSettings, GoogleServiceSettings, MailSettings):
      pass
 
 
