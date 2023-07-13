@@ -4,7 +4,7 @@ from bson.objectid import ObjectId
 from typing import Optional
 from pymongo import ReturnDocument
 from config.database import Database
-from schemas.marking_scheme import MarkingScheme ,MarkingSchemeCreate,MarkingSchemeUpdate
+from schemas.marking_scheme import MarkingScheme , MarkingSchemeCreate, MarkingSchemeUpdate
 
 class MarkingSchemeModel():
      collection: str = "marking_schemes"
@@ -51,7 +51,7 @@ class MarkingSchemeModel():
           return marking_schemes
      
      # get marking scheme by year and subjectId
-     def get_marking_scheme_by_year_subjectId(self, request:Request, year:int, subjectId:str)->MarkingScheme:
+     def get_marking_scheme_by_year_subjectId(self, request:Request, year:int, subjectId:str) -> MarkingScheme:
           marking_scheme = self.get_collection(request).find_one({'year': year, 'subjectId': subjectId})
           if marking_scheme:
                marking_scheme["id"] = str(marking_scheme["_id"]) 
@@ -88,6 +88,20 @@ class MarkingSchemeModel():
                updated_marking["subjectId"] = str(updated_marking["subjectId"])
                return updated_marking
           return None
+     
+     
+     def update(self, request: Request, filter: str, value: str | ObjectId, data)-> MarkingScheme | bool:
+          updated_scheme = self.get_collection(request).find_one_and_update(
+               {filter : value}, 
+               {'$set': data},
+               return_document=ReturnDocument.AFTER
+          )
+          
+          if updated_scheme:
+               return updated_scheme
+          else:
+               return False
+     
      
      def delete_single(self, request: Request, field: str, value: str):
           if(field == "_id"):
