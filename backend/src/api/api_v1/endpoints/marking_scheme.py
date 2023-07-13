@@ -92,6 +92,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
           )
           
           new_marking_scheme = await marking_scheme_model.add_new_marking(request, marking_scheme)
+          print("New marking scheme",new_marking_scheme)
           if new_marking_scheme:
                marking_id = new_marking_scheme['id']
                # save marking scheme from cloud storage to local storage
@@ -308,6 +309,8 @@ async def download_paper(request: Request, scheme_id : str):
 
 @router.put('/update/grading/{markingSchemeId}', response_description="update an marking config of a marking scheme", response_model=MarkingScheme)
 async def update_mark_config(request: Request, markingSchemeId: str, payload: List[MarkPercentage] = Body()):
+     print("markingSchemeId:",markingSchemeId)
+     print("payload:",payload)
      updated_scheme = marking_scheme_model.update(request, "_id", ObjectId(markingSchemeId), payload)
      
      if updated_scheme:
@@ -359,12 +362,12 @@ async def update_marking(request: Request, subjectId: str, payload: List[Marking
      
 
 # get marking scheme by  subjectId
-@router.get("/{year}/{subjectId}", response_description="Get a marking scheme subjectId and year", response_model = MarkingScheme)
-async def get_by_subjectId_year(request:Request, year:int, subjectId:str):
-     insertedYear = int(year)
+@router.get("/{subjectId}", response_description="Get a marking scheme subjectId", response_model = MarkingScheme)
+async def get_by_subjectId_year(request:Request, subjectId:str):
+     # insertedYear = int(year)
      subject_id = subjectId
-     print(insertedYear,subject_id)
-     marking= marking_scheme_model.get_marking_scheme_by_year_subjectId(request,insertedYear,subject_id)
+     # print(insertedYear,subject_id)
+     marking= marking_scheme_model.get_marking_scheme_by_subjectId(request,subject_id)
      print(marking)
      if marking:
           return marking

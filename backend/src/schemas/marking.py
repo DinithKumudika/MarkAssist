@@ -10,6 +10,7 @@ class Marking(BaseModel):
      noOfPoints: str
      marks: str
      text: str
+     keywords: list
      uploadUrl: str
      markingScheme: str
      selected: bool
@@ -47,6 +48,7 @@ class MarkingUpdate(BaseModel):
      noOfPoints: str
      marks: str
      text: Optional[str] = None
+     keywords: list
      uploadUrl: Optional[str] = None
      markingScheme: Optional[str] = None
      selected: bool

@@ -8,7 +8,7 @@ function MarkAccurcyConfigure({marksConfigure,handleAddChild,handleRemoveChild,h
           index===0 ? <MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus=""/> 
           :<MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus="-"/>
         : length===1 ? <MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus="+"/>
-          : (markConfigure.maximum==="100") ?  <MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus=""/>
+          : (markConfigure.maximum===100) ?  <MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus=""/>
             :<MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus="+"/>
     )
   })
@@ -18,7 +18,7 @@ function MarkAccurcyConfigure({marksConfigure,handleAddChild,handleRemoveChild,h
       <div className="flex flex-row justify-between text-center mb-2">
       <input disabled className="w-[150px] text-center rounded py-1 max-md:w-[60px]" type="text" value="Minimum"/>
       <input disabled className="w-[150px] text-center rounded py-1 max-md:w-[75px]" type="text" value="Maximum"/>
-      <input disabled className="w-[150px] text-center rounded py-1 max-md:w-[60px]" type="text" value="Marks"/>
+      <input disabled className="w-[150px] text-center rounded py-1 max-md:w-[60px]" type="text" value="Marks Percentage"/>
       <input disabled className="text-center rounded py-1 w-[36px]" type="text"/>
       </div>
       {rows}

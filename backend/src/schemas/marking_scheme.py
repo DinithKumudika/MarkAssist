@@ -65,7 +65,7 @@ class MarkingSchemeCreate(BaseModel):
      subjectId:str
      markingUrl:str
      markConfig: List[MarkPercentage]
-     isProceeded: bool
+     isProceeded: bool = False
      createdAt: Optional[datetime] = Field(default_factory=datetime.now)
      updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
 

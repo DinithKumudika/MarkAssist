@@ -62,8 +62,20 @@ class MarkingSchemeModel():
                return None
      
 
+     # get marking scheme by year and subjectId
+     def get_marking_scheme_by_subjectId(self, request:Request, subjectId:str) -> MarkingScheme:
+          marking_scheme = self.get_collection(request).find_one({ 'subjectId': subjectId})
+          if marking_scheme:
+               marking_scheme["id"] = str(marking_scheme["_id"]) 
+               marking_scheme["subjectId"] = str(marking_scheme["subjectId"]) 
+               return marking_scheme
+          else:
+               print("No marking scheme")
+               return None
+               
      async def add_new_marking(self, request: Request, marking: MarkingSchemeCreate) -> MarkingScheme:
           # new_marking = self.get_collection(request).insert_one(marking.dict())
+          print("This is marking",marking)
           new_marking = self.get_collection(request).insert_one(jsonable_encoder(marking))
 
           inserted_id = new_marking.inserted_id
