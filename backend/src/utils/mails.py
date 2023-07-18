@@ -17,12 +17,28 @@ def send_registration_email():
      pass
 
 def send_email_verification_email(to: str, name: str, url: str):
-
+    
      """
      Send email for verification
      """
      template = 'auth/verification.html'
      subject = "MarkAssist - Email Verification"
+     data = {
+          "url": url, 
+          "first_name": name,
+          "subject": subject
+     }
+     html = render_template(template, data)
+     send_email(to, subject, html)
+
+
+def send_add_password_email(to: str, name: str, url: str):
+
+     """
+     Send email for teacher account create complete
+     """
+     template = 'auth/addPassword.html'
+     subject = "MarkAssist - Account Create Complete"
      data = {
           "url": url, 
           "first_name": name,

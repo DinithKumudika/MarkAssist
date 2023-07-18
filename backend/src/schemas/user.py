@@ -93,13 +93,15 @@ class StudentCreate(UserCreate):
                 "userType": "student",
                 "emailActive": False,
                 "isDeleted": False,
-                "studentIndex": 20020697
+                "studentIndex": 20020697,                
+                "createdAt": "",
+                "updatedAt": ""
 
             }
         }
 
 # TODO: set a default password
-class TeacherCreate(UserBase):
+class TeacherCreate(UserCreate):
     password: str | None = None
     userType: str = "teacher"
     title: str
@@ -116,7 +118,9 @@ class TeacherCreate(UserBase):
                 "emailActive": False,
                 "isDeleted": False,
                 "title": "Dr",
-                "role": "Lecturer"
+                "role": "Lecturer",                
+                "createdAt": "",
+                "updatedAt": ""
 
             }
         }
@@ -132,3 +136,11 @@ class UserVerify(BaseModel):
     emailActive: bool = False
     verificationCode: str | None = None
     updatedAt: datetime | None = None
+
+# class AddTecherPassword(BaseModel):
+#     emailActive: bool = False
+#     updatedAt: datetime | None = None
+#     password: str
+    
+class AddTecherPassword(UserVerify):
+    password: str

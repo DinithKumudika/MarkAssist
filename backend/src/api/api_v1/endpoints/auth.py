@@ -9,11 +9,11 @@ from typing import Union
 from datetime import datetime, timedelta
 
 from models.user import UserModel
-from schemas.user import User, UserCreate, UserVerify, StudentCreate, TeacherCreate
+from schemas.user import User, UserCreate, UserVerify, StudentCreate, TeacherCreate,AddTecherPassword
 from schemas.token import Token
 from utils.auth import generate_token
 from utils.hashing import Hasher
-from utils.mails import send_email_verification_email
+from utils.mails import send_email_verification_email,send_add_password_email
 from utils.verification import create_token, create_verification_code
 
 router = APIRouter()
@@ -51,19 +51,24 @@ async def register(request: Request, type: str, payload: Union[StudentCreate, Te
     user = user_model.by_email(request, payload.email)
 
     if user:
+        # user is alredy exist
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="user already exists"
         )
-    
-    payload.password = Hasher.get_password_hash(payload.password)
+        
     payload.createdAt = datetime.utcnow()
     payload.updatedAt = payload.createdAt
+        
+    # if user type is only student then add password
+    if(type == 'student'):
+        payload.password = Hasher.get_password_hash(payload.password)
     
+    # create new user and add to collection
     new_user_id = user_model.create_user(request, payload)
     user = user_model.by_id(request, new_user_id)
 
-    if user:
+    if (user):
         print("created user", user)
         token = create_token()
         verification_code = create_verification_code(token)
@@ -79,19 +84,33 @@ async def register(request: Request, type: str, payload: Union[StudentCreate, Te
         updated_user = user_model.update_single(request, "_id", ObjectId(new_user_id), verifying_user.dict())
         print("user updated", updated_user)
         
-        if updated_user:
-            url = f"http://localhost:5000/verify-account/{token.hex()}"
-        
-            try:
-                send_email_verification_email(to=payload.email, name=payload.firstName, url=url)
-                return JSONResponse(
-                    {'status': 'email sent'},
-                    status_code=status.HTTP_200_OK
-                )
-            except Exception as e:
-                print(str(e))
-                return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+        if(type == 'student'):
+            if updated_user:
+                url = f"http://localhost:5000/verify-account/{token.hex()}"
+            
+                try:
+                    send_email_verification_email(to=payload.email, name=payload.firstName, url=url)
+                    return JSONResponse(
+                        {'status': 'email sent'},
+                        status_code=status.HTTP_200_OK
+                    )
+                except Exception as e:
+                    print(str(e))
+                    return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif(type == 'teacher'):
+                if updated_user:
+                    url = f"http://localhost:5000/complete-registration/{token.hex()}"
+            
+                try:
+                    send_add_password_email(to=payload.email, name=payload.firstName, url=url)
+                    return JSONResponse(
+                        {'status': 'email sent'},
+                        status_code=status.HTTP_200_OK
+                    )
+                except Exception as e:
+                    print(str(e))
+                    return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+   
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
         detail="couldn't create new user"
@@ -158,3 +177,46 @@ async def verify_token(request: Request, token: str):
             }, 
             status_code=status.HTTP_200_OK
         )
+
+@router.post('/complete-registration/{token}', response_description='add password to account')
+async def add_password_to_account(request: Request, token: str, payload:AddTecherPassword = Body()):
+    hashed_code = hashlib.sha256()
+    hashed_code.update(bytes.fromhex(token))
+    verification_code = hashed_code.hexdigest()
+    
+    user = user_model.find(request, "verificationCode", verification_code)
+
+    print("This is user",user)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, 
+            detail="Invalid code or user doesn't exist"
+        )
+    
+    if user['emailActive']:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, 
+            detail='Email can only be verified once'
+        )
+    
+    payload.password = Hasher.get_password_hash(payload.password)
+    payload.updatedAt = datetime.utcnow()
+    
+    update_user = AddTecherPassword(emailActive=True, verificationCode="", updatedAt=datetime.utcnow(), password = payload.password)
+    updated_user = user_model.update_single(request, "_id", ObjectId(user['id']), update_user.dict())
+    
+    # delete verification code-------------------------Not done
+    # set email active to true
+    # add password to codllection
+    # set status code
+    if updated_user:
+        return JSONResponse(
+        {
+            "status": "success", 
+            "message": "Account Creation complete and verified "
+        }, 
+        status_code=status.HTTP_200_OK
+    )
+    
+    
+        
