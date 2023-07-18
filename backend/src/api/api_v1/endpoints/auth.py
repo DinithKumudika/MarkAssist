@@ -6,7 +6,7 @@ from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
 from typing import Union
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from models.user import UserModel
 from schemas.user import User, UserCreate, UserVerify, StudentCreate, TeacherCreate,AddTecherPassword
@@ -42,6 +42,12 @@ async def login(request: Request, payload: OAuth2PasswordRequestForm = Depends()
     })
 
     return Token(access_token=token, token_type="bearer")
+
+
+# google oAuth
+@router.post("/google", response_description="")
+async def google_login(request: Request):
+    pass
 
 
 # register new user
@@ -132,7 +138,7 @@ async def send_verification_code(request: Request, to: str):
     token = create_token()
     verification_code = create_verification_code(token)
         
-    url = f"http://localhost:5000/verify-account/{token.hex()}"
+    url = f"http://localhost:3000/verify-account/{token.hex()}"
     name = "Dinith"
         
     try:

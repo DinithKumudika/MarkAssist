@@ -12,8 +12,12 @@ function MarksBox({markingScheme_URL, answersheet_URL,answer,marking,showImages}
   // const markingschemes = JSON.parse(localStorage.getItem('markingSceme'));
 
   // console.log(markingScheme_URL)
-  // console.log(markingschemes)
+  console.log("markingschhh::",marking.keywords)
   
+  const keywords = marking.keywords.map((keyword,index) => (
+    <input type="text" key={index} value={keyword} className="shadow shadow-gray-500 bg-[#EDEDED] mr-2 h-12 text-center rounded rounded-lg font-bold" disabled/>
+  ))
+
   return (
     
     <div className="flex flex-col my-6 p-6">
@@ -35,6 +39,12 @@ function MarksBox({markingScheme_URL, answersheet_URL,answer,marking,showImages}
           {showImages ? <AiFillEye onClick={handleIconClick} className='hover:cursor-pointer border-2 border-gray-500 text-4xl z-auto'/> 
               : showImage ?<AiFillEye onClick={handleIconClick} className='hover:cursor-pointer border-2 border-gray-500 text-4xl z-auto'/> 
                   : <AiFillEyeInvisible className='hover:cursor-pointer text-4xl border-2 border-gray-500 z-auto' onClick={handleIconClick}/>}
+        </div>
+        <div className="flex flex-col">
+          <p className="text-xl text-[#191854] text-center font-bold my-2">Keywords</p>
+          <div className="flex justify-between wrap p-2 bg-gray-100">
+            {keywords}
+          </div>
         </div>
         <div className=" py-4 flex flex-row justify-between px-2 max-md:flex-col max-md:items-center">
           <div  className="bg-[#EDEDED] px-2 rounded rounded-xl w-52 flex flex-row items-center justify-center mb-2 max-md:justify-between max-md:px-4">

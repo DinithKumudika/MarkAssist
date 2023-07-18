@@ -29,3 +29,5 @@ https://colab.research.google.com/drive/1-OYccyTvmfa3r7cAquw8sioFFPJcn4R9?usp=sh
 https://towardsdatascience.com/sentiment-analysis-concept-analysis-and-applications-6c94d6f58c17
 
 https://towardsdatascience.com/sentence-transformer-fine-tuning-setfit-outperforms-gpt-3-on-few-shot-text-classification-while-d9a3788f0b4e
+
+https://blog.authlib.org/2020/fastapi-google-login

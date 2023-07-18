@@ -2,6 +2,8 @@ import { Route, Routes } from 'react-router-dom';
 import EssayPage from './Pages/EssayPage';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
+import EmailVerifiedPage from './Pages/EmailVerifiedPage';
+import TeacherPasswordChangePage from './Pages/TeacherPasswordChangePage';
 import AdminDashboard from './Pages/AdminDashboard';
 import SubjectsPage from './Pages/SubjectsPage';
 import SubjectPage from './Pages/SubjectPage';
@@ -24,6 +26,9 @@ function App(){
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+        <Route path="/verify_account" element={<TeacherPasswordChangePage />} />
+        <Route path="/email_verified" element={<EmailVerifiedPage />} />
+
         <Route path="/essayPage" element={<EssayPage />} />
 
         <Route path="/subjects" element={<SubjectsPage />} />

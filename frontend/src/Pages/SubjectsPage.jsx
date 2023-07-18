@@ -2,6 +2,7 @@ import NavBar from '../Components/NavBar'
 import SideBar from '../Components/SideBar'
 import Subjects from '../Components/Subjects/Subjects'
 import {useEffect, useState} from 'react'
+import { MoonLoader } from 'react-spinners';
 import axios from 'axios'
 
 function SubjectsPage() {
@@ -12,9 +13,11 @@ function SubjectsPage() {
   // console.log(allItems);
   const user_id=allItems['user_id'];
   const userType = allItems['user_role'];
+  console.log(userType,user_id);
   const accessToken = localStorage.getItem('accessToken')
   const [isClicked,setClick] = useState("inner");
   const [subjects,setSubjects] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(()=>{
     fetchSubjects();
@@ -31,7 +34,9 @@ function SubjectsPage() {
         .get(`http://127.0.0.1:8000/api_v1/subjects/${user_id}`, {headers})
         .then((response) => {
           const data = response.data;
+          console.log(data);
           setSubjects(data);
+          setIsLoading(false);
         })
         .catch((error) => {
           console.error(error);
@@ -43,6 +48,7 @@ function SubjectsPage() {
         .then((response) => {
           const data = response.data;
           setSubjects(data);
+          setIsLoading(false);
         })
         .catch((error) => {
           console.error(error);
@@ -50,6 +56,10 @@ function SubjectsPage() {
       }
     
   }
+
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
   // console.log("Subjects:",subjects)
   //Function to handle the click of the hamburger menu
   const handleClick = () => {
@@ -60,12 +70,23 @@ function SubjectsPage() {
     }
     // console.log(isClicked)
   }
+  const config = [
+    {
+      label:"subjectCode"
+    },
+    {
+      label:"subjectName"
+    }
+  ]
 
   return (
     <div>
       <NavBar black onClickFunc={handleClick}/>
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
-      <Subjects clicked={isClicked} data={subjects}/>
+      {isLoading ? <MoonLoader color="#36d7b7" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 
+        :<Subjects clicked={isClicked} data={subjects}/>
+      }
+      
     </div>
   )
 }

@@ -16,7 +16,7 @@ from google.cloud import vision
 import os
 
 from models.marking_scheme import MarkingSchemeModel
-from schemas.marking_scheme import MarkingScheme,MarkingSchemeCreate
+from schemas.marking_scheme import MarkingScheme, MarkingSchemeCreate, MarkPercentage
 from schemas.marking import MarkingUpdate
 from models.marking import MarkingModel
 from models.subject import SubjectModel
@@ -64,6 +64,23 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
           
           marking_url = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
           
+          defaultMarkConfig = [
+               {
+                    "minimum": 0,
+                    "maximum": 30,
+                    "percentageOfMarks": 30
+               },
+               {
+                    "minimum": 30,
+                    "maximum": 70,
+                    "percentageOfMarks": 70
+               },
+               {
+                    "minimum": 70,
+                    "maximum": 100,
+                    "percentageOfMarks": 100
+               }          
+          ]
           # Create a new MarkingScheme object with the provided data and file URL
           marking_scheme = MarkingSchemeCreate(
                subjectCode=subject['subjectCode'],
@@ -71,9 +88,11 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                year= int(year),
                subjectId=subjectId,
                markingUrl=marking_url,
+               markConfig=defaultMarkConfig
           )
           
           new_marking_scheme = await marking_scheme_model.add_new_marking(request, marking_scheme)
+          print("New marking scheme",new_marking_scheme)
           if new_marking_scheme:
                marking_id = new_marking_scheme['id']
                # save marking scheme from cloud storage to local storage
@@ -90,9 +109,9 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     images = helpers.convert_to_images(save_path, dir_path)
                     answers = []
                     answer_count = 0
-                    # identify answer areas of marking scheme
+                    keywords_count = 0
                     
-                    # identify answer areas of marking scheme
+                    # identify answer areas and keyword areas of marking scheme
                     for img_idx,image in enumerate(images):
                          src_image = cv2.imread(image)
                          screen_width = helpers.get_screen_width()
@@ -103,41 +122,76 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                               "img_no": img_idx + 1,
                               "questions": []
                          })
+                         
+                         question = {}
+                         
                          for i, contour in enumerate(contours):
                               # precision for approximation
                               epsilon = 0.01 * cv2.arcLength(contour, True)
                               approx = cv2.approxPolyDP(contour, epsilon, True)
                               x, y, w, h = cv2.boundingRect(approx)
                               aspect_ratio = w / h
+                              
+                              questions_on_page = answers[img_idx]["questions"]
+                              
+                              if(('keywords' in question) and ('answer' in question)):               
+                                   questions_on_page.append(question)
+                                   print("answers scanned:", len(answers))
+                                   print(f"no of questions on page {img_idx + 1}:", len(questions_on_page))
+                         
+                                   question = {}
                
                               if aspect_ratio > 1 and w > 50 and h > 20 and cv2.contourArea(contour) > 100:
-                                   if w > 700:
+                                   if w > 700 and h > 100:
                                         cropped_answer = sized_image[y:y+h, x:x+w]
-                                        questions_on_page = answers[img_idx]["questions"]
-                                        questions_on_page.append({
-                                             "answer": cropped_answer
-                                        })
+                                        question["answer"] = cropped_answer
                                         answer_count += 1
+                                        
+                                   elif w > 700 and h <= 100:
+                                        cropped_keywords = sized_image[y:y+h, x:x+w]
+                                        question["keywords"] = cropped_keywords
+                                        keywords_count += 1
+                                        
                     save_path = os.path.join("../data/markings", marking_id)
+                    answer_path = os.path.join(save_path, "answers")
+                    keyword_path = os.path.join(save_path, "keywords")
+                    
                     os.mkdir(save_path)
+                    os.mkdir(answer_path)
+                    os.mkdir(keyword_path)
+                    
                     for page in answers:
                          # print(page)
                          questions = page["questions"]
-                         # print(questions)
                          questions.reverse()
                          for i, question in enumerate(questions):
-                              cv2.imwrite(f"{save_path}/{page['img_no']}_{i+1}.jpg", question['answer'])
-                    
+                              cv2.imwrite(f"{answer_path}/{page['img_no']}_{i+1}_answer.jpg", question['answer'])
+                              cv2.imwrite(f"{keyword_path}/{page['img_no']}_{i+1}_keywords.jpg", question['keywords'])
                     answers = []
+                    keywords = []
                     client = vision.ImageAnnotatorClient()
-                    answer_path = os.path.join('./../data/markings/', marking_id)
+                    # answer_path = os.path.join(f'./../data/markings/{marking_id}', "answers")
+                    # keyword_path = os.path.join(f'./../data/markings/{marking_id}', "keywords")
                     answer_images = helpers.get_images(answer_path)
+                    keyword_images = helpers.get_images(keyword_path)
+                    
                     for i, image in enumerate(answer_images):
                          scanned_text = helpers.read_text(client, image)
                          answers.append({
                               "question no": i+1, 
                               "text": scanned_text
                          })
+                    
+                    for i, image in enumerate(keyword_images):
+                         scanned_text = helpers.read_text(client, image)
+                         keywords_arr = scanned_text.split(',')
+                         keywords.append({
+                              "question no": i+1, 
+                              "keywords": keywords_arr
+                         })
+                    
+                    print("answers:", answers)
+                    print("keywords:", keywords)
                          
                     urls = []
                     markings = []
@@ -150,6 +204,11 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                               urls.append(file_url)
                          question_no = answers[i]["question no"]
                          answer_text = answers[i]["text"]
+                         print("keywords::",keywords)
+                         print("keywords[i]",keywords[i])
+                         print("question_no",question_no)
+                         if keywords[i]["question no"] == question_no:
+                              extracted_keywords = keywords[i]["keywords"]
                          
                          marking = MarkingCreate(
                               subjectId=new_marking_scheme["subjectId"],
@@ -159,6 +218,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                               noOfPoints='',
                               marks='',
                               text=answer_text,
+                              keywords=extracted_keywords,
                               uploadUrl=file_url,
                               markingScheme=marking_id,
                               selected=False
@@ -245,6 +305,23 @@ async def download_paper(request: Request, scheme_id : str):
           status_code=status.HTTP_404_NOT_FOUND, 
           detail=f"There is no paper with the id of{scheme_id}"
      )
+
+
+@router.put('/update/grading/{markingSchemeId}', response_description="update an marking config of a marking scheme", response_model=MarkingScheme)
+async def update_mark_config(request: Request, markingSchemeId: str, payload: List[MarkPercentage] = Body()):
+     print("markingSchemeId:",markingSchemeId)
+     print("payload:",payload)
+     updated_scheme = marking_scheme_model.update(request, "_id", ObjectId(markingSchemeId), payload)
+     
+     if updated_scheme:
+          return updated_scheme
+     else:
+          return JSONResponse(
+               {
+                    "message": "error updating marking scheme"
+               }, 
+               status_code=status.HTTP_304_NOT_MODIFIED
+          )
      
 @router.put('/update/{subjectId}', response_description="Update an existing marking scheme questions")
 async def update_marking(request: Request, subjectId: str, payload: List[MarkingUpdate] = Body()):
@@ -282,48 +359,15 @@ async def update_marking(request: Request, subjectId: str, payload: List[Marking
           status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
           detail="update failed"
      )
-# @router.put('/update/{subjectId}', response_description="Update an existing marking scheme questions", response_model=None)
-# async def update_marking(request: Request, subjectId: str, payload: Body()):
-#      pass
-#      updates = []
-#      for data in payload:
-#           updates.append(
-#                {
-#                     "filter": {"_id": ObjectId(data["id"]), "subjectId": subjectId}, 
-#                     "update": {
-#                          "$set": {
-#                               "questionNo": data["questionNo"], 
-#                               "subQuestionNo": data["subQuestionNo"],
-#                               "partNo": data["partNo"],
-#                               "noOfPoints": data["noOfPoints"],
-#                               "marks": data["marks"],
-#                               "selected": data["selected"]
-#                          }
-#                     }
-#                }
-#           )
-#      update_count = marking_model.update_multiple(request, updates)
      
-#      if update_count:
-#           # TODO: return updated answer entries
-#           return JSONResponse(
-#                {
-#                     "detail": f"{update_count} answers updated"
-#                }, 
-#                status_code=status.HTTP_200_OK
-#           )
-#      raise HTTPException(
-#           status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-#           detail="update failed"
-#      )
 
 # get marking scheme by  subjectId
-@router.get("/{year}/{subjectId}", response_description="Get a marking scheme subjectId and year", response_model = MarkingScheme)
-async def get_by_subjectId_year(request:Request, year:int, subjectId:str):
-     insertedYear = int(year)
+@router.get("/{subjectId}", response_description="Get a marking scheme subjectId", response_model = MarkingScheme)
+async def get_by_subjectId_year(request:Request, subjectId:str):
+     # insertedYear = int(year)
      subject_id = subjectId
-     print(insertedYear,subject_id)
-     marking= marking_scheme_model.get_marking_scheme_by_year_subjectId(request,insertedYear,subject_id)
+     # print(insertedYear,subject_id)
+     marking= marking_scheme_model.get_marking_scheme_by_subjectId(request,subject_id)
      print(marking)
      if marking:
           return marking

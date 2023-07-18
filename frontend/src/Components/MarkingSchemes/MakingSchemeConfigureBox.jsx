@@ -6,6 +6,11 @@ function MakingSchemeConfigureBox({ index, formData, onChange,showImages}) {
     const handleIconClick = () => {
       setShowImages((prev) => !prev);
     };
+
+    const keywords = formData.keywords.map((keyword,index) => (
+      <input type="text" key={index} value={keyword} className="shadow shadow-gray-500 bg-[#EDEDED] mr-2 h-12 text-center rounded rounded-lg font-bold" disabled/>
+    ))
+
     var buttonclicked;
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -40,6 +45,12 @@ function MakingSchemeConfigureBox({ index, formData, onChange,showImages}) {
               <p className="border border-gray-500 p-2 mb-1 mr-1">{formData.text}</p>
              {showImages ? <img  className="w-full h-fit " src={formData.uploadUrl} alt="Marking scheme"/>
                 : showImage && <img  className="w-full h-fit " src={formData.uploadUrl} alt="Marking scheme"/>}
+          <div className="flex flex-col">
+            <p className="text-xl text-[#191854] text-center font-bold my-2">Keywords</p>
+            <div className="flex justify-between wrap p-2 bg-gray-100">
+              {keywords}
+            </div>
+        </div>
           </div>
           <div className='basis-[5%]'>
             {showImages ? <AiFillEye onClick={handleIconClick} className='hover:cursor-pointer border-2 border-gray-500 text-4xl z-auto'/> 
