@@ -22,11 +22,11 @@ function TeacherAddBox({closeFunc}) {
         isDeleted : false,
         title : 'Mr.',
         role : 'Lecturer',
-        // telephoneNumber : '',
+        telephoneNumber : '',
     });
 
-    const { firstName,lastName,email,userType,emailActive,isDeleted,title,role } = formData;
-    const telephoneNumber = ''
+    const { firstName,lastName,email,userType,emailActive,isDeleted,title,role ,telephoneNumber} = formData;
+    // const telephoneNumber = ''
 
     const handleSelectChange = (event) =>{
         setFormData((prevState)=>({
@@ -48,7 +48,7 @@ function TeacherAddBox({closeFunc}) {
     const handleSubmit = async (event)=>{
         event.preventDefault();
         console.log(formData);
-        if(!formData.role || !formData.title || !formData.firstName || !formData.lastName || !formData.email ){
+        if(!formData.role || !formData.title || !formData.firstName || !formData.lastName || !formData.email || !formData.telephoneNumber ){
             setError("Please fill all the fields");
             console.log("error");
             return;
@@ -132,7 +132,7 @@ function TeacherAddBox({closeFunc}) {
                                 </div>
                                 <div className='max-md:mr-0 max-md:w-[85%] mr-8 w-[45%] flex flex-row items-center mb-8'>
                                     <label className='mr-4 font-sans w-36'>Telephone No.</label>
-                                    <input type="text" pattern="[0][0-9]{9}" value={telephoneNumber} onChange={onChange} name="telephoneNumber" placeholder="0123456789" className='w-[65%] h-8  p-2 shadow shadow-gray-500 rounded' disabled/>
+                                    <input type="text" pattern="[0][0-9]{9}" value={telephoneNumber} onChange={onChange} name="telephoneNumber" placeholder="0123456789" className='w-[65%] h-8  p-2 shadow shadow-gray-500 rounded'/>
                                 </div>
                             </div>
                             <div className='flex flex-row items-center justify-between max-md:flex-col '>

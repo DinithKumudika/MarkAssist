@@ -86,7 +86,7 @@ async def register(request: Request, type: str, payload: Union[StudentCreate, Te
         print("user updated", updated_user)
         
         if updated_user:
-            url = f"http://localhost:5000/verify-account/{token.hex()}"
+            url = f"http://localhost:3000/verify-account/{token.hex()}"
         
             try:
                 send_email_verification_email(to=payload.email, name=payload.firstName, url=url)
@@ -119,7 +119,7 @@ async def send_verification_code(request: Request, to: str):
     token = create_token()
     verification_code = create_verification_code(token)
         
-    url = f"http://localhost:5000/verify-account/{token.hex()}"
+    url = f"http://localhost:3000/verify-account/{token.hex()}"
     name = "Dinith"
         
     try:
