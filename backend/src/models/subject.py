@@ -12,6 +12,14 @@ class SubjectModel():
      def get_collection(self, request: Request):
           return request.app.db[self.collection]
      
+     # get all subjects as a list
+     def list_subjects(self, request: Request) -> list:
+          subjects = list(self.get_collection(request).find())
+          for subject in subjects:
+               subject["id"] = str(subject["_id"]) 
+               subject["teacherId"] = str(subject["teacherId"]) 
+          return subjects
+     
      def list_subjects_by_user_id(self, request: Request,user_id:str) -> list:
           subjects = list(self.get_collection(request).find({'teacherId':user_id}))
           for subject in subjects:
@@ -35,7 +43,18 @@ class SubjectModel():
      #                "subjects": subjects_list
      #           })
      #      return grouped_subjects
-
+     
+     # get all subject as a list distinctly
+     def list_subjects_distinct_subjectCode(self, request: Request) -> list:
+          subjects = self.get_collection(request).distinct("subjectCode")
+          distinct_subjects = []
+          for subject in subjects:
+               subject_data = self.get_collection(request).find_one({"subjectCode": subject})
+               subject_data["id"] = str(subject_data["_id"])
+               subject_data["teacherId"] = str(subject_data["teacherId"])
+               distinct_subjects.append(subject_data)
+          return distinct_subjects
+     
      def list_subjects_by_user_id_distinct_subjectCode(self, request: Request, user_id: str) -> list:
           subjects = self.get_collection(request).distinct("subjectCode", {"teacherId": user_id})
           distinct_subjects = []
