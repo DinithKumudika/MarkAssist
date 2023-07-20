@@ -45,7 +45,7 @@ async def get_years_list(request: Request,user_id:str, subjectCode: str):
 # get subject by user Id and subject id
 @router.get('/{user_id}/{id}', response_description="Get a subject by id and user id", response_model=Subject,status_code=status.HTTP_200_OK)
 async def get_subject_by_id_user_id(request: Request, user_id:str ,id: str):
-     print('Called get_subject_by_id function')
+     print('Called get_subject_by_id_user_id function')
      subject = subject_model.get_subject_by_id_user_id(request,user_id, id)
      if subject:
           return subject
@@ -66,18 +66,18 @@ async def delete_subject(request: Request, id: str):
      )
      
 
-     
-@router.get('/teacher/{id}', response_description="Get subjects by teacher id",response_model= List[Subject],status_code=status.HTTP_200_OK)
-async def get_subjects_by_teacher_id(request: Request, id: str):
-     subjects = subject_model.get_subject_teacher(request, id)
-     # subjects = list(subjects)
-     # print ("This is subjects",(subjects))
-     if subjects:
-          return subjects
-     raise HTTPException(
-          status_code=status.HTTP_404_NOT_FOUND,
-          detail= f"no subjects with the teacher id of {id}"
-     )
+#TODO:need to change this function with new schema
+# @router.get('/teacher/{id}', response_description="Get subjects by teacher id",response_model= List[Subject],status_code=status.HTTP_200_OK)
+# async def get_subjects_by_teacher_id(request: Request, id: str):
+#      subjects = subject_model.get_subject_teacher(request, id)
+#      # subjects = list(subjects)
+#      # print ("This is subjects",(subjects))
+#      if subjects:
+#           return subjects
+#      raise HTTPException(
+#           status_code=status.HTTP_404_NOT_FOUND,
+#           detail= f"no subjects with the teacher id of {id}"
+#      )
      
 # Add a new subject
 @router.post('/', response_description="Add a new subject", response_model= Subject, status_code= status.HTTP_201_CREATED)
@@ -101,13 +101,12 @@ async def add_a_subject(request:Request, payload: SubjectCreate = Body(...)):
                subjectCode = payload.subjectCode,
                subjectName = payload.subjectName,
                year = int(payload.year),
-               teacherId = payload.teacherId,
                semester = int(payload.semester) ,
                academicYear = int(payload.academicYear),
                assignmentMarks =int(payload.assignmentMarks),
                paperMarks = int(payload.paperMarks),
                editingTeacher = payload.editingTeacher,
-               nonEditingTeaacher =payload.nonEditingTeaacher,
+               nonEditingTeacher =payload.nonEditingTeacher,
                createdAt =  datetime.now(),
                updatedAt = datetime.now()
           )

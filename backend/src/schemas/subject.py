@@ -8,13 +8,12 @@ class Subject(BaseModel):
     subjectCode:str
     subjectName:str
     year:int
-    teacherId:str
     semester:int
     academicYear:int
     assignmentMarks:int
     paperMarks:int
     editingTeacher:str
-    nonEditingTeaacher:str
+    nonEditingTeacher:str
     
 
     class Config:
@@ -25,13 +24,12 @@ class Subject(BaseModel):
             "subjectCode": "SCS2213",
             "subjectName":"DSA",
             "year": 2022,
-            "teacherId": "64873b4029eb156b34979ab0",
             "semester":2 ,
             "academicYear":2,
             "assignmentMarks":30,
             "paperMarks":70,
-            "editingTeaacher":"Saman",
-            "nonEditingTeacher":"Chaminda",
+            "editingTeaacher":"64873b4029eb156b34979ab0",
+            "nonEditingTeacher":"64873b4029eb156b34979ab0",
             }
         }
         
@@ -61,13 +59,12 @@ class SubjectCreate(BaseModel):
     subjectCode:str
     subjectName:str
     year:int
-    teacherId:str
     semester:int
     academicYear:int
     assignmentMarks:int
     paperMarks:int
     editingTeacher:str
-    nonEditingTeaacher:str
+    nonEditingTeacher:str
     createdAt: Optional[datetime] = Field(default_factory=datetime.now)
     updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
 
@@ -78,13 +75,12 @@ class SubjectCreate(BaseModel):
             "subjectCode": "SCS2213",
             "subjectName":"DSA",
             "year": 2022,
-            "teacherId": "64873b4029eb156b34979ab0",
             "semester":2 ,
             "academicYear":2,
             "assignmentMarks":30,
             "paperMarks":70,
-            "editingTeacher":"Saman",
-            "nonEditingTeaacher":"Chaminda",
+            "editingTeaacher":"64873b4029eb156b34979ab0",
+            "nonEditingTeacher":"64873b4029eb156b34979ab0",
             "createdAt": "2023-06-27T10:00:00",
             "updatedAt": "2023-06-27T10:00:00"
             }
