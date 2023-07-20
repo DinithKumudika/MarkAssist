@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from fastapi import UploadFile,File
-from typing import Optional, List
+from typing import Optional, List, Dict
 from datetime import datetime
 
 

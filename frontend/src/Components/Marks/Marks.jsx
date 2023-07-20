@@ -80,7 +80,8 @@ function Marks({clicked,answers,markings}) {
   };
 
   const handleProceedClick = () => {
-    console.log(marksConfigure)
+    console.log("clicked")
+    console.log("marksconfigure:::",marksConfigure)
     marksConfigure.map((markConfigure,index) => {
       if(markConfigure.maximum==="" || markConfigure.percentageOfMarks===""){
         setError("Please fill all the fields")
@@ -108,6 +109,8 @@ function Marks({clicked,answers,markings}) {
   console.log(error)
 
   const handleOKClick = () => {
+    console.log("clicked")
+    console.log("marksconfigure:::",marksConfigure)
     marksConfigure.map((markConfigure,index) => {
       if(markConfigure.maximum==="" || markConfigure.percentageOfMarks===""){
         setError("Please fill all the fields")

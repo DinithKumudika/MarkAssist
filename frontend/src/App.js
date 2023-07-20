@@ -26,8 +26,8 @@ function App(){
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-        <Route path="/verify_account" element={<TeacherPasswordChangePage />} />
-        <Route path="/email_verified" element={<EmailVerifiedPage />} />
+        <Route path="/complete-registration/:token" element={<TeacherPasswordChangePage />} />
+        <Route path="/verify-account/:token" element={<EmailVerifiedPage />} />
 
         <Route path="/essayPage" element={<EssayPage />} />
 

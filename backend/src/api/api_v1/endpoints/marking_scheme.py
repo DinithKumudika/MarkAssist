@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Request,Depends,UploadFile, File,Form
 from fastapi.params import Body
 from fastapi.responses import JSONResponse
-from typing import List
+from typing import List, Dict
 from bson.objectid import ObjectId
 import httpx
 
@@ -308,20 +308,17 @@ async def download_paper(request: Request, scheme_id : str):
 
 
 @router.put('/update/grading/{markingSchemeId}', response_description="update an marking config of a marking scheme", response_model=MarkingScheme)
-async def update_mark_config(request: Request, markingSchemeId: str, payload: List[MarkPercentage] = Body()):
+async def update_mark_config(request: Request, markingSchemeId: str, payload: List = Body(...)):
      print("markingSchemeId:",markingSchemeId)
-     print("payload:",payload)
+     print("payload:", payload)
      updated_scheme = marking_scheme_model.update(request, "_id", ObjectId(markingSchemeId), payload)
      
      if updated_scheme:
           return updated_scheme
-     else:
-          return JSONResponse(
-               {
-                    "message": "error updating marking scheme"
-               }, 
-               status_code=status.HTTP_304_NOT_MODIFIED
-          )
+     raise HTTPException(
+          status_code=status.HTTP_304_NOT_MODIFIED, 
+          detail=f"error updating marking scheme"
+     )
      
 @router.put('/update/{subjectId}', response_description="Update an existing marking scheme questions")
 async def update_marking(request: Request, subjectId: str, payload: List[MarkingUpdate] = Body()):

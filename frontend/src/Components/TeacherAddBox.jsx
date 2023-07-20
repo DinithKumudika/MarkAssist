@@ -56,9 +56,9 @@ function TeacherAddBox({closeFunc}) {
             console.log("no error");
             console.log(formData);
             const formdata = new FormData();
-            formdata.append('subjectCode', formData.subjectCode);
+            // formdata.append('subjectCode', formData.subjectCode);
             axios
-            .post('http://127.0.0.1:8000/api_v1/admins/teachers/new',formdata)
+            .post('http://127.0.0.1:8000/api_v1/auth/register?type=teacher',formData)
             .then((response) => {
                 // console.log("Hello:",response);
                 setadding(false);
@@ -68,6 +68,7 @@ function TeacherAddBox({closeFunc}) {
                   if(error.response && error.response.status >=400 && error.response.status <500){
                     // console.log(error.response.data.message);
                     console.log(error.response.data.detail);
+                    setError(error.response.data.detail);
                 }
                 });
             setError("");

@@ -81,7 +81,7 @@ class UserCreate(UserBase):
 class StudentCreate(UserCreate):
     password: str
     userType: str = "student"
-    studentIndex: int
+    studentIndex: int = None
 
     class Config:
         schema_extra = {
