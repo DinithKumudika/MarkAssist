@@ -82,7 +82,7 @@ async def delete_subject(request: Request, id: str):
 # Add a new subject
 @router.post('/', response_description="Add a new subject", response_model= Subject, status_code= status.HTTP_201_CREATED)
 async def add_a_subject(request:Request, payload: SubjectCreate = Body(...)):
-     # print(payload)
+     print(payload)
      
      # check if subject is existing in db by, subjectCode and year
      current_subject = subject_model.get_subject_by_year_subjectCode(request,int(payload.year), payload.subjectCode)
@@ -103,6 +103,7 @@ async def add_a_subject(request:Request, payload: SubjectCreate = Body(...)):
                year = int(payload.year),
                semester = int(payload.semester) ,
                academicYear = int(payload.academicYear),
+               no_credits = int(payload.no_credits),
                assignmentMarks =int(payload.assignmentMarks),
                paperMarks = int(payload.paperMarks),
                editingTeacher = payload.editingTeacher,
@@ -115,7 +116,7 @@ async def add_a_subject(request:Request, payload: SubjectCreate = Body(...)):
           
           if new_subject:
                # print("This is inserted subject",new_subject)
-               return new_subject;
+               return new_subject
           raise HTTPException(
                status_code=status.HTTP_400_BAD_REQUEST,
                detail= f" failed to add a new subject"

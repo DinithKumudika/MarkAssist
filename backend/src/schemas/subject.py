@@ -10,6 +10,7 @@ class Subject(BaseModel):
     year:int
     semester:int
     academicYear:int
+    no_credits:str
     assignmentMarks:int
     paperMarks:int
     editingTeacher:str
@@ -26,6 +27,7 @@ class Subject(BaseModel):
             "year": 2022,
             "semester":2 ,
             "academicYear":2,
+            "no_credits":2,
             "assignmentMarks":30,
             "paperMarks":70,
             "editingTeaacher":"64873b4029eb156b34979ab0",
@@ -61,12 +63,13 @@ class SubjectCreate(BaseModel):
     year:int
     semester:int
     academicYear:int
+    no_credits:int
     assignmentMarks:int
     paperMarks:int
     editingTeacher:str
     nonEditingTeacher:str
-    createdAt: Optional[datetime] = Field(default_factory=datetime.now)
-    updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
+    # createdAt: Optional[datetime] = Field(default_factory=datetime.now)
+    # updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
 
     class Config:
         schema_extra = {
@@ -77,11 +80,12 @@ class SubjectCreate(BaseModel):
             "year": 2022,
             "semester":2 ,
             "academicYear":2,
+            "no_credits":2,
             "assignmentMarks":30,
             "paperMarks":70,
             "editingTeaacher":"64873b4029eb156b34979ab0",
             "nonEditingTeacher":"64873b4029eb156b34979ab0",
-            "createdAt": "2023-06-27T10:00:00",
-            "updatedAt": "2023-06-27T10:00:00"
+            # "createdAt": "2023-06-27T10:00:00",
+            # "updatedAt": "2023-06-27T10:00:00"
             }
         }

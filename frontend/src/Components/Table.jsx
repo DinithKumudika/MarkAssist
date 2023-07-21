@@ -15,12 +15,19 @@ function Table({name, role, date, subjects, select, index, fileName, overallMark
   let AnswerSheet =""
   if(teachers){
     teacher = teachers.map((teacher) => {
+      // Create a Date object from the timestamp string
+    const dateObj = new Date(teacher.createdAt);
+
+    // Get the individual components of the date
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1; // Months are zero-indexed, so add 1
+    const day = dateObj.getDate();
         return (
           <tr className="w-full">
             <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.firstName} {teacher.lastName}</td>
-            <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.role}</td>
+            <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 text-center'>{teacher.role}</td>
             {/* {date && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>{teacher.date}</td>} */}
-            <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>2023</td>
+            <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60 text-center'>{year}-{month.toString().padStart(2, '0')}-{day.toString().padStart(2, '0')}</td>
             {/* {subjects && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.subjects}</td>} */}
             <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>3</td>
             {/* {select && <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-[#4457FF] w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={handleSelect}><div className='ml-2'>Select</div></button></td>} */}

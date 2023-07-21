@@ -19,13 +19,14 @@ function SubjectAddBox({closeFunc,teachers}) {
         assignmentMarks: '',
         semester: 1,
         academicYear: 1,
+        no_credits:1,
         paperMarks: '',
         editingTeacher: `${teachers[0].id}`,
         nonEditingTeacher: `${teachers[0].id}`,
 
     });
 
-    const { subjectCode, subjectStream , subjectName, year, assignmentMarks, semester, academicYear, paperMarks, editingTeacher, nonEditingTeacher } = formData;
+    const { subjectCode, subjectStream , subjectName, year, assignmentMarks, no_credits, semester, academicYear, paperMarks, editingTeacher, nonEditingTeacher } = formData;
 
     const handleSelectChange = (event) =>{
         setFormData((prevState)=>({
@@ -47,7 +48,7 @@ function SubjectAddBox({closeFunc,teachers}) {
     const handleSubmit = async (event)=>{
         event.preventDefault();
         // console.log(formData);
-        if(!formData.subjectCode || !formData.subjectStream || !formData.subjectName || !formData.year || !formData.assignmentMarks || !formData.semester || !formData.paperMarks || !formData.editingTeacher || !formData.nonEditingTeacher){
+        if(!formData.subjectCode || !formData.subjectStream || !formData.subjectName || !formData.year || !formData.assignmentMarks || !formData.semester || !formData.academicYear || !formData.no_credits || !formData.paperMarks || !formData.editingTeacher || !formData.nonEditingTeacher){
             setError("Please fill all the fields");
             console.log("error");
             return;
@@ -56,16 +57,18 @@ function SubjectAddBox({closeFunc,teachers}) {
             setError("");
         }
         const formdata = new FormData();
-        formdata.append('subjectCode', formData.subjectCode);
-        formdata.append('subjectStream', formData.subjectStream);
+        formdata.append('subjectCode',formData.subjectCode);
+        // formdata.append('subjectStream', formData.subjectStream);
         formdata.append('subjectName', formData.subjectName);
-        formdata.append('year', formData.year);
-        formdata.append('semester', formData.semester);
-        formdata.append('assignmentMarks', formData.assignmentMarks);
-        formdata.append('paperMarks', formData.paperMarks);
+        formdata.append('year', parseInt(formData.year));
+        formdata.append('semester', parseInt(formData.semester));
+        formdata.append('academicYear', parseInt(formData.academicYear));
+        formdata.append('no_credits', parseInt(formData.no_credits));
+        formdata.append('assignmentMarks', parseInt(formData.assignmentMarks));
+        formdata.append('paperMarks', parseInt(formData.paperMarks));
         formdata.append('editingTeacher', formData.editingTeacher);
         formdata.append('nonEditingTeacher', formData.nonEditingTeacher);
-
+        console.log("year:",typeof parseInt(formdata.get('year')));
         console.log("formdata:",formData);
         axios
         .post(`http://127.0.0.1:8000/api_v1/subjects`,formdata)
@@ -90,6 +93,7 @@ function SubjectAddBox({closeFunc,teachers}) {
     }
 
     const teacher = teachers.map((teacher,index)=>{
+        console.log(teacher.title)
         return <option key={index} value={teacher.id} className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>{teacher.title}.{teacher.firstName} {teacher.lastName}</option>
     })
 
@@ -160,6 +164,16 @@ function SubjectAddBox({closeFunc,teachers}) {
                                     <label className='mr-4 font-sans w-36'>Academic Year</label>
                                     {/* <input type="text" value={academicYear} onChange={onChange} name="academicYear" placeholder="30" className='w-[65%] h-8  p-2 shadow shadow-gray-500 rounded'/> */}
                                     <select name='academicYear' className='items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded ' value={academicYear} onChange={handleSelectChange}>
+                                      <option value="1" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>1</option>
+                                      <option value="2" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>2</option>
+                                      <option value="3" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>3</option>
+                                      <option value="4" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>4</option>
+                                    </select>
+                                </div>
+                                <div className='max-md:mr-0 max-md:w-[85%] mr-8 w-[45%] flex flex-row items-center mb-8 '>
+                                    <label className='mr-4 font-sans w-24 max-md:w-36'>No of credits</label>
+                                    {/* <input type="text" value={academicYear} onChange={onChange} name="academicYear" placeholder="30" className='w-[65%] h-8  p-2 shadow shadow-gray-500 rounded'/> */}
+                                    <select name='no_credits' className='items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded ' value={no_credits} onChange={handleSelectChange}>
                                       <option value="1" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>1</option>
                                       <option value="2" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>2</option>
                                       <option value="3" className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>3</option>
