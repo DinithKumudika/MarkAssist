@@ -137,51 +137,175 @@ async def create_images(request:Request, paper_id):
           
 #      return "File upload success";
 
-@router.post('/upload/file/',response_description="Add a new paper", response_model = Paper, status_code= status.HTTP_201_CREATED)
-async def upload_files(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...)):     
+
+# @router.post('/upload/file/', response_description="Add new papers", response_model=List[Paper], status_code=status.HTTP_201_CREATED)
+# async def upload_files(request: Request, files: List[UploadFile] = File(...), year: str = Form(...), subjectId: str = Form(...)):     
+#      # get the subjectCode and subjectName using subjectId
+#      subject = subject_model.subject_by_id(request, subjectId)
+#      if subject:
+#           print("There is subject")
+#           # print(subject['subjectName'])
+#           # print(subject['subjectCode'])
+          
+#           papers_created = []
+          
+#           for file in files:
+#                print(file.filename)
+
+#                # Upload the file and get the file URL
+#                paper_url_up = await upload_file(file, file.filename)
+#                print(paper_url_up)
+
+#                # Create a new paper object with the provided data and file URL
+#                paper = PaperCreate(
+#                     year=year,
+#                     subjectId=subjectId,
+#                     subjectCode=subject['subjectCode'],
+#                     subjectName=subject['subjectName'],
+#                     paper=file.filename,
+#                     paperUrl=paper_url_up,
+#                     createdAt=datetime.now(),
+#                     updatedAt=datetime.now()
+#                )
+#                # print(paper);
+
+#                # Save the paper to the database using your model
+#                new_paper = await paper_model.add_new_paper(request, paper)
+#                if new_paper:
+#                     papers_created.append(new_paper)
+
+#           if papers_created:
+#                return JSONResponse({
+#                     "detail": "New papers added", 
+#                     "data": [paper["id"] for paper in papers_created],
+#                     "indexNos": [file.filename.split(".")[0] for file in files]
+#                }, 
+#                status_code=status.HTTP_200_OK
+#                )
+
+#           raise HTTPException(
+#                status_code=status.HTTP_404_NOT_FOUND,
+#                detail="Error in file upload"
+#           )
+#      else:
+#           raise HTTPException(
+#                status_code=status.HTTP_404_NOT_FOUND,
+#                detail="Add subject First"
+#           )
+
+
+import zipfile
+import io
+
+@router.post('/upload/file/', response_description="Add new papers", response_model=List[Paper], status_code=status.HTTP_201_CREATED)
+async def upload_files(request: Request, files: List[UploadFile] = File(...), year: str = Form(...), subjectId: str = Form(...)):
      # get the subjectCode and subjectName using subjectId
      subject = subject_model.subject_by_id(request, subjectId)
-     if(subject):
+     if subject:
           print("There is subject")
           # print(subject['subjectName'])
           # print(subject['subjectCode'])
-          print(file.filename)
 
-          # Upload the file and get the file URL
-          paper_url_up = await upload_file(file,file.filename)
-          print(paper_url_up)
+          # Check if the uploaded file is a zip file
+          if files[0].filename.endswith('.zip'):
+               try:
+                    # Read the zip file contents into memory
+                    zip_data = await files[0].read()
 
-          # Create a new paper object with the provided data and file URL
-          paper = PaperCreate(
-               year=year,
-               subjectId=subjectId,
-               subjectCode=subject['subjectCode'],
-               subjectName=subject['subjectName'],
-               paper = file.filename,
-               paperUrl= paper_url_up,
-               createdAt =  datetime.now(),
-               updatedAt = datetime.now()
-          )
-          # print(paper);
+                    # Create an in-memory zip file object
+                    with zipfile.ZipFile(io.BytesIO(zip_data)) as zip_ref:
+                         # List the files in the zip archive
+                         file_list = zip_ref.namelist()
 
-          # Save the paper to the database using your model
-          new_paper = await paper_model.add_new_paper(request, paper)
-          if new_paper:
-               return JSONResponse({
-                         "detail": "new paper added", 
-                         "data": new_paper["id"],
-                         "indexNo": file.filename.split(".")[0]
+                         papers_created = []
+                         for extracted_file in file_list:
+                              # Read the extracted file's data into memory
+                              extracted_file_data = zip_ref.read(extracted_file)
+
+                              # Upload the extracted file and get the file URL
+                              paper_url_up = await upload_file(UploadFile(filename=extracted_file, file=io.BytesIO(extracted_file_data)), extracted_file)
+                              print(f"Uploaded file: {extracted_file}")
+                              print(f"File URL: {paper_url_up}")
+
+                              # Create a new paper object with the provided data and file URL
+                              paper = PaperCreate(
+                                   year=year,
+                                   subjectId=subjectId,
+                                   subjectCode=subject['subjectCode'],
+                                   subjectName=subject['subjectName'],
+                                   paper=extracted_file,
+                                   paperUrl=paper_url_up,
+                                   createdAt=datetime.now(),
+                                   updatedAt=datetime.now()
+                              )
+                              # print(paper);
+
+                              # Save the paper to the database using your model
+                              new_paper = await paper_model.add_new_paper(request, paper)
+                         if new_paper:
+                              papers_created.append(new_paper)
+
+                         if papers_created:
+                              return JSONResponse({
+                                   "detail": "New papers added",
+                                   "data": [paper["id"] for paper in papers_created],
+                                   "indexNos": [files[0].filename.split(".")[0] for _ in papers_created]
+                              },
+                              status_code=status.HTTP_200_OK
+                              )
+
+               except zipfile.BadZipFile:
+                    raise HTTPException(
+                         status_code=status.HTTP_400_BAD_REQUEST,
+                         detail="Invalid zip file format"
+                    )
+
+          else:
+               # Handle pdfs
+
+               papers_created = []
+               
+               for file in files:
+                    print(file.filename)
+
+                    # Upload the file and get the file URL
+                    paper_url_up = await upload_file(file, file.filename)
+                    print(paper_url_up)
+
+                    # Create a new paper object with the provided data and file URL
+                    paper = PaperCreate(
+                         year=year,
+                         subjectId=subjectId,
+                         subjectCode=subject['subjectCode'],
+                         subjectName=subject['subjectName'],
+                         paper=file.filename,
+                         paperUrl=paper_url_up,
+                         createdAt=datetime.now(),
+                         updatedAt=datetime.now()
+                    )
+                    # print(paper);
+
+                    # Save the paper to the database using your model
+                    new_paper = await paper_model.add_new_paper(request, paper)
+                    if new_paper:
+                         papers_created.append(new_paper)
+
+               if papers_created:
+                    return JSONResponse({
+                         "detail": "New papers added", 
+                         "data": [paper["id"] for paper in papers_created],
+                         "indexNos": [file.filename.split(".")[0] for file in files]
                     }, 
                     status_code=status.HTTP_200_OK
+                    )
+
+               raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Error in file upload"
                )
 
-          raise HTTPException(
-               status_code=status.HTTP_404_NOT_FOUND,
-               detail="error in file upload"
-          )
      else:
           raise HTTPException(
                status_code=status.HTTP_404_NOT_FOUND,
                detail="Add subject First"
           )
-     

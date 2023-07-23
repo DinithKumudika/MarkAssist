@@ -30,7 +30,7 @@ class Subject(BaseModel):
             "no_credits":2,
             "assignmentMarks":30,
             "paperMarks":70,
-            "editingTeaacher":"64873b4029eb156b34979ab0",
+            "editingTeacher":"64873b4029eb156b34979ab0",
             "nonEditingTeacher":"64873b4029eb156b34979ab0",
             }
         }
@@ -68,8 +68,8 @@ class SubjectCreate(BaseModel):
     paperMarks:int
     editingTeacher:str
     nonEditingTeacher:str
-    # createdAt: Optional[datetime] = Field(default_factory=datetime.now)
-    # updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
+    createdAt: Optional[datetime]
+    updatedAt: Optional[datetime]
 
     class Config:
         schema_extra = {
@@ -83,9 +83,9 @@ class SubjectCreate(BaseModel):
             "no_credits":2,
             "assignmentMarks":30,
             "paperMarks":70,
-            "editingTeaacher":"64873b4029eb156b34979ab0",
+            "editingTeacher":"64873b4029eb156b34979ab0",
             "nonEditingTeacher":"64873b4029eb156b34979ab0",
-            # "createdAt": "2023-06-27T10:00:00",
-            # "updatedAt": "2023-06-27T10:00:00"
+            "createdAt": "2023-06-27T10:00:00",
+            "updatedAt": "2023-06-27T10:00:00"
             }
         }
