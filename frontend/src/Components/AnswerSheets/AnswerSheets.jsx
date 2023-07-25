@@ -35,7 +35,7 @@ function AnswerSheets({clicked, data}) {
             <Table name={true} date={true} select={true} AnswerSheets={data}/>
         </div>
       ): ( 
-        <DragDrop closeFunc={closeModal}>Marking Scheme</DragDrop>
+        <DragDrop closeFunc={closeModal}>Answer Sheets</DragDrop>
       )}
       {show && <DragDrop closeFunc={closeModal}>Answer Sheets</DragDrop>}
     </div>
