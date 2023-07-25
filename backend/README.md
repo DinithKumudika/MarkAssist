@@ -10,28 +10,34 @@ To use the application, follow the outlined steps:
 ```console
 git clone https://github.com/DinithKumudika/MarkAssist-API.git
 ```
+
+2. create a python virtual environment and activate it
 ```console
 $ python -m venv venv
 ```
 
-2. Install the modules listed in the `requirements.txt` file:
+```console
+$ venv/Scripts/activate
+```
+
+3. Install the modules listed in the `requirements.txt` file:
 
 ```console
 (venv)$ pip install -r requirements.txt
 ```
 
-3. You also need to start your mongodb instance. See the `.env.sample` for configurations.
+4. You also need to start your mongodb instance. See the `.env.sample` for configurations.
 
-4. goto src directory.
+5. goto src directory.
 
 ```console
 cd src
 ```
 
-5. Start the application:
+6. Start the application:
 
 ```console
-python main.py
+python run.py
 ```
 
 The starter listens on port 8000 on localhost
