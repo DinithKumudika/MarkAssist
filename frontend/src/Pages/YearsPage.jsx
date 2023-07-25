@@ -12,6 +12,7 @@ function YearsPage() {
     window.location.href="/";
   }
   const user_id=allItems['user_id'];
+  const userType = allItems['user_role'];
   const [isClicked,setClick] = useState("inner");
   const [years,setYears] = useState([]);
   useEffect(()=>{
@@ -22,16 +23,27 @@ function YearsPage() {
       const headers = {
         Authorization: `Bearer ${accessToken}`,
       };
-
-      axios
-      .get(`http://localhost:8000/api_v1/subjects/years/${user_id}/${subjectCode}`,{headers})
-      .then((response) => {
-        const data = response.data;
-        setYears(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      if(userType==='teacher'){
+        axios
+        .get(`http://localhost:8000/api_v1/subjects/years/${user_id}/${subjectCode}`,{headers})
+        .then((response) => {
+          const data = response.data;
+          setYears(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      }else if(userType==='admin'){
+        axios
+        .get(`http://localhost:8000/api_v1/subjects/years/${subjectCode}`)
+        .then((response) => {
+          const data = response.data;
+          setYears(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      }
   }
 
   //Function to handle the click of the hamburger menu

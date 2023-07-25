@@ -56,24 +56,35 @@ function SubjectAddBox({closeFunc,teachers}) {
             console.log("no error");
             setError("");
         }
-        const formdata = new FormData();
-        formdata.append('subjectCode',formData.subjectCode);
-        // formdata.append('subjectStream', formData.subjectStream);
-        formdata.append('subjectName', formData.subjectName);
-        formdata.append('year', parseInt(formData.year));
-        formdata.append('semester', parseInt(formData.semester));
-        formdata.append('academicYear', parseInt(formData.academicYear));
-        formdata.append('no_credits', parseInt(formData.no_credits));
-        formdata.append('assignmentMarks', parseInt(formData.assignmentMarks));
-        formdata.append('paperMarks', parseInt(formData.paperMarks));
-        formdata.append('editingTeacher', formData.editingTeacher);
-        formdata.append('nonEditingTeacher', formData.nonEditingTeacher);
-        console.log("year:",typeof parseInt(formdata.get('year')));
-        console.log("formdata:",formData);
+        formData.subjectCode = formData.subjectStream+formData.subjectCode;
+        const form = {...formData}
+        delete form.subjectStream;
+        form.createdAt = new Date();
+        form.updatedAt = new Date();
+        console.log("form:",form);
+        // const formdata = new FormData();
+        // formdata.append('subjectCode',formData.subjectCode);
+        // // formdata.append('subjectStream', formData.subjectStream);
+        // formdata.append('subjectName', formData.subjectName);
+        // formdata.append('year', parseInt(formData.year));
+        // formdata.append('semester', parseInt(formData.semester));
+        // formdata.append('academicYear', parseInt(formData.academicYear));
+        // formdata.append('no_credits', parseInt(formData.no_credits));
+        // formdata.append('assignmentMarks', parseInt(formData.assignmentMarks));
+        // formdata.append('paperMarks', parseInt(formData.paperMarks));
+        // formdata.append('editingTeacher', formData.editingTeacher);
+        // formdata.append('nonEditingTeacher', formData.nonEditingTeacher);
+        // formdata.append('createdAt', new Date());
+        // formdata.append('updatedAt', new Date());
+        // console.log("year:",typeof parseInt(formdata.get('year')));
+        // console.log("formdata:",formData);
         axios
-        .post(`http://127.0.0.1:8000/api_v1/subjects`,formdata)
+        .post(`http://127.0.0.1:8000/api_v1/subjects`,form)
         .then((response)=>{
             console.log(response);
+            if(response.status === 201){
+                closeFunc();
+            }
         })
         .catch((error) => {
             console.error(error);

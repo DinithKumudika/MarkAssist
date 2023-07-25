@@ -124,6 +124,25 @@ class SubjectModel():
                print("There are no subjects")
                return None
 
+
+     # get subject by subjectCode as a list
+     def get_subject_by_subjectCode(self, request: Request, subjectCode: str) -> list:
+          print("This is subjectCode", subjectCode)
+          
+          subjects = list(self.get_collection(request).find({"subjectCode": subjectCode}).sort("year", -1))
+
+          if subjects:
+               print("No subjects", subjects)
+               for subject in subjects:
+                    subject["id"] = str(subject["_id"])
+                    subject["editingTeacher"] = str(subject["editingTeacher"])
+                    subject["nonEditingTeacher"] = str(subject["nonEditingTeacher"])
+
+               return subjects
+          else:
+               print("There are no subjects")
+               return None
+
      
      
      def subject_by_id(self, request: Request, id: str) -> Subject:
@@ -170,7 +189,8 @@ class SubjectModel():
                subject["nonEditingTeacher"] = str(subject["nonEditingTeacher"])
                return subject
           else:
-               return None;
+               return None
+          
 
           
      

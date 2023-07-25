@@ -15,7 +15,7 @@ function MarksBox({markingScheme_URL, answersheet_URL,answer,marking,showImages}
   console.log("markingschhh::",marking.keywords)
   
   const keywords = marking.keywords.map((keyword,index) => (
-    <input type="text" key={index} value={keyword} className="shadow shadow-gray-500 bg-[#EDEDED] mr-2 h-12 text-center rounded rounded-lg font-bold" disabled/>
+    <input type="text" key={index} value={keyword} className="shadow shadow-gray-500 bg-[#EDEDED] mr-2 h-12 text-center rounded rounded-lg font-bold mb-2" disabled/>
   ))
 
   return (
@@ -42,7 +42,7 @@ function MarksBox({markingScheme_URL, answersheet_URL,answer,marking,showImages}
         </div>
         <div className="flex flex-col">
           <p className="text-xl text-[#191854] text-center font-bold my-2">Keywords</p>
-          <div className="flex justify-between wrap p-2 bg-gray-100">
+          <div className="flex justify-between flex-wrap p-2 bg-gray-100">
             {keywords}
           </div>
         </div>

@@ -217,6 +217,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                               partNo='',
                               noOfPoints='',
                               marks='',
+                              keywordsMarks='',
                               text=answer_text,
                               keywords=extracted_keywords,
                               uploadUrl=file_url,
@@ -308,11 +309,10 @@ async def download_paper(request: Request, scheme_id : str):
 
 
 @router.put('/update/grading/{markingSchemeId}', response_description="update an marking config of a marking scheme", response_model=MarkingScheme)
-async def update_mark_config(request: Request, markingSchemeId: str, payload: List = Body(...)):
+async def update_mark_config(request: Request, markingSchemeId: str, payload = Body(...)):
      print("markingSchemeId:",markingSchemeId)
      print("payload:", payload)
-     updated_scheme = marking_scheme_model.update(request, "_id", ObjectId(markingSchemeId), payload)
-     
+     updated_scheme = marking_scheme_model.update(request, "_id", ObjectId(markingSchemeId), {"markConfig": payload})
      if updated_scheme:
           return updated_scheme
      raise HTTPException(
@@ -337,6 +337,7 @@ async def update_marking(request: Request, subjectId: str, payload: List[Marking
                                    "partNo": data.partNo,
                                    "noOfPoints": data.noOfPoints,
                                    "marks": data.marks,
+                                   "keywordsMarks": data.keywordsMarks,
                                    "selected": data.selected
                               }
                          }

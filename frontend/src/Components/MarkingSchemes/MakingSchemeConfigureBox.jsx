@@ -8,7 +8,7 @@ function MakingSchemeConfigureBox({ index, formData, onChange,showImages}) {
     };
 
     const keywords = formData.keywords.map((keyword,index) => (
-      <input type="text" key={index} value={keyword} className="shadow shadow-gray-500 bg-[#EDEDED] mr-2 h-12 text-center rounded rounded-lg font-bold" disabled/>
+      <input type="text" key={index} value={keyword} className="shadow shadow-gray-500 bg-[#EDEDED] mr-2 h-12 text-center rounded rounded-lg font-bold mb-2" disabled/>
     ))
 
     var buttonclicked;
@@ -35,22 +35,22 @@ function MakingSchemeConfigureBox({ index, formData, onChange,showImages}) {
     }
 
     const classes = classnames('bg-[#EDEDED] h-10 text-center rounded rounded-lg font-bold w-full ')
-    const divclasses = classnames('bg-[#EDEDED] rounded rounded-xl w-52 flex flex-row items-center justify-between mb-2 max-md:justify-between max-md:px-4 max-sm:w-48')
+    const divclasses = classnames('bg-[#EDEDED] rounded rounded-xl w-full flex flex-row items-center justify-between mb-2 ')
   return (
     <div className="flex flex-col my-6 w-full">
       <p className="font-bold mb-1">{formData.questionNo}  {formData.subQuestionNo} {formData.partNo}</p>
-      <div className=" bg-[#D4D4D4] rounded-lg flex flex-row max-sm:flex-col">
-        <div className="flex flex-row  px-2 rounded-lg p-4 basis-4/5 bg-[#EDEDED] h-auto">
-          <div className='basis-[95%]'>
+      <div className="border-2 border-green-500 w-[100%] bg-[#D4D4D4] rounded-lg flex flex-row max-lg:flex-col">
+        <div className="border-2 border-yellow-500 flex flex-row px-2 rounded-lg p-4 w-[80%] bg-[#EDEDED] h-auto max-lg:w-full">
+          <div className='border-2 border-gray-900 w-[95%]'>
               <p className="border border-gray-500 p-2 mb-1 mr-1">{formData.text}</p>
              {showImages ? <img  className="w-full h-fit " src={formData.uploadUrl} alt="Marking scheme"/>
                 : showImage && <img  className="w-full h-fit " src={formData.uploadUrl} alt="Marking scheme"/>}
-          <div className="flex flex-col">
-            <p className="text-xl text-[#191854] text-center font-bold my-2">Keywords</p>
-            <div className="flex justify-between wrap p-2 bg-gray-100">
-              {keywords}
+            <div className="flex flex-col">
+              <p className="text-xl text-[#191854] text-center font-bold my-2">Keywords</p>
+              <div className="border border-blue-500 w-full flex justify-between flex-wrap p-2 bg-gray-100">
+                {keywords}
+              </div>
             </div>
-        </div>
           </div>
           <div className='basis-[5%]'>
             {showImages ? <AiFillEye onClick={handleIconClick} className='hover:cursor-pointer border-2 border-gray-500 text-4xl z-auto'/> 
@@ -58,10 +58,10 @@ function MakingSchemeConfigureBox({ index, formData, onChange,showImages}) {
                   : <AiFillEyeInvisible className='hover:cursor-pointer text-4xl border-2 border-gray-500 z-auto' onClick={handleIconClick}/>}
           </div>
         </div>
-        <div className=" py-4 flex flex-col justify-between basis-[20%] items-center px-2 max-md:flex-col max-md:items-center">
-          <div  className="w-52 max-sm:w-48 flex flex-row items-center justify-between mb-2 max-md:justify-center max-md:flex-col max-md:px-4">
-            <button onClick={handleSelect} className={`${formData.selected===false ? "bg-[#EDEDED]" : "bg-green-500 text-white"} font-bold text-[#191854] bg-[#EDEDED] px-2 rounded rounded-lg w-24 h-10 max-md:mb-2`}>Select</button>
-            <button onClick={handleDeselect} className={`${formData.selected===false ? "bg-red-500 text-white" : "bg-[#EDEDED]"} font-bold text-[#191854] bg-[#EDEDED] px-2 rounded rounded-lg w-24 h-10`}>Deselect</button>
+        <div className="border-2 border-red-500 py-4 flex flex-col justify-between w-[20%] items-center px-2 max-lg:flex-col max-lg:items-center max-lg:w-full">
+          <div  className="w-full flex flex-row items-center justify-between mb-2 max-lg:justify-between">
+            <button onClick={handleSelect} className={` ${formData.selected===false ? "bg-[#EDEDED]" : "bg-green-500 text-white"} font-bold text-[#191854] bg-[#EDEDED] px-2 rounded rounded-lg w-[45%] h-10 `}>Select</button>
+            <button onClick={handleDeselect} className={`${formData.selected===false ? "bg-red-500 text-white" : "bg-[#EDEDED]"} font-bold text-[#191854] bg-[#EDEDED] px-2 rounded rounded-lg w-[45%] h-10 `}>Deselect</button>
           </div>
           <div  className={divclasses}>
             {/* <label className="mr-2">Question no:</label> */}
@@ -82,6 +82,10 @@ function MakingSchemeConfigureBox({ index, formData, onChange,showImages}) {
           <div className={divclasses}>
             {/* <label className="mr-2">Marks:</label> */}
             <input type="text" name='marks' pattern="[0-9]{3}" value={formData.marks} placeholder='Marks' onChange={handleInputChange} className={classes}/>
+          </div>
+          <div className={divclasses}>
+            {/* <label className="mr-2">Keywords Marks:</label> */}
+            <input type="text" name='keywordsMarks' pattern="[0-9]{3}" value={formData.keywordsMarks} placeholder='Keywords Marks' onChange={handleInputChange} className={classes}/>
           </div>
         </div>
       </div>

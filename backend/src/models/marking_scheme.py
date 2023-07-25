@@ -109,7 +109,9 @@ class MarkingSchemeModel():
                return_document=ReturnDocument.AFTER
           )
           
+          print("updated scheme", updated_scheme)
           if updated_scheme:
+               updated_scheme["id"] = str(updated_scheme["_id"])
                return updated_scheme
           else:
                return False

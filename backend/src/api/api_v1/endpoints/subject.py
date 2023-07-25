@@ -42,6 +42,19 @@ async def get_years_list(request: Request,user_id:str, subjectCode: str):
           detail=f"No subjects for subject code {subjectCode} and {user_id}"
      )
 
+# get years list according to a subject code in  descending order.
+@router.get('/years/{subjectCode}', response_description=" get list of subjects according to subjectCode", response_model=List[Subject],status_code=status.HTTP_200_OK)
+async def get_years_list(request: Request, subjectCode: str):
+     subject_list = subject_model.get_subject_by_subjectCode(request, subjectCode)
+     
+     if subject_list:
+          print("get years list",subject_list)
+          return list(subject_list)
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND,
+          detail=f"No subjects for subject code {subjectCode}"
+     )
+
 # get subject by user Id and subject id
 @router.get('/{user_id}/{id}', response_description="Get a subject by id and user id", response_model=Subject,status_code=status.HTTP_200_OK)
 async def get_subject_by_id_user_id(request: Request, user_id:str ,id: str):
