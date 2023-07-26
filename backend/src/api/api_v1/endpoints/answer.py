@@ -84,7 +84,9 @@ async def save_answers(request: Request, paper_no, sub, stu):
                userId=stu, 
                questionNo=question_no, 
                text=answer_text,
-               uploadUrl= file_url
+               uploadUrl= file_url,
+               accuracy=None,
+               marks= None
           )
           answer_id = answer_model.save_answer(request, answer)
           
@@ -116,12 +118,25 @@ async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu:
      for i, el in enumerate(answers_by_student):
           print("student answer", i+1, ":", answers_by_student[i]["text"])
           print("Marking answer", i+1, ":", markings_by_scheme_id[i]["text"])
-          percentage = text_similarity(markings_by_scheme_id[i]["text"], answers_by_student[i]["text"])
-          print("Percentage:",percentage)
-          percentages.append({
-               "question": i+1, 
-               "percentage": percentage.split(": ")[-1]
-          })
+
+          if(markings_by_scheme_id[i]["selected"]):
+               percentage = text_similarity(markings_by_scheme_id[i]["text"], answers_by_student[i]["text"])
+               print("Percentage:",percentage)
+               
+               # here we should by questionNo,userId,subjectId
+               filters = {"userId":stu, "questionNo":i+1, "subjectId":sub}
+               data = {"accuracy":percentage.split(": ")[-1]}
+               
+               answer_model.update(request, filters , data)
+               
+               # TODO: add to db,accuracy field add to schema
+               
+               percentages.append({
+                    "subjectId":sub,
+                    "userId":stu,
+                    "questionNoquestion": i+1, 
+                    "accuracy": percentage.split(": ")[-1]
+               })
      return JSONResponse({
                "similarity percentages": percentages
           },

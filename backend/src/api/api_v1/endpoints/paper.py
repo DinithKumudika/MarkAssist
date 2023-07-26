@@ -8,6 +8,8 @@ import httpx
 import requests
 
 import os
+import zipfile
+import io
 
 from models.paper import PaperModel
 from schemas.paper import Paper,PaperCreate,PaperForm
@@ -193,9 +195,6 @@ async def create_images(request:Request, paper_id):
 #                detail="Add subject First"
 #           )
 
-
-import zipfile
-import io
 
 @router.post('/upload/file/', response_description="Add new papers", response_model=List[Paper], status_code=status.HTTP_201_CREATED)
 async def upload_files(request: Request, files: List[UploadFile] = File(...), year: str = Form(...), subjectId: str = Form(...)):
