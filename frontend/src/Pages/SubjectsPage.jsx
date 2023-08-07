@@ -6,6 +6,9 @@ import { MoonLoader } from 'react-spinners';
 import axios from 'axios'
 
 function SubjectsPage() {
+  setTimeout(() => {
+    // Timeout of 1s
+  }, 1000);
   const allItems=JSON.parse(localStorage.getItem('tokenData'));
   if(!allItems){
     window.location.href="/";
@@ -36,6 +39,8 @@ function SubjectsPage() {
           const data = response.data;
           console.log(data);
           setSubjects(data);
+          const sortedData = [...data].sort((a, b) => a.subjectName.localeCompare(b.subjectName));
+          setSubjects(sortedData)
           setIsLoading(false);
         })
         .catch((error) => {
@@ -48,6 +53,8 @@ function SubjectsPage() {
         .then((response) => {
           const data = response.data;
           setSubjects(data);
+          const sortedData = [...data].sort((a, b) => a.subjectName.localeCompare(b.subjectName));
+          setSubjects(sortedData)
           setIsLoading(false);
         })
         .catch((error) => {

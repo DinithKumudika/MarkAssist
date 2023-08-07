@@ -5,11 +5,10 @@ function MarkAccurcyConfigure({marksConfigure,handleAddChild,handleRemoveChild,h
   const rows = marksConfigure.map((markConfigure,index) => {
     return(
       (index!==length-1) ? 
-          index===0 ? <MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus=""/> 
-          :<MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus="-"/>
-        : length===1 ? <MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus="+"/>
-          : (markConfigure.maximum===100) ?  <MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus=""/>
-            :<MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} addMinus="+"/>
+          index===0 ? <MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} add="+" Minus=""/> 
+          :<MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} add="+" Minus="-"/>
+        : (markConfigure.maximum===100) ?  <MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} add="" Minus="-"/>
+          :<MarkAccurcyConfigureBox handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} index={index} key={index} data={markConfigure} handleFormChange={handleFormChange} add="+" Minus="-"/>
     )
   })
   return (

@@ -25,7 +25,7 @@ function Subjects({clicked,data}) {
   const [show, setShow] = useState(false);
   //Sort setvalue
   // let sortedData=data
-  const [sort,setSort] = useState("")
+  const [sort,setSort] = useState("subjectName")
   const [sorteddata,setsorteddata] = useState(data)
   // console.log("sorteddata",sorteddata)
   //To save teachers list
@@ -43,10 +43,26 @@ function Subjects({clicked,data}) {
   //Sort select change
   const handleSortChange = (event) =>{
     setSort(event.target.value)
-    // console.log(formData);
-    const sortedData = [...data].sort((a, b) => `${a}.${event.target.value}`.localeCompare(`${b}.${event.target.value}`));
-    // console.log("sortedData::",sortedData,event.target.value)
-    setsorteddata(sortedData)
+    console.log("sort::",event.target.value);
+    if(event.target.value==="subjectName-ASC"){
+      const sortedData = [...data].sort((a, b) => a.subjectName.localeCompare(b.subjectName));
+      console.log("sortedData::",sortedData)
+      setsorteddata(sortedData)
+    }else if(event.target.value==="subjectCode-ASC"){
+      const sortedData = [...data].sort((a, b) => a.subjectCode.localeCompare(b.subjectCode));
+      console.log("sortedData::",sortedData)
+      setsorteddata(sortedData)
+    }else if(event.target.value==="subjectName-DSC"){
+      const sortedData = [...data].sort((a, b) => a.subjectCode.localeCompare(b.subjectCode)*-1);
+      console.log("sortedData::",sortedData)
+      setsorteddata(sortedData)
+    }else if(event.target.value==="subjectCode-DSC"){
+      const sortedData = [...data].sort((a, b) => a.subjectCode.localeCompare(b.subjectCode)*-1);
+      console.log("sortedData::",sortedData)
+      setsorteddata(sortedData)
+    }
+    // const sortedData = [...data].sort((a, b) =>`${a}.${event.target.value}`.localeCompare(`${b}.${event.target.value}`));
+    // console.log("sortedData::",sortedData)
   }
   // sortedData = useSort(data,sort,"asc")
 
@@ -76,8 +92,10 @@ function Subjects({clicked,data}) {
                   <p className='p-2 rounded rounded-lg w-20 mr-4 font-bold text-[#191854]'>Subjects({length})</p>
                   <p className='p-2 rounded rounded-lg w-20 '>Sort by:</p>
                   <select className='w-28 'name='sort' value={sort} onChange={handleSortChange}>
-                    <option value="subjectName" className='font-bold'>Name</option>
-                    <option value="subjectCode" className='font-bold'>Subject Code</option>
+                    <option value="subjectName-ASC" className='font-bold'>Name-ASC</option>
+                    <option value="subjectName-DSC" className='font-bold'>Name-DSC</option>
+                    <option value="subjectCode-ASC" className='font-bold'>Subject Code-ASC</option>
+                    <option value="subjectCode-DSC" className='font-bold'>Subject Code-DSC</option>
                   </select>
                   {/* <p className='bg-black/20 p-2 rounded rounded-lg'>Grade</p> */}
               </div>

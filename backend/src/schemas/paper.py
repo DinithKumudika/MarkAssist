@@ -11,6 +11,8 @@ class Paper(BaseModel):
      subjectName:str
      paper:str
      paperUrl:str
+     createdAt: Optional[datetime] = Field(default_factory=datetime.now)
+     updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
      
      class Config:
           schema_extra = {

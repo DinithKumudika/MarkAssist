@@ -193,6 +193,53 @@ async def create_images(request:Request, paper_id):
 #                detail="Add subject First"
 #           )
 
+# @router.post('/upload/file/',response_description="Add a new paper", response_model = Paper, status_code= status.HTTP_201_CREATED)
+# async def upload_files(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...)):     
+#      # get the subjectCode and subjectName using subjectId
+#      subject = subject_model.subject_by_id(request, subjectId)
+#      if(subject):
+#           print("There is subject")
+#           # print(subject['subjectName'])
+#           # print(subject['subjectCode'])
+#           print(file.filename)
+
+#           # Upload the file and get the file URL
+#           paper_url_up = await upload_file(file,file.filename)
+#           print(paper_url_up)
+
+#           # Create a new paper object with the provided data and file URL
+#           paper = PaperCreate(
+#                year=year,
+#                subjectId=subjectId,
+#                subjectCode=subject['subjectCode'],
+#                subjectName=subject['subjectName'],
+#                paper = file.filename,
+#                paperUrl= paper_url_up,
+#                createdAt =  datetime.now(),
+#                updatedAt = datetime.now()
+#           )
+#           # print(paper);
+
+#           # Save the paper to the database using your model
+#           new_paper = await paper_model.add_new_paper(request, paper)
+#           if new_paper:
+#                return JSONResponse({
+#                          "detail": "new paper added", 
+#                          "data": new_paper["id"],
+#                          "indexNo": file.filename.split(".")[0]
+#                     }, 
+#                     status_code=status.HTTP_200_OK
+#                )
+
+#           raise HTTPException(
+#                status_code=status.HTTP_404_NOT_FOUND,
+#                detail="error in file upload"
+#           )
+#      else:
+#           raise HTTPException(
+#                status_code=status.HTTP_404_NOT_FOUND,
+#                detail="Add subject First"
+#           )
 
 import zipfile
 import io
@@ -200,6 +247,7 @@ import io
 @router.post('/upload/file/', response_description="Add new papers", response_model=List[Paper], status_code=status.HTTP_201_CREATED)
 async def upload_files(request: Request, files: List[UploadFile] = File(...), year: str = Form(...), subjectId: str = Form(...)):
      # get the subjectCode and subjectName using subjectId
+     print("Files::",files)
      subject = subject_model.subject_by_id(request, subjectId)
      if subject:
           print("There is subject")

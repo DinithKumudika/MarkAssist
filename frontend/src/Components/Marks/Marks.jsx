@@ -59,7 +59,7 @@ function Marks({clicked,answers,markings}) {
       {
         "minimum" : minimum,
         "maximum" : null,
-        "marks" : null
+        "percentageOfMarks" : null
       }
     ]);
   };
@@ -85,7 +85,7 @@ function Marks({clicked,answers,markings}) {
     marksConfigure.map((markConfigure,index) => {
       if(markConfigure.maximum==="" || markConfigure.percentageOfMarks===""){
         setError("Please fill all the fields")
-      }else if(index===marksConfigure.length-1){
+      }else if(index===(marksConfigure.length)-1){
         if(markConfigure.maximum!==100){
           setError("Range Should be 0-100.")
         }

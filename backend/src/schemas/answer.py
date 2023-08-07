@@ -10,6 +10,7 @@ class Answer(BaseModel):
      text: str
      uploadUrl: str
      
+     
 class AnswerCreate(BaseModel):
      paperNo: str
      subjectId: str

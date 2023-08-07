@@ -44,20 +44,20 @@ function MarksPage() {
         // console.log("Markasdfghings:",marking[0].markingScheme)
         setIsLoading2(false);
         setmarkingschemeID(marking[0].markingScheme) 
-        axios
-        .get(`http://127.0.0.1:8000/api_v1/answers/compare/${marking[0].markingScheme}?sub=${subjectId}&stu=${answer[0].userId}`)
-        .then((response)=>{
-          const marks = response.data
-          // setMarkings(marking)
-          // markingschemeID = marking[0].markingScheme
-          console.log("Markkkkkkssssss:",marks)
+        // axios
+        // .get(`http://127.0.0.1:8000/api_v1/answers/compare/${marking[0].markingScheme}?sub=${subjectId}&stu=${answer[0].userId}`)
+        // .then((response)=>{
+        //   const marks = response.data
+        //   // setMarkings(marking)
+        //   // markingschemeID = marking[0].markingScheme
+        //   console.log("Markkkkkkssssss:",marks)
 
-        })
-        .catch((error) => {
-          console.error(error);
-          // setMarks(null)
-          // Handle the error, e.g., display an error message to the user
-        });
+        // })
+        // .catch((error) => {
+        //   console.error(error);
+        //   // setMarks(null)
+        //   // Handle the error, e.g., display an error message to the user
+        // });
       })
       .catch((error) => {
         console.error(error);

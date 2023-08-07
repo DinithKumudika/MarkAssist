@@ -39,15 +39,15 @@ function MakingSchemeConfigureBox({ index, formData, onChange,showImages}) {
   return (
     <div className="flex flex-col my-6 w-full">
       <p className="font-bold mb-1">{formData.questionNo}  {formData.subQuestionNo} {formData.partNo}</p>
-      <div className="border-2 border-green-500 w-[100%] bg-[#D4D4D4] rounded-lg flex flex-row max-lg:flex-col">
-        <div className="border-2 border-yellow-500 flex flex-row px-2 rounded-lg p-4 w-[80%] bg-[#EDEDED] h-auto max-lg:w-full">
-          <div className='border-2 border-gray-900 w-[95%]'>
-              <p className="border border-gray-500 p-2 mb-1 mr-1">{formData.text}</p>
+      <div className="w-[100%] bg-[#D4D4D4] rounded-lg flex flex-row max-lg:flex-col">
+        <div className="flex flex-row px-2 rounded-lg p-4 w-[80%] bg-[#EDEDED] h-auto max-lg:w-full">
+          <div className='w-[95%]'>
+              <p className=" p-2 mb-1 mr-1">{formData.text}</p>
              {showImages ? <img  className="w-full h-fit " src={formData.uploadUrl} alt="Marking scheme"/>
                 : showImage && <img  className="w-full h-fit " src={formData.uploadUrl} alt="Marking scheme"/>}
             <div className="flex flex-col">
               <p className="text-xl text-[#191854] text-center font-bold my-2">Keywords</p>
-              <div className="border border-blue-500 w-full flex justify-between flex-wrap p-2 bg-gray-100">
+              <div className="w-full flex justify-between flex-wrap p-2 bg-gray-100">
                 {keywords}
               </div>
             </div>
@@ -58,7 +58,7 @@ function MakingSchemeConfigureBox({ index, formData, onChange,showImages}) {
                   : <AiFillEyeInvisible className='hover:cursor-pointer text-4xl border-2 border-gray-500 z-auto' onClick={handleIconClick}/>}
           </div>
         </div>
-        <div className="border-2 border-red-500 py-4 flex flex-col justify-between w-[20%] items-center px-2 max-lg:flex-col max-lg:items-center max-lg:w-full">
+        <div className="py-4 flex flex-col justify-between w-[20%] items-center px-2 max-lg:flex-col max-lg:items-center max-lg:w-full">
           <div  className="w-full flex flex-row items-center justify-between mb-2 max-lg:justify-between">
             <button onClick={handleSelect} className={` ${formData.selected===false ? "bg-[#EDEDED]" : "bg-green-500 text-white"} font-bold text-[#191854] bg-[#EDEDED] px-2 rounded rounded-lg w-[45%] h-10 `}>Select</button>
             <button onClick={handleDeselect} className={`${formData.selected===false ? "bg-red-500 text-white" : "bg-[#EDEDED]"} font-bold text-[#191854] bg-[#EDEDED] px-2 rounded rounded-lg w-[45%] h-10 `}>Deselect</button>

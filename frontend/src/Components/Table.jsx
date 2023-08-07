@@ -1,4 +1,5 @@
 import {Link, useLocation, useNavigate} from 'react-router-dom';
+import { Fragment } from 'react';
 function Table({name, role, date, subjects, select, index, fileName, overallMark, MarkingSchemes,teachers, AnswerSheets, papers}) {
   const navigate = useNavigate();
   console.log("teacher:",teachers)
@@ -23,25 +24,33 @@ function Table({name, role, date, subjects, select, index, fileName, overallMark
     const month = dateObj.getMonth() + 1; // Months are zero-indexed, so add 1
     const day = dateObj.getDate();
         return (
-          <tr className="w-full">
-            <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.firstName} {teacher.lastName}</td>
-            <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 text-center'>{teacher.role}</td>
-            {/* {date && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>{teacher.date}</td>} */}
-            <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60 text-center'>{year}-{month.toString().padStart(2, '0')}-{day.toString().padStart(2, '0')}</td>
-            {/* {subjects && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.subjects}</td>} */}
-            <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>3</td>
-            {/* {select && <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-[#4457FF] w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={handleSelect}><div className='ml-2'>Select</div></button></td>} */}
-          </tr>
+          <Fragment key={teacher.firstName}>
+            <tr className="w-full">
+              <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.firstName} {teacher.lastName}</td>
+              <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 text-center'>{teacher.role}</td>
+              {/* {date && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>{teacher.date}</td>} */}
+              <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60 text-center'>{year}-{month.toString().padStart(2, '0')}-{day.toString().padStart(2, '0')}</td>
+              {/* {subjects && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.subjects}</td>} */}
+              <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>3</td>
+              {/* {select && <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-[#4457FF] w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={handleSelect}><div className='ml-2'>Select</div></button></td>} */}
+            </tr>
+          </Fragment>
         )
       })
   }
 
   if(MarkingSchemes){
     console.log("MarkingSchemes:",MarkingSchemes)
+    const dateObj = new Date(MarkingSchemes.createdAt);
+
+    // Get the individual components of the date
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1; // Months are zero-indexed, so add 1
+    const day = dateObj.getDate();
     markingscheme = (
         <tr className="w-full">
           <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{MarkingSchemes.subjectCode}-{MarkingSchemes.subjectName}-{MarkingSchemes.year}</td>
-          <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>10/06/2023</td>
+          <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>{year}-{month.toString().padStart(2, '0')}-{day.toString().padStart(2, '0')}</td>
           <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-custom-blue-2 w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={handleSelect}><div className='ml-2'>Select</div></button></td>
         </tr>
       )
@@ -67,18 +76,28 @@ function Table({name, role, date, subjects, select, index, fileName, overallMark
 
   if(AnswerSheets){
     AnswerSheet = AnswerSheets.map((AnswerSheet) => {
+      // Create a Date object from the timestamp string
+      const dateObj = new Date(AnswerSheet.createdAt);
+
+      // Get the year, month, and date from the Date object
+      const year = dateObj.getFullYear();
+      const month = dateObj.getMonth() + 1; // Months are zero-indexed, so add 1
+      const day = dateObj.getDate();
+      // console.log("year:",AnswerSheet)
       return (
-        <tr className="w-full" key={AnswerSheet.subjectId}>
-            
-            <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-2/5'>{AnswerSheet.paper}</td>
-            <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-3/12'>{AnswerSheet.paper}</td>
-            {/* {date && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>{teacher.date}</td>} */}
-            {/* <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60 w-3/12'><Link key={AnswerSheet.id} to={"/subjects/marks/"+AnswerSheet.year+"/"+AnswerSheet.subjectId} className='w-full'>100</Link></td> */}
-            {/* {subjects && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.subjects}</td>} */}
-            {/* <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>3</td> */}
-            {select && <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-custom-blue-2 w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={()=>navigate(`/answersheets/marks/${AnswerSheet.year}/${AnswerSheet.subjectId}/${AnswerSheet.id}`)}><div className='ml-2'>Select</div></button></td>}
-        
-          </tr>
+        <Fragment key={AnswerSheet.paper}>
+          <tr className="w-full" >
+
+              <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-2/5'>{AnswerSheet.paper}</td>
+              <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-3/12'>{year}-{month.toString().padStart(2, '0')}-{day.toString().padStart(2, '0')}</td>
+              {/* {date && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>{teacher.date}</td>} */}
+              {/* <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60 w-3/12'><Link key={AnswerSheet.id} to={"/subjects/marks/"+AnswerSheet.year+"/"+AnswerSheet.subjectId} className='w-full'>100</Link></td> */}
+              {/* {subjects && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.subjects}</td>} */}
+              {/* <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>3</td> */}
+              {select && <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-custom-blue-2 w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={()=>navigate(`/answersheets/marks/${AnswerSheet.year}/${AnswerSheet.subjectId}/${AnswerSheet.id}`)}><div className='ml-2'>Select</div></button></td>}
+
+            </tr>
+        </Fragment>
       )
     })
   }

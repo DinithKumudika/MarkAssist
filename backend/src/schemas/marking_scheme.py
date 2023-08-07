@@ -27,7 +27,8 @@ class MarkingScheme(BaseModel):
      subjectId:str
      markingUrl:str
      markConfig: List[MarkPercentage]
-
+     createdAt: Optional[datetime] = Field(default_factory=datetime.now)
+     updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
      class Config:
           schema_extra = {
                "example": {

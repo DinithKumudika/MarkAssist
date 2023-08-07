@@ -52,10 +52,10 @@ function DragDrop({children,closeFunc,data}) {
     e.preventDefault();
     if(!files?.length) return
     const formData = new FormData()
-    files.forEach(file => formData.append('file', file))
+    files.forEach(file => formData.append('files', file))
     formData.append('year', year);
     formData.append('subjectId',subjectId);
-    // console.log("form data",formData)
+    console.log("form data",formData.get('files'))
     setUploading(true);
     if(pathName[0]==="markingschemes"){
       axios
@@ -68,7 +68,8 @@ function DragDrop({children,closeFunc,data}) {
         window.location.reload();
 
       })
-    }else if(pathName[0]==="answersheets"){
+    }
+    else if(pathName[0]==="answersheets"){
       axios
       .post(`http://127.0.0.1:8000/api_v1/papers/upload/file`,formData)
       .then((response) => {
