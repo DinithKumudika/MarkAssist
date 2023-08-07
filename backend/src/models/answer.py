@@ -1,5 +1,7 @@
 from fastapi import Request
 from bson.objectid import ObjectId
+from pymongo import ReturnDocument 
+from typing import Dict,List, Union
 
 import cv2
 from google.cloud import vision
@@ -114,5 +116,17 @@ class AnswerModel():
                answer["id"] = str(answer["_id"]) 
           return answers
      
-     def update():
-          pass 
+     
+     def update(self, request: Request, filters: Dict[str, Union[str, ObjectId]], data)-> Answer | bool:
+          updated_answer = self.get_collection(request).find_one_and_update(
+               filters, 
+               {'$set': data},
+               return_document=ReturnDocument.AFTER
+          )
+          
+          print("updated answer", updated_answer)
+          if updated_answer:
+               updated_answer["id"] = str(updated_answer["_id"])
+               return updated_answer
+          else:
+               return False
