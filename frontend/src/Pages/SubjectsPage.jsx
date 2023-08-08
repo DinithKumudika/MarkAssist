@@ -4,6 +4,7 @@ import Subjects from '../Components/Subjects/Subjects'
 import {useEffect, useState} from 'react'
 import { MoonLoader } from 'react-spinners';
 import axios from 'axios'
+import { set } from 'mongoose';
 
 function SubjectsPage() {
   setTimeout(() => {
@@ -44,7 +45,11 @@ function SubjectsPage() {
           setIsLoading(false);
         })
         .catch((error) => {
-          console.error(error);
+          console.log(error.response.status);
+          if(error.response.status===404){
+            setSubjects(null);
+            setIsLoading(false);
+          }
         });
       }else if(userType==="teacher"){
         // console.log(headers);
@@ -58,7 +63,11 @@ function SubjectsPage() {
           setIsLoading(false);
         })
         .catch((error) => {
-          console.error(error);
+          console.log(error.response.status);
+          if(error.response.status===404){
+            setSubjects(null);
+            setIsLoading(false);
+          }
         });
       }
     

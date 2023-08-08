@@ -118,6 +118,8 @@ class AnswerModel():
      
      
      def update(self, request: Request, filters: Dict[str, Union[str, ObjectId]], data)-> Answer | bool:
+          print("filters", filters)
+          print("data", data)
           updated_answer = self.get_collection(request).find_one_and_update(
                filters, 
                {'$set': data},

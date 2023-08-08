@@ -73,7 +73,7 @@ function MakingSchemeConfigureBox({ index, formData, onChange,showImages}) {
           </div>
           <div className={divclasses}>
             {/* <label className="mr-2">Sub-sub Question no:</label> */}
-            <input type="text" name='partNo' value={formData.partNo} placeholder='Sub-sub Question no' onChange={handleInputChange} className={classes}/>
+            <input type="text" name='partNo' value={formData.partNo} placeholder='Part no' onChange={handleInputChange} className={classes}/>
           </div>
           <div className={divclasses}>
             {/* <label className="mr-2">No of points:</label> */}

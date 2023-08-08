@@ -111,7 +111,7 @@ function SubjectAddBox({closeFunc,teachers}) {
     return ReactDOM.createPortal(
         <div className='w-[95%]'>
         <div className='z-30 fixed inset-0 bg-gray-300 opacity-80' onClick={closeFunc}></div>
-        <div className='shadow shadow-gray-500 z-30 absolute top-[15%] left-[4%] h-fit w-[92%] px-2 pb-5 bg-white  flex flex-col items-center max-lg:left-[2%] max-lg:w-[98%]'>
+        <div className='m-auto shadow shadow-gray-500 z-30 absolute top-[15%] left-[4%] h-fit w-[92%] px-2 pb-5 bg-white  flex flex-col items-center max-lg:left-[2%] max-lg:w-[98%]'>
             <form className='w-full pl-2' onSubmit={handleSubmit}>
 
                 <div className='border-b-4 py-4 w-full flex justify-between'>

@@ -86,6 +86,7 @@ async def save_answers(request: Request, paper_no, sub, stu):
                text=answer_text,
                uploadUrl= file_url,
                accuracy=None,
+               keywordsaccuracy=None,
                marks= None
           )
           answer_id = answer_model.save_answer(request, answer)
@@ -116,18 +117,41 @@ async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu:
      
      percentages = []
      for i, el in enumerate(answers_by_student):
-          print("student answer", i+1, ":", answers_by_student[i]["text"])
-          print("Marking answer", i+1, ":", markings_by_scheme_id[i]["text"])
+          keywordsAccuracy=0
+          # print("student answer", i+1, ":", answers_by_student[i]["text"])
+          # print("Marking answer", i+1, ":", markings_by_scheme_id[i]["text"])
 
           if(markings_by_scheme_id[i]["selected"]):
                percentage = text_similarity(markings_by_scheme_id[i]["text"], answers_by_student[i]["text"])
                print("Percentage:",percentage)
                
                # here we should by questionNo,userId,subjectId
-               filters = {"userId":stu, "questionNo":i+1, "subjectId":sub}
+               filters = {"userId":stu, "questionNo":str(i+1), "subjectId":sub}
                data = {"accuracy":percentage.split(": ")[-1]}
+               # data = {"accuracy":"0.6"}
+               print("filters", data)
+
+               # # keywordsAccuracy
+               # result_string = ' '.join(markings_by_scheme_id[i]["keywords"])
+               # no_keywords= len(markings_by_scheme_id[i]['keywords'])
+               # print("no_keywords",no_keywords)
+               # keywords=[]
+               # for keyword in markings_by_scheme_id[i]["keywords"]:
+               #      print("keyword",keyword)
+               #      if keyword.lower() in answers_by_student[i]["text"].lower():
+               #          print(f"'{keyword}' is present in the paragraph.")
+               #          if keyword in keywords:
+               #               print(keywords)
+               #           #     pass
+               #          else:
+               #               print("Keywords::",keywords)
+               #               keywords.append(keyword)
+               #               keywordsAccuracy+=100/no_keywords
+               #      else:
+               #          print(f"'{keyword}' is not present in the paragraph.")
                
-               answer_model.update(request, filters , data)
+               # answer_model.update(request, filters , data)
+               print("keywordsAccuracy",keywordsAccuracy)
                
                # TODO: add to db,accuracy field add to schema
                
@@ -135,7 +159,8 @@ async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu:
                     "subjectId":sub,
                     "userId":stu,
                     "questionNoquestion": i+1, 
-                    "accuracy": percentage.split(": ")[-1]
+                    # "accuracy": percentage.split(": ")[-1]
+                    # "accuracy": "0.6"
                })
      return JSONResponse({
                "similarity percentages": percentages

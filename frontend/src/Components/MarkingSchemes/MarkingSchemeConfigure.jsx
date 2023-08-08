@@ -1,16 +1,22 @@
 import classnames from 'classnames'
 import { AiOutlinePlus } from "react-icons/ai";
 import { BiFilter } from "react-icons/bi";
+import Modal from '../Modal';
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import MakingSchemeConfigureBox from './MakingSchemeConfigureBox'
 import Button from '../Button';
 import axios from 'axios'
 function MarkingSchemeConfigure({clicked, data,subjectId}) {
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState([]);
   const navigate = useNavigate();
   const handleClose = () => {
     navigate(-1);
+  };
+  const handleProceedClose = () => {
+    console.log("clicked")
+    setShowConfirmation((prev) => !prev);
   };
 
   const [showImages, setShowImages] = useState(false);
@@ -19,22 +25,26 @@ function MarkingSchemeConfigure({clicked, data,subjectId}) {
   };
 
   const handleFormSubmit = () => {
-    // Submit the form data
-    // console.log("formData:",formData);
-    //Filtering out and removing undefined indexes in the formData array
+    setShowConfirmation((prev) => !prev);
+  };
+
+  const handleProceed = () => {
     const definedData = formData.filter((item) => item !== undefined);
     // console.log("DefinedData:",definedData);
     axios
     .put(`http://127.0.0.1:8000/api_v1/markings/update/${subjectId}`,definedData)
     .then((response)=>{
       console.log(response);
+      setShowConfirmation(false);
       navigate(-1);
     })
     .catch((error) => {
       console.error(error);
+      setShowConfirmation(false);
+      navigate(-1);
       // Handle the error, e.g., display an error message to the user
     });
-  };
+  }
 
   const handleFormChange = (index, childFormData) => {
     // Update the form data for the specific child component
@@ -78,11 +88,13 @@ function MarkingSchemeConfigure({clicked, data,subjectId}) {
             {/* <MakingSchemeConfigureBox key="1" index="1" formData={data1} onChange={handleFormChange}/> */}
             {markings}
         </div>
-        <div className='w-full flex justify-center'>
+        <div className={`w-full  flex justify-center gap-2 fixed bottom-0 p-2 bg-white`}>
             {/* <button onClick={handleFormSubmit}className='rounded-[5px] w-52 bg-[#4457FF] text-white font-bold p-1 px-4 cursor-pointer ' >Submit</button> */}
-            <Button onClick={handleFormSubmit} classNames="bg-custom-blue-2 mb-2 mr-2">Submit</Button>
-            <Button onClick={handleClose} classNames="bg-custom-blue-2 mb-2">Cancel</Button>
+            <Button onClick={handleFormSubmit} classNames={`bg-custom-blue-2 ${clicked === 'outer' ? ' -ml-16 ' : ' -ml-64 '}`}>Submit</Button>
+            <Button onClick={handleClose} classNames="bg-custom-blue-2">Cancel</Button>
         </div>
+        {showConfirmation && <Modal handleProceed={handleProceed} onClose={handleProceedClose}/>}
+
     </div>
   )
 }

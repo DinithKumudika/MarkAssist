@@ -10,6 +10,7 @@ class Answer(BaseModel):
      text: str
      uploadUrl: str
      accuracy: Optional[float] = None
+     keywordsaccuracy: Optional[float] = None
      marks: Optional[float] = None
      
      
@@ -21,6 +22,7 @@ class AnswerCreate(BaseModel):
      text: str
      uploadUrl: str
      accuracy: Optional[float] = None
+     keywordsaccuracy: Optional[float] = None
      marks: Optional[float] = None
      
 class AnswerUpdate(BaseModel):

@@ -45,7 +45,7 @@ async def get_All(request: Request):
      
      
 @router.post("/", response_description="upload a marking scheme", response_model = MarkingScheme, status_code= status.HTTP_201_CREATED)
-async def add_marking(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...) ):
+async def add_marking(request: Request, files: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...) ):
      
      # get the subjectCode and subjectName using subjectId
      subject = subject_model.subject_by_id(request, subjectId)
@@ -62,7 +62,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                marking_model.delete(request, "subjectId", subjectId)
           
           
-          marking_url = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
+          marking_url = await upload_file(files,files.filename)  # Assuming you have implemented the `upload_file` function
           
           defaultMarkConfig = [
                {
@@ -100,8 +100,8 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     response = await client.get(marking_url)
                     response.raise_for_status()
                     save_path = f"./../data/marking_schemes/{marking_id}.pdf"
-                    with open(save_path, "wb") as file:
-                         file.write(response.content)
+                    with open(save_path, "wb") as files:
+                         files.write(response.content)
                try:
                     # convert marking scheme to images
                     dir_path = os.path.join('./../data/images/marking_scheme', marking_id)
@@ -197,8 +197,8 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     markings = []
                     
                     for i, image in enumerate(answer_images):
-                         with open(image, "rb") as file:
-                              upload = UploadFile(filename=image, file=file)
+                         with open(image, "rb") as files:
+                              upload = UploadFile(filename=image, file=files)
                               filename = f"Q_{i+1}"
                               file_url = await upload_file2(upload, "uploads/images/answers/marking_schemes", marking_id, filename)
                               urls.append(file_url)

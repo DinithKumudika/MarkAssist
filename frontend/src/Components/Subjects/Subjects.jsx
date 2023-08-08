@@ -7,7 +7,8 @@ import Button from '../Button';
 import { useSort } from '../../Hooks/Sort';
 import axios from 'axios';
 function Subjects({clicked,data}) {
-  const length = data.length;
+  const length = data?.length;
+  console.log("Length:",length);
   const allItems=JSON.parse(localStorage.getItem('tokenData'));
   console.log("DATA:",data);
   if(!allItems){
@@ -26,7 +27,7 @@ function Subjects({clicked,data}) {
   //Sort setvalue
   // let sortedData=data
   const [sort,setSort] = useState("subjectName")
-  const [sorteddata,setsorteddata] = useState(data)
+  const [sorteddata,setsorteddata] = useState(data ? data : null)
   // console.log("sorteddata",sorteddata)
   //To save teachers list
   const [teachers,setTeachers] = useState([]);
@@ -78,7 +79,7 @@ function Subjects({clicked,data}) {
     })
   },[])
 
-  const subjects = (sorteddata).map((subject,index)=>{
+  const subjects = (sorteddata)?.map((subject,index)=>{
     // console.log(subject);
     return <Link key={index} to={"/"+pathName[0]+"/years/"+subject.subjectCode} className='h-24'><SubjectBox onClick={handleClick} key={index} subjectCode={subject.subjectCode} subjectName={subject.subjectName} userType={userType}/></Link>
   })

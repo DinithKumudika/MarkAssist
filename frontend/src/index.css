@@ -10,6 +10,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button{
+  @apply bg-custom-blue-2;
+}
+.checkButton{
+  text-align: -webkit-center;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"]{
+  outline: none;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

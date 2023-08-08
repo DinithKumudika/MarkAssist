@@ -48,7 +48,7 @@ function MarkingSchemes({clicked, data}) {
                 <input className="rounded shadow shadow-gray-600 w-full h-9 p-2 mb-4" type="text" placeholder='Search'/>
               </form>
             </div>
-            <Table name={true} date={true} select={link} MarkingSchemes={data}/>
+            <Table name={true} date={true} select={link} configured={true} MarkingSchemes={data}/>
         </div>
             // <td className='text-lg px-4 max-sm:px-1 h-10 border-y-2 border-x-2 font-medium opacity-60'>{data.subjectCode}-{data.subjectName}-{data.year}</td>
 

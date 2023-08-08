@@ -33,13 +33,13 @@ function MarksPage() {
       const answer = response.data
       setAnswers(answer)
       setIsLoading(false);
-      console.log("Answers:",answer)
+      // console.log("Answers:",answer)
       // Process the response data or update your React component state
       axios
       .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${subjectId}`)
       .then((response)=>{
         const marking = response.data
-        console.log("Markasdfghings:",answers)
+        // console.log("Markasdfghings:",answers)
         setMarkings(marking)
         // console.log("Markasdfghings:",marking[0].markingScheme)
         setIsLoading2(false);

@@ -2,9 +2,21 @@ import DragDrop from '../DragDrop'
 import Table from '../Table'
 import classnames from 'classnames'
 import { AiOutlinePlus } from "react-icons/ai";
+import Modal from '../Modal';
 import { BiFilter } from "react-icons/bi";
 import { useState } from 'react'
-function AnswerSheets({clicked, data}) {
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+function AnswerSheets({clicked, data,markingScheme}) {
+  const navigate = useNavigate();
+  const [markings,setMarkings] = useState([]);
+  const [answers,setAnswers] = useState([]);
+  const [markingschemeID,setmarkingschemeID] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading2, setIsLoading2] = useState(true);
+  const [marks,setMarks] = useState([]);
+
+  console.log("DAaaTA:"+markingScheme?.isProceeded)
   const classes = classnames('sidebar static max-sm:ml-16 pt-[80px]');
   const [show, setShow] = useState(false);
   // console.log("DATA:"+data.id)
@@ -17,6 +29,61 @@ function AnswerSheets({clicked, data}) {
     setShow(false);
   }
 
+  const handleLink = () =>{
+    navigate(`/markingschemes/${markingScheme?.subjectId}`)
+  }
+
+  const handleGenerateAccuracy= ()=>{
+    console.log("data::",data);
+    data.forEach((data,index)=>{
+      axios
+      .get(`http://127.0.0.1:8000/api_v1/answers/${data.id}`)
+      .then((response) => {
+        const answer = response.data
+        setAnswers(answer)
+        setIsLoading(false);
+        console.log("Answers:",answer)
+        // Process the response data or update your React component state
+        axios
+        .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${data.subjectId}`)
+        .then((response)=>{
+          const marking = response.data
+          console.log("Markasdfghings:",answers)
+          setMarkings(marking)
+          // console.log("Markasdfghings:",marking[0].markingScheme)
+          setIsLoading2(false);
+          setmarkingschemeID(marking[0].markingScheme) 
+          axios
+          .get(`http://127.0.0.1:8000/api_v1/answers/compare/${marking[0].markingScheme}?sub=${data.subjectId}&stu=${answer[0].userId}`)
+          .then((response)=>{
+            const marks = response.data
+            // setMarkings(marking)
+            // markingschemeID = marking[0].markingScheme
+            console.log("Markkkkkkssssss:",marks)
+  
+          })
+          .catch((error) => {
+            console.error(error);
+            // setMarks(null)
+            // Handle the error, e.g., display an error message to the user
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          setMarks(null)
+          // Handle the error, e.g., display an error message to the user
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        setAnswers(null)
+        // Handle the error, e.g., display an error message to the user
+      });
+    })
+    
+    // console.log("Markingsss:",answers)
+  }
+
   return (
     <div className={`${classes} ${clicked === 'outer' ? ' ml-16 outer w-[calc(100vw-64px)]' : 'ml-64 w-[calc(100vw-256px)] inner'} max-sm:16 max-sm:w-[calc(100vw-64px)]`}>
       {data ? (
@@ -25,10 +92,13 @@ function AnswerSheets({clicked, data}) {
               <p className='text-xl font-bold text-[#191854]'>Answer Sheets</p>
               <p className='text-lg text-black opacity-60'>Upload answer papers</p>
             </div>
-            <div className='px-12 max-sm:px-4 flex flex-row justify-between w-full'>
-              <button className="rounded rounded-sm bg-custom-blue-2 w-40 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleCKick}><AiOutlinePlus/><div className='ml-2'>Upload</div></button>
-              <button className="rounded rounded-sm bg-custom-blue-2 w-40 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row"><BiFilter/><div className='ml-2'>Filter</div></button>
-              <form className='w-3/4 ' >
+            <div className='px-12 max-sm:px-4 flex flex-col lg:flex-row justify-between w-full md:flex-col'>
+              <div className='flex lg:w-1/2 mb-2  md:[90%] md:mb-2 md-max:justify-between'>
+                <button className="rounded rounded-sm bg-custom-blue-2 w-fit px-2 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleCKick}><AiOutlinePlus/><div className='ml-2'>Upload</div></button>
+                <button className="rounded rounded-sm bg-custom-blue-2 w-fit px-2 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row"><BiFilter/><div className='ml-2'>Filter</div></button>
+                <button className="rounded rounded-sm w-fit bg-custom-blue-2 max-sm:w-fill px-2 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleGenerateAccuracy}><BiFilter/><div className='ml-2'>Generate Accuracy</div></button>
+              </div>
+              <form className='lg:w-1/2 md:2/3 ' >
                 <input className="rounded shadow shadow-gray-600 w-full h-9 p-2 mb-4" type="text" placeholder='Search'/>
               </form>
             </div>
@@ -37,7 +107,8 @@ function AnswerSheets({clicked, data}) {
       ): ( 
         <DragDrop closeFunc={closeModal}>Answer Sheets</DragDrop>
       )}
-      {show && <DragDrop closeFunc={closeModal}>Answer Sheets</DragDrop>}
+        {!markingScheme?.isProceeded ? <Modal handleLink={handleLink} message="Configure the marking scheme before uploading answer sheets."/> : show && <DragDrop closeFunc={closeModal}>Answer Sheets</DragDrop>}
+       {/* {(markingScheme?.isProceeded && <Modal handleLink={handleLink} message="Configure the marking scheme before uploading answer sheets."/>) && show && <DragDrop closeFunc={closeModal}>Answer Sheets</DragDrop>} */}
     </div>
   )
 }

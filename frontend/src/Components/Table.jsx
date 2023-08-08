@@ -1,6 +1,8 @@
 import {Link, useLocation, useNavigate} from 'react-router-dom';
+import {AiOutlineCheck ,AiOutlineClose} from 'react-icons/ai';
+import {ImCheckmark,ImCross} from 'react-icons/im';
 import { Fragment } from 'react';
-function Table({name, role, date, subjects, select, index, fileName, overallMark, MarkingSchemes,teachers, AnswerSheets, papers}) {
+function Table({name, role, date, subjects, select,configured, index, fileName, overallMark, MarkingSchemes,teachers, AnswerSheets, papers}) {
   const navigate = useNavigate();
   console.log("teacher:",teachers)
   const handleSelect = () =>{
@@ -51,6 +53,7 @@ function Table({name, role, date, subjects, select, index, fileName, overallMark
         <tr className="w-full">
           <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{MarkingSchemes.subjectCode}-{MarkingSchemes.subjectName}-{MarkingSchemes.year}</td>
           <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>{year}-{month.toString().padStart(2, '0')}-{day.toString().padStart(2, '0')}</td>
+          <td className={`checkButton text-2xl px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-bold ${MarkingSchemes.isProceeded ? 'text-green-600' : 'text-red-600'}`}>{MarkingSchemes.isProceeded ? <ImCheckmark/> : <ImCross/>}</td>
           <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-custom-blue-2 w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={handleSelect}><div className='ml-2'>Select</div></button></td>
         </tr>
       )
@@ -111,6 +114,7 @@ function Table({name, role, date, subjects, select, index, fileName, overallMark
           {role && <th className='text-xl h-8 font-bold opacity-60 w-1/5'>Role</th>}
 
           {date && <th className='text-xl h-8 font-bold opacity-60 w-1/5'>Date Added</th>}
+          {configured && <th className='text-xl h-8 font-bold opacity-60 w-1/5'>Configured</th>}
           {subjects && <th className='text-xl h-8 font-bold opacity-60 w-2/5'>Subjects</th>}
 
           {index && <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Index</th>}
