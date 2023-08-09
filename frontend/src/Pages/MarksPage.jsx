@@ -108,7 +108,7 @@ function MarksPage() {
   }
   return (
     <div>
-      <NavBar />
+      <NavBar clicked={isClicked}/>
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
       {/* {markings.length>=answers.length ? <Marks clicked={isClicked} answers={answers} markings={markings}/> : ''} */}
         {(isLoading || isLoading2) ? <MoonLoader color="#36d7b7" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 

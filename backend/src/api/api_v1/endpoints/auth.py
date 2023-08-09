@@ -38,7 +38,9 @@ async def login(request: Request, payload: OAuth2PasswordRequestForm = Depends()
     token = generate_token({
         "user_id": user["id"],
         "username": user["email"],
-        "user_role": user["userType"]
+        "user_role": user["userType"],
+        "firstName": user["firstName"],
+        "lastName": user["lastName"],
     })
 
     return Token(access_token=token, token_type="bearer")

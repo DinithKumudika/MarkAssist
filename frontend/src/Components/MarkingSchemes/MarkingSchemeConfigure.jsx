@@ -80,8 +80,8 @@ function MarkingSchemeConfigure({clicked, data,subjectId}) {
               <p className='text-xl font-bold text-custom-blue-3'>Marking scheme configure</p>
               <p className='text-lg text-black opacity-80 text-center'>Check your marking scheme and configure</p>
               {
-                showImages ? <Button onClick={handleIconClick} classNames="w-24 text-center bg-custom-blue-2 absolute left-[85%] mt-2">Hide All</Button>
-                : <Button onClick={handleIconClick} classNames="w-24 text-center bg-custom-blue-2 absolute left-[85%] mt-2">View All</Button>
+                showImages ? <Button onClick={handleIconClick} classNames="w-24 text-center bg-custom-blue-main absolute left-[85%] mt-2">Hide All</Button>
+                : <Button onClick={handleIconClick} classNames="w-24 text-center bg-custom-blue-main absolute left-[85%] mt-2">View All</Button>
               }
 
             </div>
@@ -90,8 +90,8 @@ function MarkingSchemeConfigure({clicked, data,subjectId}) {
         </div>
         <div className={`w-full  flex justify-center gap-2 fixed bottom-0 p-2 bg-white`}>
             {/* <button onClick={handleFormSubmit}className='rounded-[5px] w-52 bg-[#4457FF] text-white font-bold p-1 px-4 cursor-pointer ' >Submit</button> */}
-            <Button onClick={handleFormSubmit} classNames={`bg-custom-blue-2 ${clicked === 'outer' ? ' -ml-16 ' : ' -ml-64 '}`}>Submit</Button>
-            <Button onClick={handleClose} classNames="bg-custom-blue-2">Cancel</Button>
+            <Button onClick={handleFormSubmit} classNames={`bg-custom-blue-main ${clicked === 'outer' ? ' -ml-16 ' : ' -ml-64 '}`}>Submit</Button>
+            <Button onClick={handleClose} classNames="bg-custom-blue-main">Cancel</Button>
         </div>
         {showConfirmation && <Modal handleProceed={handleProceed} onClose={handleProceedClose}/>}
 

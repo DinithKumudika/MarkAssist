@@ -19,7 +19,7 @@ function AdminDashboard() {
 
   return (
     <div>
-      <NavBar />
+      <NavBar clicked={isClicked}/>
       <SideBar dashboard subjects clicked={isClicked} onClickFunc={handleClick}/>
       {/* <Subjects clicked={isClicked}/> */}
     </div>

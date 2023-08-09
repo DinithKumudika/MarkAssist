@@ -75,7 +75,7 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
           <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{MarkingSchemes.subjectCode}-{MarkingSchemes.subjectName}-{MarkingSchemes.year}</td>
           <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>{year}-{month.toString().padStart(2, '0')}-{day.toString().padStart(2, '0')}</td>
           <td className={`checkButton text-2xl px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-bold ${MarkingSchemes.isProceeded ? 'text-green-600' : 'text-red-600'}`}>{MarkingSchemes.isProceeded ? <ImCheckmark/> : <ImCross/>}</td>
-          <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-custom-blue-2 w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={handleSelect}><div className='ml-2'>Select</div></button></td>
+          <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-custom-blue-main w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={handleSelect}><div className='ml-2'>Select</div></button></td>
         </tr>
       )
   }
@@ -123,7 +123,7 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
               {/* <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60 w-3/12'><Link key={AnswerSheet.id} to={"/subjects/marks/"+AnswerSheet.year+"/"+AnswerSheet.subjectId} className='w-full'>100</Link></td> */}
               {/* {subjects && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.subjects}</td>} */}
               {/* <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>3</td> */}
-              {select && <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-custom-blue-2 w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={()=>navigate(`/answersheets/marks/${AnswerSheet.year}/${AnswerSheet.subjectId}/${AnswerSheet.id}`)}><div className='ml-2'>Select</div></button></td>}
+              {select && <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-custom-blue-main w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={()=>navigate(`/answersheets/marks/${AnswerSheet.year}/${AnswerSheet.subjectId}/${AnswerSheet.id}`)}><div className='ml-2'>Select</div></button></td>}
 
             </tr>
         </Fragment>

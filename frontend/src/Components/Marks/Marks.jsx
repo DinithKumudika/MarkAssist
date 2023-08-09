@@ -295,13 +295,13 @@ const handleProceed = () => {
           }
         </div>
         <div className="flex flex-row">
-          <Button onClick={handleOKClick} classNames="w-24 text-center bg-custom-blue-2 mt-2 mr-2">Ok</Button>
-          <Button onClick={handleProceedClick} classNames="w-24 text-center bg-custom-blue-2 mt-2">Proceed</Button>
+          <Button onClick={handleOKClick} classNames="w-24 text-center bg-custom-blue-main mt-2 mr-2">Ok</Button>
+          <Button onClick={handleProceedClick} classNames="w-24 text-center bg-custom-blue-main mt-2">Proceed</Button>
         </div>
       </div>
       {
-        showImages ? <Button onClick={handleIconClick} classNames="w-24 text-center bg-custom-blue-2 absolute left-[85%] mt-2">Hide All</Button>
-        : <Button onClick={handleIconClick} classNames="w-24 text-center bg-custom-blue-2 absolute left-[85%] mt-2">View All</Button>
+        showImages ? <Button onClick={handleIconClick} classNames="w-24 text-center bg-custom-blue-main absolute left-[85%] mt-2">Hide All</Button>
+        : <Button onClick={handleIconClick} classNames="w-24 text-center bg-custom-blue-main absolute left-[85%] mt-2">View All</Button>
       }
       {isLoading ? <MoonLoader color="#191854" loading={isLoading} size={50} /> :
         data

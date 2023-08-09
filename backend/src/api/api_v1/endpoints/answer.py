@@ -2,6 +2,8 @@ from typing import List
 from fastapi import APIRouter, HTTPException, Request, status, UploadFile
 from fastapi.responses import JSONResponse
 from fastapi.params import Body
+from thefuzz import process
+from thefuzz import fuzz
 import os
 
 from schemas.answer import AnswerCreate, Answer
@@ -127,16 +129,27 @@ async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu:
           # print("Marking answer", i+1, ":", markings_by_scheme_id[i]["text"])
 
           if(markings_by_scheme_id[i]["selected"]):
-               percentage = text_similarity(markings_by_scheme_id[i]["text"], answers_by_student[i]["text"])
-               print("Percentage:",percentage)
+               # percentage = text_similarity(markings_by_scheme_id[i]["text"], answers_by_student[i]["text"])
+               # print("Percentage:",percentage)
                
-               # here we should by questionNo,userId,subjectId
-               filters = {"userId":stu, "questionNo":str(i+1), "subjectId":sub}
-               data = {"accuracy":percentage.split(": ")[-1]}
-               # data = {"accuracy":"0.6"}
-               print("filters", data)
+               # # here we should by questionNo,userId,subjectId
+               # filters = {"userId":stu, "questionNo":str(i+1), "subjectId":sub}
+               # data = {"accuracy":percentage.split(": ")[-1]}
+               # # data = {"accuracy":"0.6"}
+               # print("filters", data)
 
                # # keywordsAccuracy
+               # collection = ["AFC Barcelona", "Barcelona AFC", "barcelona fc", "afc barcalona"]
+               print(process.extract(answers_by_student[i]["text"], markings_by_scheme_id[i]['keywords'], scorer=fuzz.ratio))
+               # print(f"Partial ratio similarity score: {fuzz.partial_ratio(markings_by_scheme_id[i]['keywords'][0], answers_by_student[i]['text'])}")
+              # But order will not effect simple ratio if strings do not match
+               for keyword in markings_by_scheme_id[i]["keywords"]:
+                    print(f"Partial ratio similarity score {keyword.lower()} => [{answers_by_student[i]['text'].lower()}]: {fuzz.partial_ratio(keyword.lower(), answers_by_student[i]['text'].lower())}")
+                    # if fuzz.ratio(keyword, answers_by_student[i]['text']) > 50:
+                    #      keywordsAccuracy+=100/len(markings_by_scheme_id[i]['keywords'])
+               # print(f"Simple ratio similarity score: {fuzz.ratio(markings_by_scheme_id[i]['keywords'][0], answers_by_student[i]['text'])}")
+
+
                # result_string = ' '.join(markings_by_scheme_id[i]["keywords"])
                # no_keywords= len(markings_by_scheme_id[i]['keywords'])
                # print("no_keywords",no_keywords)
@@ -155,17 +168,17 @@ async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu:
                #      else:
                #          print(f"'{keyword}' is not present in the paragraph.")
                
-               answer_model.update(request, filters , data)
-               print("keywordsAccuracy",keywordsAccuracy)
+               # answer_model.update(request, filters , data)
+               # print("keywordsAccuracy",keywordsAccuracy)
                 
                
-               percentages.append({
-                    "subjectId":sub,
-                    "userId":stu,
-                    "questionNoquestion": i+1, 
-                    "accuracy": percentage.split(": ")[-1]
-                    # "accuracy": "0.6"
-               })
+               # percentages.append({
+               #      "subjectId":sub,
+               #      "userId":stu,
+               #      "questionNoquestion": i+1, 
+               #      "accuracy": percentage.split(": ")[-1]
+               #      # "accuracy": "0.6"
+               # })
      return JSONResponse({
                "similarity percentages": percentages
           },

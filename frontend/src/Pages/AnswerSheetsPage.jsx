@@ -56,7 +56,7 @@ function AnswerSheetsPage() {
 
   return (
     <div>
-      <NavBar />
+      <NavBar clicked={isClicked}/>
       <SideBar mcq subjects markingSchemes answerPapers onClickFunc={handleClick} clicked={isClicked}/>
       {/* <AnswerSheets clicked={isClicked} data={answerSheet} markingScheme={markingScheme}/> */}
       {isLoading ? <MoonLoader color="#36d7b7" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 

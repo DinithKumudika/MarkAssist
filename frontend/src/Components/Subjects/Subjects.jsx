@@ -81,7 +81,7 @@ function Subjects({clicked,data}) {
 
   const subjects = (sorteddata)?.map((subject,index)=>{
     // console.log(subject);
-    return <Link key={index} to={"/"+pathName[0]+"/years/"+subject.subjectCode} className='h-24'><SubjectBox onClick={handleClick} key={index} subjectCode={subject.subjectCode} subjectName={subject.subjectName} userType={userType}/></Link>
+    return <Link key={index} to={"/"+pathName[0]+"/years/"+subject?.subjectCode} className='h-40 w-80'><SubjectBox onClick={handleClick} key={index} subject={subject} backgroundUrl={subject.backgroundImage} subjectCode={subject.subjectCode} subjectName={subject.subjectName} userType={userType}/></Link>
   })
 
   return (
@@ -92,11 +92,11 @@ function Subjects({clicked,data}) {
               <div className='flex flex-row items-center justify-start h-10'>
                   <p className='p-2 rounded rounded-lg w-20 mr-4 font-bold text-[#191854]'>Subjects({length})</p>
                   <p className='p-2 rounded rounded-lg w-20 '>Sort by:</p>
-                  <select className='w-28 'name='sort' value={sort} onChange={handleSortChange}>
-                    <option value="subjectName-ASC" className='font-bold'>Name-ASC</option>
-                    <option value="subjectName-DSC" className='font-bold'>Name-DSC</option>
-                    <option value="subjectCode-ASC" className='font-bold'>Subject Code-ASC</option>
-                    <option value="subjectCode-DSC" className='font-bold'>Subject Code-DSC</option>
+                  <select className='w-28 hover:cursor-pointer 'name='sort' value={sort} onChange={handleSortChange}>
+                    <option value="subjectName-ASC" className='hover:cursor-pointer font-bold'>Name-ASC</option>
+                    <option value="subjectName-DSC" className='hover:cursor-pointer font-bold'>Name-DSC</option>
+                    <option value="subjectCode-ASC" className='hover:cursor-pointer font-bold'>Subject Code-ASC</option>
+                    <option value="subjectCode-DSC" className='hover:cursor-pointer font-bold'>Subject Code-DSC</option>
                   </select>
                   {/* <p className='bg-black/20 p-2 rounded rounded-lg'>Grade</p> */}
               </div>
@@ -104,7 +104,7 @@ function Subjects({clicked,data}) {
                 <Button onClick={handleClick}> Add a Subject</Button>
               }
             </div>
-            <div className='h-custom-94% py-2 flex flex-wrap overflow-auto'>
+            <div className='flex flex-wrap justify-between gap-4 overflow-auto'>
               {subjects}
             </div>
           </div>

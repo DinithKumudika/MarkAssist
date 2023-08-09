@@ -11,9 +11,9 @@ function Modal({onClose,handleProceed,handleLink,message,clicked}) {
                 </div>)}
                 {message ? <h2>{message}</h2> : <h2>Are you sure you want to proceed. This cannot be un done.</h2>}
                 <div className='p-4 flex items-center justify-center gap-2'>
-                    {handleProceed && <button onClick={handleProceed} className='border-2 p-2 rounded-lg bg-custom-blue-2 text-white font-bold'>OK</button>}
-                    {onClose && <button onClick={onClose} className='border-2 p-2 rounded-lg bg-custom-blue-2 text-white font-bold'>Close</button>}
-                    {handleLink && <button onClick={handleLink} className='border-2 p-2 rounded-lg bg-custom-blue-2 text-white font-bold'>Go</button>}
+                    {handleProceed && <button onClick={handleProceed} className='border-2 p-2 rounded-lg bg-custom-blue-main text-white font-bold'>OK</button>}
+                    {onClose && <button onClick={onClose} className='border-2 p-2 rounded-lg bg-custom-blue-main text-white font-bold'>Close</button>}
+                    {handleLink && <button onClick={handleLink} className='border-2 p-2 rounded-lg bg-custom-blue-main text-white font-bold'>Go</button>}
                 </div>
             </div>
 

@@ -128,9 +128,9 @@ function AnswerSheets({clicked, data,markingScheme}) {
             </div>
             <div className='px-12 max-sm:px-4 flex flex-col lg:flex-row justify-between w-full md:flex-col'>
               <div className='flex lg:w-1/2 mb-2  md:[90%] md:mb-2 md-max:justify-between'>
-                <button className="rounded rounded-sm bg-custom-blue-2 w-fit px-2 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleCKick}><AiOutlinePlus/><div className='ml-2'>Upload</div></button>
-                <button className="rounded rounded-sm bg-custom-blue-2 w-fit px-2 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row"><BiFilter/><div className='ml-2'>Filter</div></button>
-                <button className="rounded rounded-sm w-fit bg-custom-blue-2 max-sm:w-fill px-2 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleGenerateAccuracy}><BiFilter/><div className='ml-2'>Generate Accuracy</div></button>
+                <button className="rounded rounded-sm bg-custom-blue-main w-fit px-2 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleCKick}><AiOutlinePlus/><div className='ml-2'>Upload</div></button>
+                <button className="rounded rounded-sm bg-custom-blue-main w-fit px-2 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row"><BiFilter/><div className='ml-2'>Filter</div></button>
+                <button className="rounded rounded-sm w-fit bg-custom-blue-main max-sm:w-fill px-2 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleGenerateAccuracy}><BiFilter/><div className='ml-2'>Generate Accuracy</div></button>
               </div>
               <form className='lg:w-1/2 md:2/3 ' >
                 <input className="rounded shadow shadow-gray-600 w-full h-9 p-2 mb-4" type="text" placeholder='Search'/>
