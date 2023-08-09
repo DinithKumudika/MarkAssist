@@ -4,7 +4,7 @@ import Subjects from '../Components/Subjects/Subjects'
 import {useEffect, useState} from 'react'
 import { MoonLoader } from 'react-spinners';
 import axios from 'axios'
-import { set } from 'mongoose';
+// import { set } from 'mongoose';
 
 function SubjectsPage() {
   setTimeout(() => {

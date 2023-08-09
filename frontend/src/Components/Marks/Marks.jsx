@@ -7,7 +7,7 @@ import { MoonLoader } from 'react-spinners';
 import Modal from "../Modal";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-import { set } from "mongoose";
+// import { set } from "mongoose";
 function Marks({clicked,answers,markings}) {
   const navigate = useNavigate();
   const classes = classnames('sidebar static max-sm:ml-16 pt-[80px]');
