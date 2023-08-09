@@ -31,9 +31,17 @@ class PaperModel():
                paper["id"] = str(paper["_id"])
                paper["subjectId"] = str(paper["subjectId"]) 
           return papers
-     
+
      def papers_by_subjectId(self,request:Request,subject_id:str) -> list:
           papers = list(self.get_collection(request).find({"subjectId": subject_id}))
+
+          for paper in papers:
+               paper["id"] = str(paper["_id"])
+               paper["subjectId"] = str(paper["subjectId"]) 
+          return papers
+     
+     def papers_by_subjectId_and_marksGenerated(self,request:Request,subject_id:str, marksGenerated:bool) -> list:
+          papers = list(self.get_collection(request).find({"subjectId": subject_id, "marksGenerated": marksGenerated}))
 
           for paper in papers:
                paper["id"] = str(paper["_id"])
