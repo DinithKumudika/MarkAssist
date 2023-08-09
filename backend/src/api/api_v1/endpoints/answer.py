@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, Request, status, UploadFile
 from fastapi.responses import JSONResponse
-
+from fastapi.params import Body
 import os
 
 from schemas.answer import AnswerCreate, Answer
@@ -106,6 +106,7 @@ async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu:
      print("marking scheme id", markingSchemeId)
      print("student id", stu)
      print("sub id", sub)
+     # print("payload", payload)
      answers_by_student = answer_model.get_by_subject_student(request, stu, sub)
      # sorting student answers by question no's
      answers_by_student = sorted(answers_by_student, key=lambda x:int(x["questionNo"]))

@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import { AiOutlinePlus } from "react-icons/ai";
 import Modal from '../Modal';
 import { BiFilter } from "react-icons/bi";
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 function AnswerSheets({clicked, data,markingScheme}) {
@@ -15,6 +15,38 @@ function AnswerSheets({clicked, data,markingScheme}) {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoading2, setIsLoading2] = useState(true);
   const [marks,setMarks] = useState([]);
+
+  const [Checked, setChecked] = useState({})
+  const [checkAll, setCheckAll] = useState(true)
+  useEffect(()=>{
+    data?.map((AnswerSheet) => {
+        setChecked(prevState=>{return {...prevState,[AnswerSheet.paper]:true}})
+    })
+  },[])
+
+  const handleAllCheck = (ev) =>{
+    const newCheckAll = {};
+    for (const key in Checked){
+      if(ev.target.checked){
+        newCheckAll[key] = true;
+      }else{
+        newCheckAll[key] = false;
+      }
+    }
+    setChecked(newCheckAll);
+    setCheckAll(ev.target.checked);
+    console.log("newCheckAll:",checkAll)
+    console.log("newCheck:",Checked)
+
+  }
+
+  const handleCheck = (ev) =>{
+    setChecked((prevState) => {
+      console.log("prev state:", Checked);
+      return { ...prevState, [ev.target.name]: ev.target.checked };
+    });
+  }
+
 
   console.log("DAaaTA:"+markingScheme?.isProceeded)
   const classes = classnames('sidebar static max-sm:ml-16 pt-[80px]');
@@ -36,49 +68,51 @@ function AnswerSheets({clicked, data,markingScheme}) {
   const handleGenerateAccuracy= ()=>{
     console.log("data::",data);
     data.forEach((data,index)=>{
-      axios
-      .get(`http://127.0.0.1:8000/api_v1/answers/${data.id}`)
-      .then((response) => {
-        const answer = response.data
-        setAnswers(answer)
-        setIsLoading(false);
-        console.log("Answers:",answer)
-        // Process the response data or update your React component state
+      if(Checked[data.paper]){
         axios
-        .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${data.subjectId}`)
-        .then((response)=>{
-          const marking = response.data
-          console.log("Markasdfghings:",answers)
-          setMarkings(marking)
-          // console.log("Markasdfghings:",marking[0].markingScheme)
-          setIsLoading2(false);
-          setmarkingschemeID(marking[0].markingScheme) 
+        .get(`http://127.0.0.1:8000/api_v1/answers/${data.id}`)
+        .then((response) => {
+          const answer = response.data
+          setAnswers(answer)
+          setIsLoading(false);
+          console.log("Answers:",answer)
+          // Process the response data or update your React component state
           axios
-          .get(`http://127.0.0.1:8000/api_v1/answers/compare/${marking[0].markingScheme}?sub=${data.subjectId}&stu=${answer[0].userId}`)
+          .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${data.subjectId}`)
           .then((response)=>{
-            const marks = response.data
-            // setMarkings(marking)
-            // markingschemeID = marking[0].markingScheme
-            console.log("Markkkkkkssssss:",marks)
-  
+            const marking = response.data
+            console.log("Markasdfghings:",answers)
+            setMarkings(marking)
+            // console.log("Markasdfghings:",marking[0].markingScheme)
+            setIsLoading2(false);
+            setmarkingschemeID(marking[0].markingScheme) 
+            axios
+            .get(`http://127.0.0.1:8000/api_v1/answers/compare/${marking[0].markingScheme}?sub=${data.subjectId}&stu=${answer[0].userId}`)
+            .then((response)=>{
+              const marks = response.data
+              // setMarkings(marking)
+              // markingschemeID = marking[0].markingScheme
+              console.log("Markkkkkkssssss:",marks)
+    
+            })
+            .catch((error) => {
+              console.error(error);
+              // setMarks(null)
+              // Handle the error, e.g., display an error message to the user
+            });
           })
           .catch((error) => {
             console.error(error);
-            // setMarks(null)
+            setMarks(null)
             // Handle the error, e.g., display an error message to the user
           });
         })
         .catch((error) => {
           console.error(error);
-          setMarks(null)
+          setAnswers(null)
           // Handle the error, e.g., display an error message to the user
         });
-      })
-      .catch((error) => {
-        console.error(error);
-        setAnswers(null)
-        // Handle the error, e.g., display an error message to the user
-      });
+      }
     })
     
     // console.log("Markingsss:",answers)
@@ -102,7 +136,7 @@ function AnswerSheets({clicked, data,markingScheme}) {
                 <input className="rounded shadow shadow-gray-600 w-full h-9 p-2 mb-4" type="text" placeholder='Search'/>
               </form>
             </div>
-            <Table check={true} checked={true} name={true} date={true} select={true} AnswerSheets={data}/>
+            <Table check={true} checked={true} Checked={Checked} checkAll={checkAll} name={true} handleCheck={handleCheck} handleAllCheck={handleAllCheck} date={true} select={true} AnswerSheets={data}/>
         </div>
       ): ( 
         <DragDrop closeFunc={closeModal}>Answer Sheets</DragDrop>

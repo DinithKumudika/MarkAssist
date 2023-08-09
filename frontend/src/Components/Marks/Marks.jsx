@@ -184,14 +184,22 @@ function Marks({clicked,answers,markings}) {
 
 const handleProceed = () => {
   //Methana isProcessed eka true wenna oona****************
+  console.log("clicked:",markings[0].markingScheme)
   axios
   .put(`http://127.0.0.1:8000/api_v1/markings/update/grading/${markings[0].markingScheme}`,marksConfigure)
   .then((response) => {
     const data = response.data
     console.log("Data:",data)
     setShowConfirmation(false);
-    navigate(-1);
-    // setIsLoading(false);
+    // axios.patch(`http://127.0.0.1:8000/api_v1/answer/calculate_marks/${markings[0].markingScheme}?subjectId:${markings[0].subjectId}`)
+    // .then((response)=>{
+      //   console.log("Marks calculated:",response.data)
+        // window.location.reload();
+        // setIsLoading(false);
+    // })
+    // .catch((error)=>{
+    //   console.log(error)
+    // })
     // Process the response data or update your React component state
   })
   .catch((error) => {
@@ -249,7 +257,7 @@ const handleProceed = () => {
       .then((response) => {
         const data = response.data
         console.log("Data:",data)
-        navigate(-1);
+        window.location.reload();
         // setIsLoading(false);
         // Process the response data or update your React component state
       })

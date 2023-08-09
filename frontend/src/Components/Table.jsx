@@ -2,7 +2,7 @@ import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {AiOutlineCheck ,AiOutlineClose} from 'react-icons/ai';
 import {ImCheckmark,ImCross} from 'react-icons/im';
 import { Fragment, useEffect, useState } from 'react';
-function Table({check,checked,name, role, date, subjects, select,configured, index, fileName, overallMark, MarkingSchemes,teachers, AnswerSheets, papers}) {
+function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, role, date, subjects, select,configured, index, fileName, overallMark, MarkingSchemes,teachers, AnswerSheets, papers}) {
   const navigate = useNavigate();
   console.log("teacher:",teachers)
   const handleSelect = () =>{
@@ -16,26 +16,26 @@ function Table({check,checked,name, role, date, subjects, select,configured, ind
   let markingscheme =""
   let paper =""
   let AnswerSheet =""
-  const [Checked, setChecked] = useState({})
-  const [checkAll, setCheckAll] = useState(true)
-  useEffect(()=>{
-    AnswerSheets?.map((AnswerSheet) => {
-        setChecked(prevState=>{return {...prevState,[AnswerSheet.paper]:true}})
-    })
-  },[])
+  // const [Checked, setChecked] = useState({})
+  // const [checkAll, setCheckAll] = useState(true)
+  // useEffect(()=>{
+  //   AnswerSheets?.map((AnswerSheet) => {
+  //       setChecked(prevState=>{return {...prevState,[AnswerSheet.paper]:true}})
+  //   })
+  // },[])
 
-  const handleAllCheck = (ev) =>{
-    const newCheckAll = {};
-    for (const key in Checked){
-      if(ev.target.checked){
-        newCheckAll[key] = true;
-      }else{
-        newCheckAll[key] = false;
-      }
-    }
-    setChecked(newCheckAll);
-    setCheckAll(ev.target.checked);
-  }
+  // const handleAllCheck = (ev) =>{
+  //   const newCheckAll = {};
+  //   for (const key in Checked){
+  //     if(ev.target.checked){
+  //       newCheckAll[key] = true;
+  //     }else{
+  //       newCheckAll[key] = false;
+  //     }
+  //   }
+  //   setChecked(newCheckAll);
+  //   setCheckAll(ev.target.checked);
+  // }
 
   if(teachers){
     teacher = teachers.map((teacher) => {
@@ -113,13 +113,8 @@ function Table({check,checked,name, role, date, subjects, select,configured, ind
           <tr className="w-full" >
 
               <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60  w-[4px]'>
-                <input onChange={(e) =>
-                    setChecked((prevState) => {
-                      console.log("prev state:", prevState);
-                      return { ...prevState, [e.target.name]: e.target.checked };
-                    })
-                  }
-                  checked={Checked[AnswerSheet.paper]} className='h-[15px] w-[15px] hover:cursor-pointer' type="checkbox" id="myCheckbox" name={AnswerSheet.paper} value="isChecked"/>  
+                <input onChange={(e) => handleCheck(e)}
+                  checked={Checked[AnswerSheet.paper]} className='h-[15px] w-[15px] hover:cursor-pointer' type="checkbox" id="myCheckbox" name={AnswerSheet.paper} />  
               </td>
               <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-2/5'>{AnswerSheet.paper}</td>
               <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-3/12'>{year}-{month.toString().padStart(2, '0')}-{day.toString().padStart(2, '0')}</td>
@@ -142,7 +137,7 @@ function Table({check,checked,name, role, date, subjects, select,configured, ind
         <thead className='bg-[#D9D9D9] sticky'>
         <tr className="w-full">
           {check && <th className='text-xl h-8 font-bold opacity-60 w-[4px]'>
-            <input checked={checkAll}  onChange={handleAllCheck} className='h-[15px] w-[15px] hover:cursor-pointer' type="checkbox" id="myCheckbox" name={AnswerSheet.paper} value="isChecked"/>  
+            <input checked={checkAll}  onChange={handleAllCheck} className='h-[15px] w-[15px] hover:cursor-pointer' type="checkbox" id="myCheckbox" name={AnswerSheet.paper}/>  
           </th>}
           {name && <th className='text-xl h-8 font-bold opacity-60 w-2/5'>Name</th>}
           {role && <th className='text-xl h-8 font-bold opacity-60 w-1/5'>Role</th>}
