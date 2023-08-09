@@ -8,6 +8,7 @@ from schemas.answer import AnswerCreate, Answer
 from models.answer import AnswerModel, extract_answers, read_answers
 from models.marking import MarkingModel
 from models.marking_scheme import MarkingSchemeModel
+from models.paper import PaperModel
 from helpers import get_images, text_similarity
 from utils.firebase_storage import upload_file2
 
@@ -15,6 +16,7 @@ router = APIRouter()
 answer_model = AnswerModel()
 marking_model = MarkingModel()
 marking_scheme_model = MarkingSchemeModel()
+paper_model = PaperModel()
 
 
 @router.get('/{paper_no}', response_description="get answer images from database", response_model=List[Answer])
@@ -171,59 +173,78 @@ async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu:
      )
      
      
-@router.patch('/calculate_marks/{markingSchemeId}', response_description="calculate marks for a student subject")
-async def calculate_marks(request: Request, markingSchemeId:str, sub: str, stu: str):
+@router.patch('/calculate_marks/{markingSchemeId}/{subjectId}', response_description="calculate marks for a student subject")
+async def calculate_marks(request: Request, markingSchemeId:str, subjectId: str,):
      
      print("marking scheme id", markingSchemeId)
-     print("student id", stu)
-     print("sub id", sub)
+
+     print("subject id", subjectId)
      
-     answers_by_student = answer_model.get_by_subject_student(request, stu, sub)
-     # sorting student answers by question no's
-     answers_by_student = sorted(answers_by_student, key=lambda x:int(x["questionNo"]))
+     # get the marking scheme by marking scheme id
+     marking_scheme_by_id = marking_scheme_model.by_id(request, markingSchemeId)
      
+     # get the marking of the marking scheme by marking scheme id
      markings_by_scheme_id = marking_model.get_by_marking_scheme(request, markingSchemeId)
      # sorting marking scheme answers by question no's
      markings_by_scheme_id = sorted(markings_by_scheme_id, key=lambda x:int(x["questionNo"]))
      
-     marking_scheme_by_id = marking_scheme_model.by_id(request, markingSchemeId)
+     # get paper list according to subject id and marksGenerated field value
+     papers_list = paper_model.papers_by_subjectId_and_marksGenerated(request, subjectId, True)
      
-     answers = []
-     for i, el in enumerate(answers_by_student):
-          # print("student answer", i+1, ":", answers_by_student[i]["text"])
-          # print("Marking answer", i+1, ":", markings_by_scheme_id[i]["text"])
+     if(papers_list):
+          # loop the papers_list
+          for paper in papers_list:
+               userId = paper['paper'][:-4]; # 20001721.pdf ---> 20001721
+               
+               answers_by_student = answer_model.get_by_subject_student(request, userId, subjectId)
+               # sorting student answers by question no's
+               answers_by_student = sorted(answers_by_student, key=lambda x:int(x["questionNo"]))
+               
+               answers = []
+               for i, el in enumerate(answers_by_student):
+                    # print("student answer", i+1, ":", answers_by_student[i]["text"])
+                    # print("Marking answer", i+1, ":", markings_by_scheme_id[i]["text"])
 
-          if(markings_by_scheme_id[i]["selected"]):
-               
-               marks_reserverd_in_marking = int(markings_by_scheme_id[i]["marks"])
-               markConfig = marking_scheme_by_id["markConfig"]
-               accuracy_percentage = float(answers_by_student[i]["accuracy"])*100
-               
-               mark_percentage = 0
-               for key, value in markConfig.items():
-                    if( (value['minimum'] >= accuracy_percentage) and (value['maximum'] <= accuracy_percentage)  ):
-                         mark_percentage = value['percentageOfMarks']
+                    if(markings_by_scheme_id[i]["selected"]):
                          
-               marks = (marks_reserverd_in_marking * mark_percentage)/100
-               
-               # here we should by questionNo,userId,subjectId
-               filters = {"userId":stu, "questionNo":str(i+1), "subjectId":sub}
-               data = {"marks":marks}
-               
-               updated_answer =  answer_model.update(request, filters , data)
-               
-               print("filters", data)
-               
-               answers.append({
-                    "questionNo": i+1,
-                    "marks":marks
+                         marks_reserverd_in_marking = int(markings_by_scheme_id[i]["marks"])
+                         markConfig = marking_scheme_by_id["markConfig"]
+                         accuracy_percentage = float(answers_by_student[i]["accuracy"])*100
+                         
+                         mark_percentage = 0
+                         for key, value in markConfig.items():
+                              if( (value['minimum'] >= accuracy_percentage) and (value['maximum'] <= accuracy_percentage)  ):
+                                   mark_percentage = value['percentageOfMarks']
+                                   
+                         marks = (marks_reserverd_in_marking * mark_percentage)/100
+                         
+                         # here we should by questionNo,userId,subjectId
+                         filters = {"userId":userId, "questionNo":str(i+1), "subjectId":subjectId}
+                         data = {"marks":marks}
+                         
+                         updated_answer =  answer_model.update(request, filters , data)
+                         
+                         print("filters", data)
+                         
+                         answers.append({
+                              "questionNo": i+1,
+                              "marks":marks
+                              
+                         })
+                         
                     
-               })
-                
+               return JSONResponse({
+                         "similarity percentages": answers,
+                         "updated answer": updated_answer
+                    },
+                    status_code=status.HTTP_200_OK
+               )
+               
+     else:  
+          raise HTTPException(
+               status_code=status.HTTP_404_NOT_FOUND, 
+               detail=f"No papers related to subject id {subjectId}"
+          )
           
-     return JSONResponse({
-               "similarity percentages": answers,
-               "updated answer": updated_answer
-          },
-          status_code=status.HTTP_200_OK
-     )
+     
+     
