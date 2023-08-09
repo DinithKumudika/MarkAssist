@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from typing import List, Dict
 from bson.objectid import ObjectId
 import httpx
+import random
 
 import cv2
 import numpy as np
@@ -71,12 +72,12 @@ async def add_marking(request: Request, files: UploadFile = File(...), year: str
                     "percentageOfMarks": 30
                },
                {
-                    "minimum": 30,
+                    "minimum": 31,
                     "maximum": 70,
                     "percentageOfMarks": 70
                },
                {
-                    "minimum": 70,
+                    "minimum": 71,
                     "maximum": 100,
                     "percentageOfMarks": 100
                }          

@@ -15,6 +15,8 @@ class Subject(BaseModel):
     paperMarks:int
     editingTeacher:str
     nonEditingTeacher:str
+    backgroundImage: int = 1 
+    
     
             # "subjectStream":"SCS",
 
@@ -68,6 +70,7 @@ class SubjectCreate(BaseModel):
     paperMarks:int
     editingTeacher:str
     nonEditingTeacher:str
+    backgroundImage: int = 1 
     createdAt: Optional[datetime]
     updatedAt: Optional[datetime]
 

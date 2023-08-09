@@ -150,7 +150,7 @@ async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu:
                #      else:
                #          print(f"'{keyword}' is not present in the paragraph.")
                
-               # answer_model.update(request, filters , data)
+               answer_model.update(request, filters , data)
                print("keywordsAccuracy",keywordsAccuracy)
                
                # TODO: add to db,accuracy field add to schema
@@ -159,7 +159,7 @@ async def check_similarity(request: Request, markingSchemeId:str, sub: str, stu:
                     "subjectId":sub,
                     "userId":stu,
                     "questionNoquestion": i+1, 
-                    # "accuracy": percentage.split(": ")[-1]
+                    "accuracy": percentage.split(": ")[-1]
                     # "accuracy": "0.6"
                })
      return JSONResponse({

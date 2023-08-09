@@ -102,7 +102,7 @@ function AnswerSheets({clicked, data,markingScheme}) {
                 <input className="rounded shadow shadow-gray-600 w-full h-9 p-2 mb-4" type="text" placeholder='Search'/>
               </form>
             </div>
-            <Table name={true} date={true} select={true} AnswerSheets={data}/>
+            <Table check={true} checked={true} name={true} date={true} select={true} AnswerSheets={data}/>
         </div>
       ): ( 
         <DragDrop closeFunc={closeModal}>Answer Sheets</DragDrop>

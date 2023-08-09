@@ -11,6 +11,7 @@ class Paper(BaseModel):
      subjectName:str
      paper:str
      paperUrl:str
+     marksGenerated: Optional[bool]
      createdAt: Optional[datetime] = Field(default_factory=datetime.now)
      updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
      
@@ -35,6 +36,7 @@ class PaperCreate(BaseModel):
      subjectName:str
      paper:str
      paperUrl:str
+     marksGenerated: Optional[bool] = False
      createdAt: Optional[datetime] = Field(default_factory=datetime.now)
      updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
      

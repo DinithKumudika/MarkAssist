@@ -4,6 +4,7 @@ from typing import Optional, List
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from datetime import datetime
+import random
 
 from schemas.user import User
 from schemas.subject import Subject, SubjectYearsByCode,YearsListResponse, SubjectCreate,GroupedSubject 
@@ -121,6 +122,7 @@ async def add_a_subject(request:Request, payload: SubjectCreate = Body(...)):
                paperMarks = int(payload.paperMarks),
                editingTeacher = payload.editingTeacher,
                nonEditingTeacher =payload.nonEditingTeacher,
+               backgroundImage=random.randint(1, 17),
                createdAt =  datetime.now(),
                updatedAt = datetime.now()
           )

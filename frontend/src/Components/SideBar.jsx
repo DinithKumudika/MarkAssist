@@ -46,7 +46,7 @@ function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onC
 
   //When logout button clicked
   const handleLogout = () => {
-    localStorage.removeItem('tokenData');
+    localStorage.clear();
     window.location.href = '/';
   }
 

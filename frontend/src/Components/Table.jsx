@@ -1,8 +1,8 @@
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {AiOutlineCheck ,AiOutlineClose} from 'react-icons/ai';
 import {ImCheckmark,ImCross} from 'react-icons/im';
-import { Fragment } from 'react';
-function Table({name, role, date, subjects, select,configured, index, fileName, overallMark, MarkingSchemes,teachers, AnswerSheets, papers}) {
+import { Fragment, useEffect, useState } from 'react';
+function Table({check,checked,name, role, date, subjects, select,configured, index, fileName, overallMark, MarkingSchemes,teachers, AnswerSheets, papers}) {
   const navigate = useNavigate();
   console.log("teacher:",teachers)
   const handleSelect = () =>{
@@ -16,6 +16,27 @@ function Table({name, role, date, subjects, select,configured, index, fileName, 
   let markingscheme =""
   let paper =""
   let AnswerSheet =""
+  const [Checked, setChecked] = useState({})
+  const [checkAll, setCheckAll] = useState(true)
+  useEffect(()=>{
+    AnswerSheets?.map((AnswerSheet) => {
+        setChecked(prevState=>{return {...prevState,[AnswerSheet.paper]:true}})
+    })
+  },[])
+
+  const handleAllCheck = (ev) =>{
+    const newCheckAll = {};
+    for (const key in Checked){
+      if(ev.target.checked){
+        newCheckAll[key] = true;
+      }else{
+        newCheckAll[key] = false;
+      }
+    }
+    setChecked(newCheckAll);
+    setCheckAll(ev.target.checked);
+  }
+
   if(teachers){
     teacher = teachers.map((teacher) => {
       // Create a Date object from the timestamp string
@@ -91,8 +112,18 @@ function Table({name, role, date, subjects, select,configured, index, fileName, 
         <Fragment key={AnswerSheet.paper}>
           <tr className="w-full" >
 
+              <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60  w-[4px]'>
+                <input onChange={(e) =>
+                    setChecked((prevState) => {
+                      console.log("prev state:", prevState);
+                      return { ...prevState, [e.target.name]: e.target.checked };
+                    })
+                  }
+                  checked={Checked[AnswerSheet.paper]} className='h-[15px] w-[15px] hover:cursor-pointer' type="checkbox" id="myCheckbox" name={AnswerSheet.paper} value="isChecked"/>  
+              </td>
               <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-2/5'>{AnswerSheet.paper}</td>
               <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-3/12'>{year}-{month.toString().padStart(2, '0')}-{day.toString().padStart(2, '0')}</td>
+              <td className={`checkButton text-2xl px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-bold ${AnswerSheet?.isProceeded ? 'text-green-600' : 'text-red-600'}`}>{AnswerSheet?.isProceeded ? <ImCheckmark/> : <ImCross/>}</td>
               {/* {date && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>{teacher.date}</td>} */}
               {/* <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60 w-3/12'><Link key={AnswerSheet.id} to={"/subjects/marks/"+AnswerSheet.year+"/"+AnswerSheet.subjectId} className='w-full'>100</Link></td> */}
               {/* {subjects && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.subjects}</td>} */}
@@ -110,10 +141,14 @@ function Table({name, role, date, subjects, select,configured, index, fileName, 
       <table className='w-full'>
         <thead className='bg-[#D9D9D9] sticky'>
         <tr className="w-full">
+          {check && <th className='text-xl h-8 font-bold opacity-60 w-[4px]'>
+            <input checked={checkAll}  onChange={handleAllCheck} className='h-[15px] w-[15px] hover:cursor-pointer' type="checkbox" id="myCheckbox" name={AnswerSheet.paper} value="isChecked"/>  
+          </th>}
           {name && <th className='text-xl h-8 font-bold opacity-60 w-2/5'>Name</th>}
           {role && <th className='text-xl h-8 font-bold opacity-60 w-1/5'>Role</th>}
 
           {date && <th className='text-xl h-8 font-bold opacity-60 w-1/5'>Date Added</th>}
+          {checked && <th className='text-xl h-8 font-bold opacity-60 w-1/5'>Checked</th>}
           {configured && <th className='text-xl h-8 font-bold opacity-60 w-1/5'>Configured</th>}
           {subjects && <th className='text-xl h-8 font-bold opacity-60 w-2/5'>Subjects</th>}
 
