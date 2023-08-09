@@ -89,9 +89,9 @@ async def save_answers(request: Request, paper_no, sub, stu):
                questionNo=question_no, 
                text=answer_text,
                uploadUrl= file_url,
-               accuracy=None,
-               keywordsaccuracy=None,
-               marks= None
+               accuracy=0.0,
+               keywordsaccuracy=0.0,
+               marks= 0.0
           )
           answer_id = answer_model.save_answer(request, answer)
           
@@ -210,13 +210,18 @@ async def calculate_marks(request: Request, markingSchemeId:str, subjectId: str,
                          marks_reserverd_in_marking = int(markings_by_scheme_id[i]["marks"])
                          markConfig = marking_scheme_by_id["markConfig"]
                          accuracy_percentage = float(answers_by_student[i]["accuracy"])*100
-                         
+                         print("accuracy_percentage",accuracy_percentage)
+                         print("marks_reserverd_in_marking",marks_reserverd_in_marking)
+                         print("markConfig",markConfig)
                          mark_percentage = 0
-                         for key, value in markConfig.items():
-                              if( (value['minimum'] >= accuracy_percentage) and (value['maximum'] <= accuracy_percentage)  ):
+                         for value in markConfig:
+                              print("accuracy_percentage",value['minimum'])
+                              
+                              if( (value['minimum'] <= accuracy_percentage) and (value['maximum'] >= accuracy_percentage)  ):
                                    mark_percentage = value['percentageOfMarks']
-                                   
+                                   print("mark_percentage",mark_percentage)
                          marks = (marks_reserverd_in_marking * mark_percentage)/100
+                         print("marks",marks)
                          
                          # here we should by questionNo,userId,subjectId
                          filters = {"userId":userId, "questionNo":str(i+1), "subjectId":subjectId}
@@ -233,12 +238,11 @@ async def calculate_marks(request: Request, markingSchemeId:str, subjectId: str,
                          })
                          
                     
-               return JSONResponse({
-                         "similarity percentages": answers,
-                         "updated answer": updated_answer
-                    },
-                    status_code=status.HTTP_200_OK
-               )
+          return JSONResponse({
+                    "similarity percentages": "ok"
+               },
+               status_code=status.HTTP_200_OK
+          )
                
      else:  
           raise HTTPException(

@@ -332,9 +332,9 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
                                                            questionNo=question_no, 
                                                            text=answer_text,
                                                            uploadUrl= file_url,
-                                                           accuracy=None,
-                                                           keywordsaccuracy=None,
-                                                           marks= None
+                                                           accuracy=0.0,
+                                                           keywordsaccuracy=0.0,
+                                                           marks= 0.0
                                                       )
                                                       answer_id = answer_model.save_answer(request, answer)
                                                       print("answer_id:",answer_id)
@@ -446,9 +446,9 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
                                                  questionNo=question_no, 
                                                  text=answer_text,
                                                  uploadUrl= file_url,
-                                                 accuracy=None,
-                                                 keywordsaccuracy=None,
-                                                 marks= None
+                                                 accuracy=0.0,
+                                                 keywordsaccuracy=0.0,
+                                                 marks= 0.0
                                             )
                                             answer_id = answer_model.save_answer(request, answer)
                                             print("answer_id:",answer_id)

@@ -191,15 +191,15 @@ const handleProceed = () => {
     const data = response.data
     console.log("Data:",data)
     setShowConfirmation(false);
-    // axios.patch(`http://127.0.0.1:8000/api_v1/answer/calculate_marks/${markings[0].markingScheme}?subjectId:${markings[0].subjectId}`)
-    // .then((response)=>{
-      //   console.log("Marks calculated:",response.data)
-        // window.location.reload();
-        // setIsLoading(false);
-    // })
-    // .catch((error)=>{
-    //   console.log(error)
-    // })
+    axios.patch(`http://127.0.0.1:8000/api_v1/answers/calculate_marks/${markings[0].markingScheme}/${markings[0].subjectId}`)
+    .then((response)=>{
+        console.log("Marks calculated:",response.data)
+        window.location.reload();
+        setIsLoading(false);
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
     // Process the response data or update your React component state
   })
   .catch((error) => {
