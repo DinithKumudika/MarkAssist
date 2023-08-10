@@ -325,9 +325,11 @@ async def update_mark_config(request: Request, markingSchemeId: str, payload = B
 async def update_marking(request: Request, subjectId: str, payload: List[MarkingUpdate] = Body()):
      print("SubjectID:",subjectId)
      updates = []
+     data_available=False
      for data in payload:
           print("datassss:",data)
           if data is not None:
+               data_available=True
                updates.append(
                     {
                          "filter": {"_id": ObjectId(data.id), "subjectId": subjectId}, 
@@ -344,20 +346,22 @@ async def update_marking(request: Request, subjectId: str, payload: List[Marking
                          }
                     }
                )
-     update_count = marking_model.update_multiple(request, updates)
-     
-     if update_count:
-          # TODO: return updated answer entries
-          return JSONResponse(
-               {
-                    "detail": f"{update_count} answers updated"
-               }, 
-               status_code=status.HTTP_200_OK
+     if data_available:
+          update_count = marking_model.update_multiple(request, updates)
+          if update_count:
+               # TODO: return updated answer entries
+               print("update_count:",update_count)
+               updated_scheme = marking_scheme_model.update(request, "subjectId", str(subjectId), {"isProceeded": True})
+               return JSONResponse(
+                    {
+                         "detail": f"{update_count} answers updated"
+                    }, 
+                    status_code=status.HTTP_200_OK
+               )
+          raise HTTPException(
+               status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+               detail="update failed"
           )
-     raise HTTPException(
-          status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-          detail="update failed"
-     )
      
 
 # get marking scheme by  subjectId

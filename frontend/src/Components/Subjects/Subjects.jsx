@@ -81,7 +81,7 @@ function Subjects({clicked,data}) {
 
   const subjects = (sorteddata)?.map((subject,index)=>{
     // console.log(subject);
-    return <Link key={index} to={"/"+pathName[0]+"/years/"+subject?.subjectCode} className='h-40 w-80'><SubjectBox onClick={handleClick} key={index} subject={subject} backgroundUrl={subject.backgroundImage} subjectCode={subject.subjectCode} subjectName={subject.subjectName} userType={userType}/></Link>
+    return <Link key={index} to={"/"+pathName[0]+"/years/"+subject?.subjectCode} className='h-40 w-full'><SubjectBox onClick={handleClick} key={index} subject={subject} backgroundUrl={subject.backgroundImage} subjectCode={subject.subjectCode} subjectName={subject.subjectName} userType={userType}/></Link>
   })
 
   return (
@@ -104,7 +104,7 @@ function Subjects({clicked,data}) {
                 <Button onClick={handleClick}> Add a Subject</Button>
               }
             </div>
-            <div className='flex flex-wrap justify-between gap-4 overflow-auto'>
+            <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 overflow-auto'>
               {subjects}
             </div>
           </div>

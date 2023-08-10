@@ -6,7 +6,7 @@ function MakingSchemeConfigureBox({ index, formData, onChange,showImages}) {
     const handleIconClick = () => {
       setShowImages((prev) => !prev);
     };
-
+    // console.log("formdata:",typeof(formData.keywords),formData.keywords.length)
     const keywords = formData.keywords.map((keyword,index) => (
       <input type="text" key={index} value={keyword} className="shadow shadow-gray-500 bg-[#EDEDED] mr-2 h-12 text-center rounded rounded-lg font-bold mb-2" disabled/>
     ))

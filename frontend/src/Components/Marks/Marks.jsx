@@ -52,7 +52,7 @@ function Marks({clicked,answers,markings}) {
     const updatedFormData = [...marksConfigure];
     updatedFormData[index] = childFormData;
     if(index<marksConfigure.length-1){
-      updatedFormData[index+1].minimum = updatedFormData[index].maximum;
+      updatedFormData[index+1].minimum = updatedFormData[index].maximum+1;
     }
     setmarksConfigure(updatedFormData);
   };
@@ -61,11 +61,11 @@ function Marks({clicked,answers,markings}) {
     // Add a new input fields to add ranges
     console.log("index",index)
     length=marksConfigure.length;
-    minimum=marksConfigure[index].maximum;
+    minimum=marksConfigure[index].maximum+1;
     maximum=marksConfigure[index].maximum;
     const data = [...marksConfigure];
     const newdata = {
-        "minimum" : minimum+1,
+        "minimum" : minimum,
         "maximum" : maximum,
         "percentageOfMarks" : 0
     }

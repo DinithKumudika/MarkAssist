@@ -118,7 +118,7 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
               </td>
               <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-2/5'>{AnswerSheet.paper}</td>
               <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-3/12'>{year}-{month.toString().padStart(2, '0')}-{day.toString().padStart(2, '0')}</td>
-              <td className={`checkButton text-2xl px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-bold ${AnswerSheet?.isProceeded ? 'text-green-600' : 'text-red-600'}`}>{AnswerSheet?.isProceeded ? <ImCheckmark/> : <ImCross/>}</td>
+              <td className={`checkButton text-2xl px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-bold ${AnswerSheet?.marksGenerated ? 'text-green-600' : 'text-red-600'}`}>{AnswerSheet?.marksGenerated ? <ImCheckmark/> : <ImCross/>}</td>
               {/* {date && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>{teacher.date}</td>} */}
               {/* <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60 w-3/12'><Link key={AnswerSheet.id} to={"/subjects/marks/"+AnswerSheet.year+"/"+AnswerSheet.subjectId} className='w-full'>100</Link></td> */}
               {/* {subjects && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.subjects}</td>} */}

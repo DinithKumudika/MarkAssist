@@ -17,10 +17,10 @@ function AnswerSheets({clicked, data,markingScheme}) {
   const [marks,setMarks] = useState([]);
 
   const [Checked, setChecked] = useState({})
-  const [checkAll, setCheckAll] = useState(true)
+  const [checkAll, setCheckAll] = useState(false)
   useEffect(()=>{
     data?.map((AnswerSheet) => {
-        setChecked(prevState=>{return {...prevState,[AnswerSheet.paper]:true}})
+        setChecked(prevState=>{return {...prevState,[AnswerSheet.paper]:false}})
     })
   },[])
 
@@ -67,27 +67,12 @@ function AnswerSheets({clicked, data,markingScheme}) {
 
   const handleGenerateAccuracy= ()=>{
     console.log("data::",data);
-    data.forEach((data,index)=>{
-      if(Checked[data.paper]){
-        axios
-        .get(`http://127.0.0.1:8000/api_v1/answers/${data.id}`)
-        .then((response) => {
-          const answer = response.data
-          setAnswers(answer)
-          setIsLoading(false);
-          console.log("Answers:",answer)
-          // Process the response data or update your React component state
-          axios
-          .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${data.subjectId}`)
-          .then((response)=>{
-            const marking = response.data
-            console.log("Markasdfghings:",answers)
-            setMarkings(marking)
-            // console.log("Markasdfghings:",marking[0].markingScheme)
-            setIsLoading2(false);
-            setmarkingschemeID(marking[0].markingScheme) 
+    console.log("checked::",Checked);
+    // data.forEach((data,index)=>{
+      // if(Checked[data.paper]){
+        
             axios
-            .get(`http://127.0.0.1:8000/api_v1/answers/compare/${marking[0].markingScheme}?sub=${data.subjectId}&stu=${answer[0].userId}`)
+            .patch(`http://127.0.0.1:8000/api_v1/answers/compare/${markingScheme.id}/${data[0].subjectId}`,Checked)
             .then((response)=>{
               const marks = response.data
               // setMarkings(marking)
@@ -100,20 +85,8 @@ function AnswerSheets({clicked, data,markingScheme}) {
               // setMarks(null)
               // Handle the error, e.g., display an error message to the user
             });
-          })
-          .catch((error) => {
-            console.error(error);
-            setMarks(null)
-            // Handle the error, e.g., display an error message to the user
-          });
-        })
-        .catch((error) => {
-          console.error(error);
-          setAnswers(null)
-          // Handle the error, e.g., display an error message to the user
-        });
-      }
-    })
+      // }
+    // })
     
     // console.log("Markingsss:",answers)
   }
