@@ -290,7 +290,7 @@ const handleProceed = () => {
       {/* <button onClick={handleIconClick}>View All</button> */}
       <div className="flex flex-col items-center mb-16">
         <div>
-          {isLoading ? <MoonLoader color="#191854" loading={isLoading} size={50} /> :
+          {isLoading ? <MoonLoader color="#4457FF" loading={isLoading} size={50} /> :
             <MarkAccurcyConfigure marksConfigure={marksConfigure} handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} handleFormChange={handleFormChange} error={error}/>
           }
         </div>
@@ -303,7 +303,7 @@ const handleProceed = () => {
         showImages ? <Button onClick={handleIconClick} classNames="w-24 text-center bg-custom-blue-main absolute left-[85%] mt-2">Hide All</Button>
         : <Button onClick={handleIconClick} classNames="w-24 text-center bg-custom-blue-main absolute left-[85%] mt-2">View All</Button>
       }
-      {isLoading ? <MoonLoader color="#191854" loading={isLoading} size={50} /> :
+      {isLoading ? <MoonLoader color="#4457FF" loading={isLoading} size={50} /> :
         data
       }
 

@@ -89,7 +89,7 @@ function MarkingSchemeConfigure({clicked, data,subjectId}) {
             {markings}
         </div>
         <div className={`w-full  flex justify-center gap-2 fixed bottom-0 p-2 bg-white`}>
-            {/* <button onClick={handleFormSubmit}className='rounded-[5px] w-52 bg-[#4457FF] text-white font-bold p-1 px-4 cursor-pointer ' >Submit</button> */}
+            {/* <button onClick={handleFormSubmit}className='rounded-[5px] w-52 bg-[#3443C9] text-white font-bold p-1 px-4 cursor-pointer ' >Submit</button> */}
             <Button onClick={handleFormSubmit} classNames={`bg-custom-blue-main ${clicked === 'outer' ? ' -ml-16 ' : ' -ml-64 '}`}>Submit</Button>
             <Button onClick={handleClose} classNames="bg-custom-blue-main">Cancel</Button>
         </div>

@@ -62,7 +62,7 @@ function AnswerSheets({clicked, data,markingScheme}) {
   }
 
   const handleLink = () =>{
-    navigate(`/markingschemes/${markingScheme?.subjectId}`)
+    navigate(`/markingschemes/${markingScheme?.year}/${markingScheme?.subjectId}`)
   }
 
   const handleGenerateAccuracy= ()=>{
@@ -99,7 +99,7 @@ function AnswerSheets({clicked, data,markingScheme}) {
               <p className='text-xl font-bold text-[#191854]'>Answer Sheets</p>
               <p className='text-lg text-black opacity-60'>Upload answer papers</p>
             </div>
-            <div className='px-12 max-sm:px-4 flex flex-col lg:flex-row justify-between w-full md:flex-col'>
+            <div className=' max-sm:px-4 flex flex-col lg:flex-row justify-between w-full md:flex-col'>
               <div className='flex lg:w-1/2 mb-2  md:[90%] md:mb-2 md-max:justify-between'>
                 <button className="rounded rounded-sm bg-custom-blue-main w-fit px-2 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleCKick}><AiOutlinePlus/><div className='ml-2'>Upload</div></button>
                 <button className="rounded rounded-sm bg-custom-blue-main w-fit px-2 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row"><BiFilter/><div className='ml-2'>Filter</div></button>

@@ -144,7 +144,7 @@ function DragDrop({children,closeFunc,data}) {
               </div>
             </div>
             {uploading && <div><BarLoader color="#3443C9" height={6} width={256} /></div>}
-          <button type='submit' className="my-8 w-fit max-sm:w-24 bg-[#4457FF] hover:opacity-90 text-white font-bold py-2 rounded flex gap-2 px-[8%] justify-center text-center items-center " ><AiOutlineUpload/>Upload {children}</button>
+          <button type='submit' className="my-8 w-fit max-sm:w-24 bg-[#3443C9] hover:opacity-90 text-white font-bold py-2 rounded flex gap-2 px-[8%] justify-center text-center items-center " ><AiOutlineUpload/>Upload {children}</button>
         </form>  
             <ul className='list-disc w-fit mt-8'>
               {files.map(file => (
