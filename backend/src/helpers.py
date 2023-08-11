@@ -1,3 +1,4 @@
+import time
 import pdf2image as p2i
 import cv2
 import numpy as np
@@ -6,12 +7,28 @@ import screeninfo
 from google.cloud import vision
 import pandas as pd
 import pytesseract
+import nltk
+import textdistance
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 from pytesseract import Output
+from msrest.authentication import CognitiveServicesCredentials
+from azure.cognitiveservices.vision.computervision import ComputerVisionClient
+from azure.cognitiveservices.vision.computervision.models import OperationStatusCodes
+
 
 import os
 import io
 
 from config.config import settings
+
+
+# Download NLTK resources if not already downloaded
+# nltk.download('punkt')
+# nltk.download('wordnet')
+# nltk.download('stopwords')
+
 
 def get_screen_width():
      screen = screeninfo.get_monitors()[0]
@@ -110,6 +127,25 @@ def read_text(client, image):
      return text
 
 
+def read_text_azure(client : ComputerVisionClient, image):
+     response = client.read_in_stream(open(image, 'rb'), language='en', raw=True)
+     operation_location = response.headers["Operation-Location"]
+     operation_id = operation_location.split("/")[-1]
+     time.sleep(5)
+     result = client.get_read_result(operation_id)
+     text_lines = []
+     
+
+     if result.status == OperationStatusCodes.succeeded:
+          read_results = result.analyze_result.read_results
+          for analyzed_results in read_results:
+               for line in analyzed_results.lines:
+                    print(line.text)
+                    text_lines.append(line.text)
+     
+     return text_lines
+
+
 def show_text(image, options):
      gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
      
@@ -148,3 +184,45 @@ def text_similarity(text1: str, text2: str)->str:
      # Retrieve and process the response
      completion_text = response['choices'][0]['text'].strip()
      return completion_text
+
+def preprocess_text(text):
+    # Tokenize the text and convert to lowercase
+    words = word_tokenize(text.lower())
+    
+    # Remove punctuation and stop words
+    words = [word for word in words if word.isalnum() and word not in stopwords.words('english')]
+    
+    # Lemmatize the words
+    lemmatizer = WordNetLemmatizer()
+    words = [lemmatizer.lemmatize(word) for word in words]
+    
+    return words
+
+def find_keywords_in_text(text, keywords):
+    processed_text = preprocess_text(text)
+    keyword_matches = []
+    
+    for keyword in keywords:
+        singular_form = WordNetLemmatizer().lemmatize(keyword, 'n')
+        plural_form = WordNetLemmatizer().lemmatize(keyword + 's', 'n')
+        
+        if singular_form in processed_text or plural_form in processed_text:
+            keyword_matches.append(keyword)
+        else:
+            # Check for keywords with spelling mistakes
+            for word in processed_text:
+                if textdistance.hamming.normalized_distance(keyword, word) <= 0.4:
+                    keyword_matches.append(keyword)
+                    break
+    
+    return keyword_matches
+
+def keywords_match(paragraph: str, keywords: list):
+     matching_keywords = find_keywords_in_text(paragraph, keywords)
+     
+     if matching_keywords:
+         print("Keywords found:", matching_keywords)
+         return len(matching_keywords)
+     else:
+         print("No keywords found.")
+         return 0

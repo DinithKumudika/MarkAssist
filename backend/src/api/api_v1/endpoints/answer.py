@@ -11,7 +11,7 @@ from models.answer import AnswerModel, extract_answers, read_answers
 from models.marking import MarkingModel
 from models.marking_scheme import MarkingSchemeModel
 from models.paper import PaperModel
-from helpers import get_images, text_similarity
+from helpers import get_images, text_similarity, keywords_match
 from utils.firebase_storage import upload_file2
 
 router = APIRouter()
@@ -132,16 +132,28 @@ async def check_similarity(request: Request, markingSchemeId:str, subjectId: str
                percentages = []
                for i, el in enumerate(answers_by_student):
                     keywordsAccuracy=0
-                    print("student answer", i+1, ":", answers_by_student[i]["text"])
-                    print("Marking answer", i+1, ":", markings_by_scheme_id[i]["text"])
+                    # print("student answer", i+1, ":", answers_by_student[i]["text"])
+                    # print("Marking answer", i+1, ":", markings_by_scheme_id[i]["text"])
 
                     if(markings_by_scheme_id[i]["selected"]):
                          percentage = text_similarity(markings_by_scheme_id[i]["text"], answers_by_student[i]["text"])
-                         print("Percentage:",percentage)
+                         # print("Percentage:",percentage)
+
+                         no_of_matched_keywords = keywords_match(answers_by_student[i]["text"],markings_by_scheme_id[i]["keywords"])
+                         print("no_of_matched_keywords",no_of_matched_keywords)
+                         no_of_keywords = len(markings_by_scheme_id[i]["keywords"])
+                         print("no_of_keywords",no_of_keywords)
+                         if(no_of_keywords != 0):
+                              keywordsAccuracy = (no_of_matched_keywords/no_of_keywords)*100
+                         elif (no_of_keywords == 0):
+                              keywordsAccuracy = 0
+                         elif (no_of_matched_keywords == 0):
+                              keywordsAccuracy = 0
+                         print("keywordsAccuracy",keywordsAccuracy)
 
                          # here we should by questionNo,userId,subjectId
                          filters = {"userId":studentIndex, "questionNo":str(i+1), "subjectId":subjectId}
-                         data = {"accuracy":percentage.split(": ")[-1]}
+                         data = {"accuracy":percentage.split(": ")[-1], "keywordsaccuracy":keywordsAccuracy}
                          # data = {"accuracy":"0.6"}
                          print("filters", data)
 
@@ -152,7 +164,8 @@ async def check_similarity(request: Request, markingSchemeId:str, subjectId: str
                               "subjectId":subjectId,
                               "userId":studentIndex,
                               "questionNoquestion": i+1, 
-                              "accuracy": percentage.split(": ")[-1]
+                              "accuracy": percentage.split(": ")[-1],
+                              "keywordsaccuracy":keywordsAccuracy
                               # "accuracy": "0.6"
                          })
                print("key", key)

@@ -72,6 +72,10 @@ function DragDrop({children,closeFunc,data}) {
         if(error.response && error.response.status >=400 && error.response.status <500){
           // console.log(error.response.data.message);
           console.log(error.response.data.detail);
+          setUploading(false);
+          closeFunc()
+          alert('Something went wrong')
+          window.location.reload();
       }
       });
     }
@@ -90,9 +94,11 @@ function DragDrop({children,closeFunc,data}) {
         if(error.response && error.response.status >=400 && error.response.status <500){
           // console.log(error.response.data.message);
           console.log(error.response.data.detail);
-          alert('Something went wrong')
+          // alert('Something went wrong')
           setUploading(false);
           closeFunc()
+          alert('Something went wrong')
+          window.location.reload();
       }
       });
     }

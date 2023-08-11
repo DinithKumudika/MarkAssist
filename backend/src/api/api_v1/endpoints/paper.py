@@ -17,7 +17,7 @@ from schemas.paper import Paper,PaperCreate,PaperForm
 from models.user import UserModel
 from schemas.answer import AnswerCreate, Answer
 from schemas.user import User
-from models.answer import AnswerModel, extract_answers, read_answers
+from models.answer import AnswerModel, extract_answers, read_answers ,read_answers_azure
 from helpers import get_images, text_similarity
 from utils.firebase_storage import upload_file2
 from models.subject import SubjectModel;
@@ -310,9 +310,9 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
                                         no_of_answers = extract_answers(new_paper['id'])
                                         print(no_of_answers)
                                         if no_of_answers:
-                                             answers = read_answers(new_paper['id'])
+                                             answers = read_answers_azure(new_paper['id'])
                                              if answers:
-                                                 answers = read_answers(new_paper['id'])
+                                                 answers = read_answers_azure(new_paper['id'])
                                                  answer_images = get_images(os.path.join('../data/answers/', new_paper['id']))
                                                  urls = []
 
@@ -424,9 +424,11 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
                               no_of_answers = extract_answers(new_paper['id'])
                               print(no_of_answers)
                               if no_of_answers:
-                                   answers = read_answers(new_paper['id'])
+                                   print("no_of_answers:",no_of_answers)
+                                   answers = read_answers_azure(new_paper['id'])
                                    if answers:
-                                       answers = read_answers(new_paper['id'])
+                                       answers = read_answers_azure(new_paper['id'])
+                                       print("answers:::",answers)
                                        answer_images = get_images(os.path.join('../data/answers/', new_paper['id']))
                                        urls = []
                                        
