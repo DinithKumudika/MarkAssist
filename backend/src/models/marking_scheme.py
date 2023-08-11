@@ -1,7 +1,7 @@
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
-from typing import Optional
+from typing import Optional,Dict,Union
 from pymongo import ReturnDocument
 from config.database import Database
 from schemas.marking_scheme import MarkingScheme , MarkingSchemeCreate, MarkingSchemeUpdate

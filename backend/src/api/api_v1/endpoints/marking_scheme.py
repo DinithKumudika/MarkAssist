@@ -347,6 +347,7 @@ async def update_marking(request: Request, subjectId: str, payload: List[Marking
      update_count = marking_model.update_multiple(request, updates)
      
      if update_count:
+          updated_scheme = marking_scheme_model.update(request, "subjectId", subjectId, {"isProceeded": True})
           # TODO: return updated answer entries
           return JSONResponse(
                {
