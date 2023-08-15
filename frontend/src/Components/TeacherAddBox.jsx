@@ -61,6 +61,7 @@ function TeacherAddBox({closeFunc}) {
             .post('http://127.0.0.1:8000/api_v1/auth/register?type=teacher',formData)
             .then((response) => {
                 // console.log("Hello:",response);
+                window.location.reload();
                 setadding(false);
                 closeFunc()
                 })
