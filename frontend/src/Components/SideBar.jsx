@@ -5,6 +5,7 @@ import { BiAlarmOff,BiLogOut } from "react-icons/bi";
 import { MdSubject,MdSettings } from "react-icons/md";
 import { IoNewspaperOutline } from "react-icons/io5";
 import { TiThMenu } from "react-icons/ti";
+import { HiMenuAlt2 } from "react-icons/hi";
 import { CgProfile } from "react-icons/cg";
 import {useState} from 'react';
 import AdminSidebar from './Sidebar/AdminSidebar';  
@@ -13,7 +14,7 @@ function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onC
   //Gets details from local storage
   const allItems=JSON.parse(localStorage.getItem('tokenData'));
   const userType=allItems['user_role'];
-  console.log(userType);
+  // console.log(userType);
   
   const currentURL = window.location.href;
   const location = useLocation();
@@ -26,9 +27,9 @@ function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onC
   let navbarclasses;
   // console.log("clicked::"+clicked)
   if(clicked==="outer"){
-    navbarclasses = classnames('z-20 fixed px-2 text-white font-bold text-center flex flex-col justify-between sidebar w-16 bg-[#4457FF] outer pt-1')
+    navbarclasses = classnames('h-full z-20 fixed px-2 text-white font-bold text-center flex flex-col justify-between sidebar w-16 bg-[#4457FF] outer pt-1')
   }else if(clicked==="inner"){
-    navbarclasses = classnames('z-20 fixed px-2 text-white font-bold text-center flex flex-col justify-between sidebar w-64 bg-[#4457FF] inner pt-1 max-sm:w-14')
+    navbarclasses = classnames('h-full z-20 fixed px-2 text-white font-bold text-center flex flex-col justify-between sidebar w-64 bg-[#4457FF] inner pt-1 max-sm:w-14')
   }
 
   let sidebarComponent;
@@ -45,7 +46,7 @@ function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onC
 
   //When logout button clicked
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('tokenData');
     window.location.href = '/';
   }
 
@@ -53,7 +54,7 @@ function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onC
   return (
     <div className={navbarclasses}>
       <div className="text-left">
-        <TiThMenu className='-ml-2 text-6xl flex flex-col cursor-pointer py-3' onClick={onClickFunc}/>
+        <HiMenuAlt2 className='-ml-2 text-6xl flex flex-col cursor-pointer py-3' onClick={onClickFunc}/>
         {sidebarComponent}
       </div>
       <div className={bottomclasses}>

@@ -5,6 +5,16 @@ import { IoNewspaperOutline ,IoStatsChart } from "react-icons/io5";
 import classnames from 'classnames';
 import { Link ,useLocation } from 'react-router-dom';
 function StudentSidebar({clicked}) {
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
+  if(allItems){
+    const userType = allItems['user_role'];
+    if(userType!=="student"){
+      window.location.href="/";
+    }
+  }else{
+    window.location.href="/";
+  }
+  const user_id=allItems['user_id'];
   const location = useLocation();
   const pathName = location.pathname.split('/').filter((path) => path !== '')
   const classes = classnames('flex flex-col pl-1 justify-center cursor-pointer py-3 hover:bg-white hover:bg-opacity-30 rounded rounded-lg my-2');
