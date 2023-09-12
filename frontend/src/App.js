@@ -10,7 +10,7 @@ import SubjectPage from './Pages/SubjectPage';
 import YearsPage from './Pages/YearsPage';
 import MarkingSchemesPage from './Pages/MarkingSchemesPage';
 import AnswerSheetsPage from './Pages/AnswerSheetsPage';
-import TopBar from './Components/TopBar';
+// import TopBar from './Components/TopBar';
 import TeachersPage from './Pages/TeachersPage';
 import MarksPage from './Pages/MarksPage';
 import PapersPage from './Pages/PapersPage';
@@ -18,6 +18,7 @@ import './Components/TopBar.css';
 import TeacherPage from './Pages/TeacherPage';
 import TeacherPasswordChange from './Pages/TeacherPasswordChange';
 import ConfigureMarks from './Pages/ConfigureMarks';
+import AdminDashboard1 from './Pages/AdminDashboard1';
 
 function App(){
   return(
@@ -46,9 +47,14 @@ function App(){
 
         
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/dashboard1" element={<AdminDashboard1 />} />
         <Route path="/admin/teachers" element={<TeachersPage />} />
 
         <Route path="/subjects/marks/:year/:subjectCode" element={<MarksPage />} />
+
+        <Route path="/" element={<AdminHandleStudents2 />} />
+        <Route path="/adminhandleteacher2" element={<AdminHandleTeacher2 />} />
+        <Route path="/adminhandlestudents" element={<AdminHandleStudents />} />
 
       </Routes>
     </div>
