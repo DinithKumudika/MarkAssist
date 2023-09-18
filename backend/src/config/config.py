@@ -11,7 +11,9 @@ class CommonSettings(BaseSettings):
      JWT_SECRET_KEY: str = env.get("JWT_SECRET_KEY")
      ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
      REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
-     OPENAI_API_KEY = env.get('OPENAI_API_KEY')
+     OPENAI_API_KEY: str = env.get('OPENAI_API_KEY')
+     AZURE_API_KEY:str = env.get('AZURE_API_KEY')
+     AZURE_ENDPOINT:str = env.get('AZURE_ENDPOINT')
      
      class Config:
           case_sensitive = True
@@ -24,7 +26,10 @@ class ServerSettings(BaseSettings):
      class Config:
           case_sensitive = True
 
+
 class GoogleServiceSettings(BaseSettings):
+     OAUTH_CLIENT_ID: str = env.get('GOOGLE_CLIENT_ID')
+     OAUTH_CLIENT_SECRET: str = env.get('GOOGLE_CLIENT_SECRET')
      GOOGLE_APPLICATION_CREDENTIALS: str = '../service_account.json'
      FIREBASE_API_KEY: str = env.get('API_KEY')
      FIREBASE_AUTH_DOMAIN: str = env.get('AUTH_DOMAIN')
@@ -38,15 +43,32 @@ class GoogleServiceSettings(BaseSettings):
           case_sensitive = True
 
 
+class AzureServiceSettings(BaseSettings):
+     VISION_API_KEY: str = env.get('AZURE_API_KEY')
+     VISION_ENDPOINT: str = env.get('AZURE_ENDPOINT')
+
+
 class DatabaseSettings(BaseSettings):
      DB_URI: str = env.get('MONGO_URI')
      DB_NAME: str = env.get('DB_NAME')
      
      class Config:
           case_sensitive = True
+          
+
+class MailSettings(BaseSettings):
+     MAIL_USERNAME :str = env.get('MAIL_USERNAME')
+     MAIL_PASSWORD :str = env.get('MAIL_PASSWORD')
+     MAIL_FROM :str = env.get('MAIL_FROM')
+     MAIL_PORT :int = int(env.get('MAIL_PORT'))
+     MAIL_SERVER :str = env.get('MAIL_SERVER')
+     MAIL_FROM_NAME :str = env.get('MAIN_FROM_NAME')
+     
+     class Config:
+          case_sensitive = True
 
 
-class Settings(CommonSettings, ServerSettings, DatabaseSettings, GoogleServiceSettings):
+class Settings(CommonSettings, ServerSettings, DatabaseSettings, GoogleServiceSettings, AzureServiceSettings, MailSettings):
      pass
 
 

@@ -22,11 +22,11 @@ function TeacherAddBox({closeFunc}) {
         isDeleted : false,
         title : 'Mr.',
         role : 'Lecturer',
-        // telephoneNumber : '',
+        telephoneNumber : '',
     });
 
-    const { firstName,lastName,email,userType,emailActive,isDeleted,title,role } = formData;
-    const telephoneNumber = ''
+    const { firstName,lastName,email,userType,emailActive,isDeleted,title,role ,telephoneNumber} = formData;
+    // const telephoneNumber = ''
 
     const handleSelectChange = (event) =>{
         setFormData((prevState)=>({
@@ -48,7 +48,7 @@ function TeacherAddBox({closeFunc}) {
     const handleSubmit = async (event)=>{
         event.preventDefault();
         console.log(formData);
-        if(!formData.role || !formData.title || !formData.firstName || !formData.lastName || !formData.email ){
+        if(!formData.role || !formData.title || !formData.firstName || !formData.lastName || !formData.email || !formData.telephoneNumber ){
             setError("Please fill all the fields");
             console.log("error");
             return;
@@ -56,11 +56,12 @@ function TeacherAddBox({closeFunc}) {
             console.log("no error");
             console.log(formData);
             const formdata = new FormData();
-            formdata.append('subjectCode', formData.subjectCode);
+            // formdata.append('subjectCode', formData.subjectCode);
             axios
-            .post('http://127.0.0.1:8000/api_v1/admins/teachers/new',formdata)
+            .post('http://127.0.0.1:8000/api_v1/auth/register?type=teacher',formData)
             .then((response) => {
                 // console.log("Hello:",response);
+                window.location.reload();
                 setadding(false);
                 closeFunc()
                 })
@@ -68,6 +69,7 @@ function TeacherAddBox({closeFunc}) {
                   if(error.response && error.response.status >=400 && error.response.status <500){
                     // console.log(error.response.data.message);
                     console.log(error.response.data.detail);
+                    setError(error.response.data.detail);
                 }
                 });
             setError("");
@@ -132,7 +134,7 @@ function TeacherAddBox({closeFunc}) {
                                 </div>
                                 <div className='max-md:mr-0 max-md:w-[85%] mr-8 w-[45%] flex flex-row items-center mb-8'>
                                     <label className='mr-4 font-sans w-36'>Telephone No.</label>
-                                    <input type="text" pattern="[0][0-9]{9}" value={telephoneNumber} onChange={onChange} name="telephoneNumber" placeholder="0123456789" className='w-[65%] h-8  p-2 shadow shadow-gray-500 rounded' disabled/>
+                                    <input type="text" pattern="[0][0-9]{9}" value={telephoneNumber} onChange={onChange} name="telephoneNumber" placeholder="0123456789" className='w-[65%] h-8  p-2 shadow shadow-gray-500 rounded'/>
                                 </div>
                             </div>
                             <div className='flex flex-row items-center justify-between max-md:flex-col '>
@@ -150,7 +152,7 @@ function TeacherAddBox({closeFunc}) {
                 <div className='w-full'>
                     <p className='font-bold text-blue-950 text-xl my-4 '>Other Information</p>
                 </div>
-                {adding && <BarLoader color="#00ADEF" height={6} width={128} />}
+                {adding && <BarLoader color="#4457FF" height={6} width={128} />}
 
             </form>
         </div>

@@ -1,14 +1,34 @@
+import time
 import pdf2image as p2i
 import cv2
 import numpy as np
+import openai
 import screeninfo
 from google.cloud import vision
 import pandas as pd
 import pytesseract
+import nltk
+import textdistance
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 from pytesseract import Output
+from msrest.authentication import CognitiveServicesCredentials
+from azure.cognitiveservices.vision.computervision import ComputerVisionClient
+from azure.cognitiveservices.vision.computervision.models import OperationStatusCodes
+
 
 import os
 import io
+
+from config.config import settings
+
+
+# Download NLTK resources if not already downloaded
+# nltk.download('punkt')
+# nltk.download('wordnet')
+# nltk.download('stopwords')
+
 
 def get_screen_width():
      screen = screeninfo.get_monitors()[0]
@@ -107,6 +127,25 @@ def read_text(client, image):
      return text
 
 
+def read_text_azure(client : ComputerVisionClient, image):
+     response = client.read_in_stream(open(image, 'rb'), language='en', raw=True)
+     operation_location = response.headers["Operation-Location"]
+     operation_id = operation_location.split("/")[-1]
+     time.sleep(5)
+     result = client.get_read_result(operation_id)
+     text_lines = []
+     
+
+     if result.status == OperationStatusCodes.succeeded:
+          read_results = result.analyze_result.read_results
+          for analyzed_results in read_results:
+               for line in analyzed_results.lines:
+                    print(line.text)
+                    text_lines.append(line.text)
+     
+     return text_lines
+
+
 def show_text(image, options):
      gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
      
@@ -121,3 +160,69 @@ def show_text(image, options):
                
      cv2.imshow("question no", image)
      cv2.waitKey(0)
+     
+
+def text_similarity(text1: str, text2: str)->str:
+     openai.api_key = settings.OPENAI_API_KEY
+     # Prepare the prompt
+     prompt = f"""Text 1: {text1}\nText 2: {text2}\n
+               You are a marker who mark exam papers by comparing student answer and marking scheme answer. 
+               Text 1 is the answer of the marking scheme and Text 2 is the answer written by the student for a question.
+               Compare both Text 1 and Text 2 using both cosine similarity and semantic analysis techniques together with the context. 
+               then provide me a score as a percentage between 0 and 1 in below format. Overall score is: score after comparison"""
+
+     # Make an API request
+     response = openai.Completion.create(
+          engine='text-davinci-003',
+          prompt=prompt,
+          max_tokens=256,
+          n=1,
+          stop=None,
+          temperature=0,
+     )
+
+     # Retrieve and process the response
+     completion_text = response['choices'][0]['text'].strip()
+     return completion_text
+
+def preprocess_text(text):
+    # Tokenize the text and convert to lowercase
+    words = word_tokenize(text.lower())
+    
+    # Remove punctuation and stop words
+    words = [word for word in words if word.isalnum() and word not in stopwords.words('english')]
+    
+    # Lemmatize the words
+    lemmatizer = WordNetLemmatizer()
+    words = [lemmatizer.lemmatize(word) for word in words]
+    
+    return words
+
+def find_keywords_in_text(text, keywords):
+    processed_text = preprocess_text(text)
+    keyword_matches = []
+    
+    for keyword in keywords:
+        singular_form = WordNetLemmatizer().lemmatize(keyword, 'n')
+        plural_form = WordNetLemmatizer().lemmatize(keyword + 's', 'n')
+        
+        if singular_form in processed_text or plural_form in processed_text:
+            keyword_matches.append(keyword)
+        else:
+            # Check for keywords with spelling mistakes
+            for word in processed_text:
+                if textdistance.hamming.normalized_distance(keyword, word) <= 0.4:
+                    keyword_matches.append(keyword)
+                    break
+    
+    return keyword_matches
+
+def keywords_match(paragraph: str, keywords: list):
+     matching_keywords = find_keywords_in_text(paragraph, keywords)
+     
+     if matching_keywords:
+         print("Keywords found:", matching_keywords)
+         return len(matching_keywords)
+     else:
+         print("No keywords found.")
+         return 0

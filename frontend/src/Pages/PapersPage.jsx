@@ -17,7 +17,7 @@ function PapersPage() {
   const user_id=allItems['user_id'];
   const userType = allItems['user_role'];
   const accessToken = localStorage.getItem('accessToken')
-  const [isClicked,setClick] = useState("outer");
+  const [isClicked,setClick] = useState("inner");
   const [subjects,setSubjects] = useState([]);
 
 //   useEffect(()=>{
@@ -67,7 +67,7 @@ function PapersPage() {
 
   return (
     <div>
-      <NavBar black onClickFunc={handleClick}/>
+      <NavBar black onClickFunc={handleClick} clicked={isClicked}/>
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
       <Papers clicked={isClicked} data={subjects}/>
     </div>

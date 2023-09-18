@@ -11,7 +11,7 @@ function TeachersPage() {
   }
   const user_id=allItems['user_id'];
   const userType = allItems['user_role'];
-  const [isClicked,setClick] = useState("outer");
+  const [isClicked,setClick] = useState("inner");
   const [teachers,setTeachers] = useState([]);
 
   useEffect(()=>{
@@ -46,7 +46,7 @@ function TeachersPage() {
 
   return (
     <div>
-      <NavBar black onClickFunc={handleClick}/>
+      <NavBar black onClickFunc={handleClick} clicked={isClicked}/>
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
       <Teachers clicked={isClicked} data={teachers}/>
     </div>
