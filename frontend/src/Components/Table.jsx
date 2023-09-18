@@ -55,7 +55,7 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
               <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60 text-center'>{year}-{month.toString().padStart(2, '0')}-{day.toString().padStart(2, '0')}</td>
               {/* {subjects && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.subjects}</td>} */}
               <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>3</td>
-              {/* {select && <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-[#4457FF] w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={handleSelect}><div className='ml-2'>Select</div></button></td>} */}
+              {/* {select && <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-[#3443C9] w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={handleSelect}><div className='ml-2'>Select</div></button></td>} */}
             </tr>
           </Fragment>
         )
@@ -91,7 +91,7 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
   //           <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>100</td>
   //           {/* {subjects && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.subjects}</td>} */}
   //           {/* <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>3</td> */}
-  //           {/* {select && <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-[#4457FF] w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={handleSelect}><div className='ml-2'>Select</div></button></td>} */}
+  //           {/* {select && <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-[#3443C9] w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={handleSelect}><div className='ml-2'>Select</div></button></td>} */}
   //         </tr>
   //       </Link>
   //     )
@@ -110,7 +110,7 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
       // console.log("year:",AnswerSheet)
       return (
         <Fragment key={AnswerSheet.paper}>
-          <tr className="w-full" >
+          <tr className="w-full " >
 
               <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60  w-[4px]'>
                 <input onChange={(e) => handleCheck(e)}
@@ -118,7 +118,7 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
               </td>
               <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-2/5'>{AnswerSheet.paper}</td>
               <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-3/12'>{year}-{month.toString().padStart(2, '0')}-{day.toString().padStart(2, '0')}</td>
-              <td className={`checkButton text-2xl px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-bold ${AnswerSheet?.isProceeded ? 'text-green-600' : 'text-red-600'}`}>{AnswerSheet?.isProceeded ? <ImCheckmark/> : <ImCross/>}</td>
+              <td className={`checkButton text-2xl px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-bold ${AnswerSheet?.marksGenerated ? 'text-green-600' : 'text-red-600'}`}>{AnswerSheet?.marksGenerated ? <ImCheckmark/> : <ImCross/>}</td>
               {/* {date && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>{teacher.date}</td>} */}
               {/* <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60 w-3/12'><Link key={AnswerSheet.id} to={"/subjects/marks/"+AnswerSheet.year+"/"+AnswerSheet.subjectId} className='w-full'>100</Link></td> */}
               {/* {subjects && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.subjects}</td>} */}
@@ -170,7 +170,7 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
             
 
 
-              {/* {select && <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-[#4457FF] w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={handleSelect}><div className='ml-2'>Select</div></button></td>} */}
+              {/* {select && <td className=' flex justify-center text-sm px-4 py-2 h-12 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-[#3443C9] w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row" onClick={handleSelect}><div className='ml-2'>Select</div></button></td>} */}
               {teacher}
               {markingscheme}
               {paper}

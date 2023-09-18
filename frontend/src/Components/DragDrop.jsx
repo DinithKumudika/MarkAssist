@@ -72,6 +72,10 @@ function DragDrop({children,closeFunc,data}) {
         if(error.response && error.response.status >=400 && error.response.status <500){
           // console.log(error.response.data.message);
           console.log(error.response.data.detail);
+          setUploading(false);
+          closeFunc()
+          alert('Something went wrong')
+          window.location.reload();
       }
       });
     }
@@ -90,9 +94,11 @@ function DragDrop({children,closeFunc,data}) {
         if(error.response && error.response.status >=400 && error.response.status <500){
           // console.log(error.response.data.message);
           console.log(error.response.data.detail);
-          alert('Something went wrong')
+          // alert('Something went wrong')
           setUploading(false);
           closeFunc()
+          alert('Something went wrong')
+          window.location.reload();
       }
       });
     }
@@ -102,7 +108,7 @@ function DragDrop({children,closeFunc,data}) {
   console.log(files);
   return ReactDOM.createPortal(
     <div className='flex justify-center items-center'>
-      <div className='z-30 fixed inset-0 bg-white flex items-center justify-center' onClick={closeFunc}></div>
+      <div className='z-30 fixed inset-0 opacity-70 bg-gray-500 flex items-center justify-center' onClick={closeFunc}></div>
       <div className='z-30 absolute top-0 left-0 h-full w-full p-5 bg-white  flex flex-col items-center max-sm:top-[10%]'>
           <div className='fixed right-6 w-full flex justify-end'>
             <AiOutlineClose onClick={closeFunc} className='cursor-pointer -mb-12 text-white text-center text-3xl bg-red-400 rounded-xl p-1 hover:bg-red-500'/>
@@ -116,7 +122,7 @@ function DragDrop({children,closeFunc,data}) {
               : ''
             : ''
           }
-      <div className="flex flex-col w-[90%]  h-[50%] justify-center items-center">
+      <div className="flex flex-col w-[90%] mt-8 h-[60%] justify-center items-center">
       {/* Drop Box */}
         <form onSubmit={handleSubmit} className='h-full flex flex-col items-center justify-center w-[95%]'>  
             <div {...getRootProps()} className="h-full py-6 flex flex-col inset-y-5 right-0 items-center justify-center box-border w-[90%] m-12 px-4 mtransition bg-[#D4D4D4] rounded-lg">
@@ -137,16 +143,16 @@ function DragDrop({children,closeFunc,data}) {
                         
                       </div>
                       <div className="mt-4 flex flex-col items-center justify-center ">
-                        <button className="mb-4 w-40 max-sm:w-24 bg-white hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center" ><AiOutlinePlus/>Choose Files</button>
+                        <button className="mb-4 w-40 max-sm:w-24 bg-white hover:opacity-90 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center" ><AiOutlinePlus/>Choose Files</button>
 
                       </div>
                   </div>
               </div>
             </div>
-            {uploading && <BarLoader color="#00ADEF" height={6} width={128} />}
-          <button type='submit' className="my-4 w-fit max-sm:w-24 bg-[#4457FF] hover:bg-gray-400 text-white font-bold py-2 rounded flex gap-2 px-[8%] justify-center text-center items-center " ><AiOutlineUpload/>Upload {children}</button>
+            {uploading && <div><BarLoader color="#3443C9" height={6} width={256} /></div>}
+          <button type='submit' className="my-8 w-fit max-sm:w-24 bg-[#3443C9] hover:opacity-90 text-white font-bold py-2 rounded flex gap-2 px-[8%] justify-center text-center items-center " ><AiOutlineUpload/>Upload {children}</button>
         </form>  
-            <ul className='list-disc w-fit'>
+            <ul className='list-disc w-fit mt-8'>
               {files.map(file => (
                 <li key={file.name}>
                   <div className="flex flex-row justify-between mb-2">

@@ -54,7 +54,13 @@ function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onC
   return (
     <div className={navbarclasses}>
       <div className="text-left">
-        <img src="http://localhost:3000/burger.svg" alt="burger" className={`w-8 max-sm:ml-2 cursor-pointer py-3 mb-12 ${clicked==="outer" ? ' ml-2 ' : ' ml-4 '}`} onClick={onClickFunc}/>
+        <div className={`w-8 max-sm:ml-2 cursor-pointer py-3 mb-4 ${clicked==="outer" ? ' ml-2 ' : ' ml-4 '}`} onClick={onClickFunc}>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </div>
+
+        {/* <img src="http://localhost:3000/burger.svg" alt="burger" className={`w-8 max-sm:ml-2 cursor-pointer py-3 mb-12 ${clicked==="outer" ? ' ml-2 ' : ' ml-4 '}`} onClick={onClickFunc}/> */}
         {/* <HiMenuAlt2 className='-ml-2 text-6xl flex flex-col cursor-pointer py-3' onClick={onClickFunc}/> */}
         {sidebarComponent}
       </div>

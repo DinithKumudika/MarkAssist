@@ -17,6 +17,7 @@ function Marks({clicked,answers,markings}) {
   // console.log(markings)
   const [showImages, setShowImages] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingProceed, setIsLoadingProceed] = useState(false);
   const [error, setError] = useState("");
   const [marksConfigure, setmarksConfigure] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -52,7 +53,7 @@ function Marks({clicked,answers,markings}) {
     const updatedFormData = [...marksConfigure];
     updatedFormData[index] = childFormData;
     if(index<marksConfigure.length-1){
-      updatedFormData[index+1].minimum = updatedFormData[index].maximum;
+      updatedFormData[index+1].minimum = updatedFormData[index].maximum+1;
     }
     setmarksConfigure(updatedFormData);
   };
@@ -61,11 +62,11 @@ function Marks({clicked,answers,markings}) {
     // Add a new input fields to add ranges
     console.log("index",index)
     length=marksConfigure.length;
-    minimum=marksConfigure[index].maximum;
+    minimum=marksConfigure[index].maximum+1;
     maximum=marksConfigure[index].maximum;
     const data = [...marksConfigure];
     const newdata = {
-        "minimum" : minimum+1,
+        "minimum" : minimum,
         "maximum" : maximum,
         "percentageOfMarks" : 0
     }
@@ -184,21 +185,26 @@ function Marks({clicked,answers,markings}) {
 
 const handleProceed = () => {
   //Methana isProcessed eka true wenna oona****************
+  setShowConfirmation(false);
+  console.log("clicked",isLoadingProceed)
+  setIsLoadingProceed(prev=>!prev);
+  console.log("clicked",isLoadingProceed)
   console.log("clicked:",markings[0].markingScheme)
   axios
   .put(`http://127.0.0.1:8000/api_v1/markings/update/grading/${markings[0].markingScheme}`,marksConfigure)
   .then((response) => {
     const data = response.data
     console.log("Data:",data)
-    setShowConfirmation(false);
     axios.patch(`http://127.0.0.1:8000/api_v1/answers/calculate_marks/${markings[0].markingScheme}/${markings[0].subjectId}`)
     .then((response)=>{
         console.log("Marks calculated:",response.data)
+        setIsLoadingProceed(false);
         window.location.reload();
-        setIsLoading(false);
     })
     .catch((error)=>{
       console.log(error)
+      alert("Something went wrong")
+      setIsLoadingProceed(false);
     })
     // Process the response data or update your React component state
   })
@@ -206,6 +212,8 @@ const handleProceed = () => {
     console.error(error);
     setmarksConfigure(null)
     setShowConfirmation(false);
+    alert("Something went wrong")
+    setIsLoadingProceed(false);
     // Handle the error, e.g., display an error message to the user
   });
 }
@@ -213,6 +221,7 @@ const handleProceed = () => {
   console.log(error)
 
   const handleOKClick = () => {
+    setIsLoadingProceed(true);
     setError("");
     console.log("clicked");
     // console.log("marksconfigure:::", marksConfigure);
@@ -257,6 +266,7 @@ const handleProceed = () => {
       .then((response) => {
         const data = response.data
         console.log("Data:",data)
+        setIsLoadingProceed(false);
         window.location.reload();
         // setIsLoading(false);
         // Process the response data or update your React component state
@@ -264,6 +274,8 @@ const handleProceed = () => {
       .catch((error) => {
         console.error(error);
         setmarksConfigure(null)
+        setIsLoadingProceed(false);
+        alert("Something went wrong")
         // Handle the error, e.g., display an error message to the user
       });
     }
@@ -290,7 +302,7 @@ const handleProceed = () => {
       {/* <button onClick={handleIconClick}>View All</button> */}
       <div className="flex flex-col items-center mb-16">
         <div>
-          {isLoading ? <MoonLoader color="#191854" loading={isLoading} size={50} /> :
+          {isLoading ? <MoonLoader color="#4457FF" loading={isLoading} size={50} /> :
             <MarkAccurcyConfigure marksConfigure={marksConfigure} handleAddChild={handleAddChild} handleRemoveChild={handleRemoveChild} handleFormChange={handleFormChange} error={error}/>
           }
         </div>
@@ -303,9 +315,11 @@ const handleProceed = () => {
         showImages ? <Button onClick={handleIconClick} classNames="w-24 text-center bg-custom-blue-main absolute left-[85%] mt-2">Hide All</Button>
         : <Button onClick={handleIconClick} classNames="w-24 text-center bg-custom-blue-main absolute left-[85%] mt-2">View All</Button>
       }
-      {isLoading ? <MoonLoader color="#191854" loading={isLoading} size={50} /> :
+      {isLoading ? <MoonLoader color="#4457FF" loading={isLoading} size={50} className='absolute top-[5vw] left-[45%]'/> :
         data
       }
+
+      {isLoadingProceed ? <MoonLoader color="#4457FF" loading={isLoadingProceed} size={50} className='absolute top-[8vw] left-[50%]'/> : ""}
 
       {showConfirmation && <Modal handleProceed={handleProceed} onClose={handleProceedClose}/>}
     </div>

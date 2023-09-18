@@ -1,8 +1,10 @@
 from fastapi import Request
 from bson.objectid import ObjectId
-from typing import Optional
+from typing import Optional,Dict,List, Union
 from config.database import Database
 from schemas.paper import Paper,PaperCreate,PaperForm
+from pymongo import ReturnDocument
+
 
 class PaperModel():
      collection: str = "papers"
@@ -58,6 +60,22 @@ class PaperModel():
                # print("This is id",str(inserted_id));   
                return inserted_paper
           return None
+     
+     def update(self, request: Request, filters: Dict[str, Union[str, ObjectId]], data)-> Paper | bool:
+          print("filters", filters)
+          print("data", data)
+          updated_paper = self.get_collection(request).find_one_and_update(
+               filters, 
+               {'$set': data},
+               return_document=ReturnDocument.AFTER
+          )
+          
+          print("updated answer", updated_paper)
+          if updated_paper:
+               updated_paper["id"] = str(updated_paper["_id"])
+               return updated_paper
+          else:
+               return False
      
      
      def delete(self, request: Request, id: str):

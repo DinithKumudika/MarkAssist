@@ -3,12 +3,14 @@ import {useDropzone} from 'react-dropzone';
 import { AiOutlinePlus, AiOutlineClose,AiOutlineUpload} from "react-icons/ai";
 import  ReactDOM  from 'react-dom';
 import { Link ,useLocation, useParams } from 'react-router-dom';
+import { MoonLoader } from 'react-spinners';
 import axios from 'axios'
 import Button from '../Button';
 import SubmitButton from '../SubmitButton';
 function SubjectAddBox({closeFunc,teachers}) {
     
     const currentYear = new Date().getFullYear();
+    const [isLoading, setIsLoading] = useState(false);
 
     const [error, setError] = useState();
     const [formData , setFormData] = useState({
@@ -21,8 +23,8 @@ function SubjectAddBox({closeFunc,teachers}) {
         academicYear: 1,
         no_credits:1,
         paperMarks: '',
-        editingTeacher: `${teachers[0].id}`,
-        nonEditingTeacher: `${teachers[0].id}`,
+        editingTeacher: `${teachers[0]?.id}`,
+        nonEditingTeacher: `${teachers[0]?.id}`,
 
     });
 
@@ -47,6 +49,7 @@ function SubjectAddBox({closeFunc,teachers}) {
 
     const handleSubmit = async (event)=>{
         event.preventDefault();
+        setIsLoading(true)
         // console.log(formData);
         if(!formData.subjectCode || !formData.subjectStream || !formData.subjectName || !formData.year || !formData.assignmentMarks || !formData.semester || !formData.academicYear || !formData.no_credits || !formData.paperMarks || !formData.editingTeacher || !formData.nonEditingTeacher){
             setError("Please fill all the fields");
@@ -83,6 +86,8 @@ function SubjectAddBox({closeFunc,teachers}) {
         .then((response)=>{
             console.log(response);
             if(response.status === 201){
+                window.location.reload();
+                setIsLoading(false)
                 closeFunc();
             }
         })
@@ -105,13 +110,14 @@ function SubjectAddBox({closeFunc,teachers}) {
 
     const teacher = teachers.map((teacher,index)=>{
         console.log(teacher.title)
-        return <option key={index} value={teacher.id} className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>{teacher.title}.{teacher.firstName} {teacher.lastName}</option>
+        return <option key={index} value={teacher?.id} className='text-bold items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded '>{teacher.title}.{teacher.firstName} {teacher.lastName}</option>
     })
 
     return ReactDOM.createPortal(
         <div className='w-[95%]'>
         <div className='z-30 fixed inset-0 bg-gray-300 opacity-80' onClick={closeFunc}></div>
-        <div className='m-auto shadow shadow-gray-500 z-30 absolute top-[15%] left-[4%] h-fit w-[92%] px-2 pb-5 bg-white  flex flex-col items-center max-lg:left-[2%] max-lg:w-[98%]'>
+        {isLoading ? <MoonLoader color="#4457FF" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> : ""}
+        <div className='m-auto shadow shadow-gray-500 z-30 absolute top-[10%] left-[4%] h-fit w-[92%] px-2 pb-5 bg-white  flex flex-col items-center max-lg:left-[2%] max-lg:w-[98%]'>
             <form className='w-full pl-2' onSubmit={handleSubmit}>
 
                 <div className='border-b-4 py-4 w-full flex justify-between'>

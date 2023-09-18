@@ -61,6 +61,7 @@ function TeacherAddBox({closeFunc}) {
             .post('http://127.0.0.1:8000/api_v1/auth/register?type=teacher',formData)
             .then((response) => {
                 // console.log("Hello:",response);
+                window.location.reload();
                 setadding(false);
                 closeFunc()
                 })
@@ -151,7 +152,7 @@ function TeacherAddBox({closeFunc}) {
                 <div className='w-full'>
                     <p className='font-bold text-blue-950 text-xl my-4 '>Other Information</p>
                 </div>
-                {adding && <BarLoader color="#00ADEF" height={6} width={128} />}
+                {adding && <BarLoader color="#4457FF" height={6} width={128} />}
 
             </form>
         </div>

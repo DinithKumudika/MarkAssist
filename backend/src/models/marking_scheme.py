@@ -103,6 +103,7 @@ class MarkingSchemeModel():
      
      
      def update(self, request: Request, filter: str, value: str | ObjectId, data)-> MarkingScheme | bool:
+          # print("filter", filter)
           updated_scheme = self.get_collection(request).find_one_and_update(
                {filter : value}, 
                {'$set': data},

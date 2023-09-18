@@ -81,11 +81,11 @@ function Subjects({clicked,data}) {
 
   const subjects = (sorteddata)?.map((subject,index)=>{
     // console.log(subject);
-    return <Link key={index} to={"/"+pathName[0]+"/years/"+subject?.subjectCode} className='h-40 w-80'><SubjectBox onClick={handleClick} key={index} subject={subject} backgroundUrl={subject.backgroundImage} subjectCode={subject.subjectCode} subjectName={subject.subjectName} userType={userType}/></Link>
+    return <Link key={index} to={"/"+pathName[0]+"/years/"+subject?.subjectCode} className='h-40 w-full'><SubjectBox onClick={handleClick} key={index} subject={subject} backgroundUrl={subject.backgroundImage} subjectCode={subject.subjectCode} subjectName={subject.subjectName} userType={userType}/></Link>
   })
 
   return (
-    <div className={`${classes} ${clicked === 'outer' ? ' ml-16 outer w-[calc(100vw-64px)]' : 'ml-64 w-[calc(100vw-256px)] inner'} max-sm:16 max-sm:w-[calc(100vw-64px)]`}>
+    <div className={`${classes} ${clicked === 'outer' ? ' ml-16 outer w-[calc(100vw-96px)]' : 'ml-64 w-[calc(100vw-288px)] inner'} max-sm:16 max-sm:w-[calc(100vw-96px)]`}>
       <div className='flex justify-center items-center sidebar'>
           <div className='mt-[8%] h-[85%] w-11/12'>
             <div className='flex flex-row justify-between items-center mb-4'>
@@ -104,7 +104,7 @@ function Subjects({clicked,data}) {
                 <Button onClick={handleClick}> Add a Subject</Button>
               }
             </div>
-            <div className='flex flex-wrap justify-between gap-4 overflow-auto'>
+            <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 overflow-auto'>
               {subjects}
             </div>
           </div>

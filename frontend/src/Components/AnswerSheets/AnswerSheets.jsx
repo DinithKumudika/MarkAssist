@@ -4,6 +4,7 @@ import classnames from 'classnames'
 import { AiOutlinePlus } from "react-icons/ai";
 import Modal from '../Modal';
 import { BiFilter } from "react-icons/bi";
+import { MoonLoader } from 'react-spinners';
 import { useState,useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -12,15 +13,15 @@ function AnswerSheets({clicked, data,markingScheme}) {
   const [markings,setMarkings] = useState([]);
   const [answers,setAnswers] = useState([]);
   const [markingschemeID,setmarkingschemeID] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isLoading2, setIsLoading2] = useState(true);
   const [marks,setMarks] = useState([]);
 
   const [Checked, setChecked] = useState({})
-  const [checkAll, setCheckAll] = useState(true)
+  const [checkAll, setCheckAll] = useState(false)
   useEffect(()=>{
     data?.map((AnswerSheet) => {
-        setChecked(prevState=>{return {...prevState,[AnswerSheet.paper]:true}})
+        setChecked(prevState=>{return {...prevState,[AnswerSheet.paper]:false}})
     })
   },[])
 
@@ -62,71 +63,54 @@ function AnswerSheets({clicked, data,markingScheme}) {
   }
 
   const handleLink = () =>{
-    navigate(`/markingschemes/${markingScheme?.subjectId}`)
+    navigate(`/markingschemes/${markingScheme?.year}/${markingScheme?.subjectId}`)
   }
 
   const handleGenerateAccuracy= ()=>{
+    setIsLoading(true);
     console.log("data::",data);
-    data.forEach((data,index)=>{
-      if(Checked[data.paper]){
-        axios
-        .get(`http://127.0.0.1:8000/api_v1/answers/${data.id}`)
-        .then((response) => {
-          const answer = response.data
-          setAnswers(answer)
-          setIsLoading(false);
-          console.log("Answers:",answer)
-          // Process the response data or update your React component state
-          axios
-          .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${data.subjectId}`)
-          .then((response)=>{
-            const marking = response.data
-            console.log("Markasdfghings:",answers)
-            setMarkings(marking)
-            // console.log("Markasdfghings:",marking[0].markingScheme)
-            setIsLoading2(false);
-            setmarkingschemeID(marking[0].markingScheme) 
+    console.log("checked::",Checked);
+    // data.forEach((data,index)=>{
+      // if(Checked[data.paper]){
+        
             axios
-            .get(`http://127.0.0.1:8000/api_v1/answers/compare/${marking[0].markingScheme}?sub=${data.subjectId}&stu=${answer[0].userId}`)
+            .patch(`http://127.0.0.1:8000/api_v1/answers/compare/${markingScheme.id}/${data[0].subjectId}`,Checked)
             .then((response)=>{
               const marks = response.data
               // setMarkings(marking)
               // markingschemeID = marking[0].markingScheme
               console.log("Markkkkkkssssss:",marks)
+              setIsLoading(false);
+              window.location.reload();
     
             })
             .catch((error) => {
               console.error(error);
+              alert('Something went wrong')
+              setIsLoading(false);
+              window.location.reload();
               // setMarks(null)
               // Handle the error, e.g., display an error message to the user
             });
-          })
-          .catch((error) => {
-            console.error(error);
-            setMarks(null)
-            // Handle the error, e.g., display an error message to the user
-          });
-        })
-        .catch((error) => {
-          console.error(error);
-          setAnswers(null)
-          // Handle the error, e.g., display an error message to the user
-        });
-      }
-    })
+      // }
+    // })
     
     // console.log("Markingsss:",answers)
   }
 
   return (
     <div className={`${classes} ${clicked === 'outer' ? ' ml-16 outer w-[calc(100vw-64px)]' : 'ml-64 w-[calc(100vw-256px)] inner'} max-sm:16 max-sm:w-[calc(100vw-64px)]`}>
+      {isLoading && (<div className='z-30 absolute top-[15vw] left-[50%] bg-gray-300 rounded rounded-[50%] p-2'>
+        {isLoading && <MoonLoader color="#4457FF" loading={isLoading} size={80} className='z-30'/>}
+
+      </div>)}
       {data ? (
         <div className=' flex flex-col items-center justify-top w-full h-full px-10 max-sm:px-4 py-8'>
             <div className='mb-12 text-center  w-full'>
               <p className='text-xl font-bold text-[#191854]'>Answer Sheets</p>
               <p className='text-lg text-black opacity-60'>Upload answer papers</p>
             </div>
-            <div className='px-12 max-sm:px-4 flex flex-col lg:flex-row justify-between w-full md:flex-col'>
+            <div className=' max-sm:px-4 flex flex-col lg:flex-row justify-between w-full md:flex-col'>
               <div className='flex lg:w-1/2 mb-2  md:[90%] md:mb-2 md-max:justify-between'>
                 <button className="rounded rounded-sm bg-custom-blue-main w-fit px-2 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleCKick}><AiOutlinePlus/><div className='ml-2'>Upload</div></button>
                 <button className="rounded rounded-sm bg-custom-blue-main w-fit px-2 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row"><BiFilter/><div className='ml-2'>Filter</div></button>
