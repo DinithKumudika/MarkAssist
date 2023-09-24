@@ -17,6 +17,17 @@ router = APIRouter()
 user_model = UserModel()
 subject_model = SubjectModel()
 
+@router.get('/teachers/{teacher_type}/count', response_description="Get count of editing/nonEditing teachers", status_code= status.HTTP_200_OK)
+async def get_all_teachers(request:Request,teacher_type:str):
+    count = subject_model.count_teachers_distinct_teacher_type(request, teacher_type)
+     
+    if count:
+          return count 
+    raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail="no {teacher_type}s found"
+     )
+    
 @router.get('/teachers', response_description="Get all teachers",response_model=List[User], status_code= status.HTTP_200_OK)
 async def get_all_teachers(request:Request):
     users = user_model.list_teachers(request)

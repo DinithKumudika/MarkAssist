@@ -61,8 +61,18 @@ class SubjectModel():
      #           })
      #      return grouped_subjects
      
+     
+     
+     # get the count of editing/nonEditing teachers distinctly
+     # eg: teacherType = editingTeacher then it will return the count of editing teachers distinctly
+     def count_teachers_distinct_teacher_type(self, request: Request, teacherType:str) -> list:
+          teacherIds = self.get_collection(request).distinct(teacherType)
+          return len(teacherIds)
+
+     
      # get all subject as a list distinctly
      def list_subjects_distinct_subjectCode(self, request: Request) -> list:
+          # in here we will only get the subject codes of the subjects as a list
           subjects = self.get_collection(request).distinct("subjectCode")
           distinct_subjects = []
           for subject in subjects:

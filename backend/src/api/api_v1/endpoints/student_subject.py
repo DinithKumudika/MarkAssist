@@ -16,6 +16,22 @@ user_model = UserModel()
 student_subject_model = StudentSubjectModel()
 
 
+# get student semester wise results
+@router.get("/{user_id}/result/{semester}/{academicYear}", response_description="get student's semester wise results", response_model=List[StudentSubjectBase], status_code=status.HTTP_200_OK)
+async def get_by_id(request: Request, user_id: str, semester:int, academicYear:int):
+    
+     # get student index no using user id
+     user = user_model.by_id(request, user_id)
+    
+     semester_subject_list = student_subject_model.get_semester_results(request, user["studentIndex"], semester, academicYear)
+     if semester_subject_list:
+          return semester_subject_list 
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail=f"There is no details about semester {semester} of academic year {academicYear} of index no {user['studentIndex']} student"
+     )
+     
+     
 # get student grade class rank credits
 @router.get("/{user_id}/grade", response_description="get student grade class rank credits", response_model=StudentSubject, status_code=status.HTTP_200_OK)
 async def get_by_id(request: Request, user_id: str):
