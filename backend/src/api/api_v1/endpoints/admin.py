@@ -41,6 +41,31 @@ async def get_subjects(request: Request, limit: Optional[int] = None):
           detail="no subjects found"
      )
 
+# get student list
+@router.get('/students', response_description="Get all students",response_model=List[User], status_code= status.HTTP_200_OK)
+async def get_all_students(request:Request):
+     users = user_model.list_students(request)
+      
+     if users:
+            return users 
+     raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="no students found"
+      )      
+
+# get courses list
+@router.get('/courses', response_description="Get all courses",response_model=List[Subject], status_code= status.HTTP_200_OK)
+async def get_all_courses(request:Request):
+     courses = subject_model.list_subjects_distinct_subjectCode(request)
+      
+     if courses:
+            return courses 
+     raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="no courses found"
+      )      
+
+
 # @router.post("/teachers/new", response_description="Create new teacher", response_model=User)
 # async def register(request: Request, payload: TeacherCreate = Body()) -> User:
 #      print("Data:",payload)

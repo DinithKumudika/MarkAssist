@@ -97,8 +97,35 @@ class SubjectModel():
 
           return distinct_subjects
 
+# get edinting and non edinting subjects by user id, if edinting is true, get editing subjects, else get non editing subjects
+     def list_editing_subjects_by_user_id_distinct_subjectCode(self, request: Request, user_id: str, editing:bool ) -> list:
+          
+          subject = []
+          subject_data = []
+          
+          # if editing is true, get editing subjects, else get non editing subjects
+          if editing:
+               subjects = self.get_collection(request).distinct("subjectCode", {"editingTeacher": user_id })
+          else:
+               subjects = self.get_collection(request).distinct("subjectCode", {"nonEditingTeacher": user_id }) 
 
-     
+          distinct_subjects = []
+          for subject in subjects:
+               
+               if editing:
+                    subject_data = self.get_collection(request).find_one({"editingTeacher": user_id, "subjectCode": subject})
+               else:
+                    subject_data = self.get_collection(request).find_one({"nonEditingTeacher": user_id, "subjectCode": subject})
+                    
+               if subject_data:
+                    subject_data["id"] = str(subject_data["_id"])
+                    subject_data["editingTeacher"] = str(subject_data["editingTeacher"])
+                    subject_data["nonEditingTeacher"] = str(subject_data["nonEditingTeacher"])
+                    distinct_subjects.append(subject_data)
+
+          return distinct_subjects
+
+
      
      # get subject by subjectCode and user id as a list
      def get_subject_by_subjectCode_userId(self, request: Request, user_id: str, subjectCode: str) -> list:
@@ -120,6 +147,31 @@ class SubjectModel():
                     subject["nonEditingTeacher"] = str(subject["nonEditingTeacher"])
 
                return subjects
+          else:
+               print("There are no subjects")
+               return None
+
+     # get subject details by subjectCode, year and user id as a list
+     def get_subject_by_subjectCode_year_userId(self, request: Request, user_id: str, subjectCode: str, year:int) -> Subject:
+          print("This is user id", user_id)
+          print("This is subjectCode", subjectCode)
+          print("This is year", year)
+          
+          subject = list(self.get_collection(request).find({
+               "$or": [
+                    {"editingTeacher": user_id, "subjectCode": subjectCode, "year": year},
+                    {"nonEditingTeacher": user_id, "subjectCode": subjectCode, "year": year}
+               ]
+          }))
+
+          if subject:
+               print("There is subjects", subject)
+               for subject in subject:
+                    subject["id"] = str(subject["_id"])
+                    subject["editingTeacher"] = str(subject["editingTeacher"])
+                    subject["nonEditingTeacher"] = str(subject["nonEditingTeacher"])
+
+               return subject
           else:
                print("There are no subjects")
                return None
