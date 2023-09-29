@@ -52,7 +52,7 @@ function Register(){
             formdata.append('emailActive', false);
             formdata.append('isDeleted', false);
             try{
-                const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/register',formData);
+                const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/register?type=student',formData);
                 console.log(response.data); 
                 navigate('/login');
             }catch(error){

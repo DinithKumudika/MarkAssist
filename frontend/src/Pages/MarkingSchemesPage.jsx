@@ -3,24 +3,46 @@ import SideBar from '../Components/SideBar'
 import MarkingSchemes from '../Components/MarkingSchemes/MarkingSchemes'
 import {useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom'
+import { MoonLoader } from 'react-spinners';
 import axios from 'axios'
 function MarkingSchemesPage() {
   const { year,subjectId} = useParams()
-  const allItems=JSON.parse(localStorage.getItem('token'));
-  const user_id=allItems['_id'];
-  const [isClicked,setClick] = useState("outer");
-  const [markingScheme,setMarkingScheme] = useState([]);
-
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
+  // console.log(allItems);
+  if(!allItems){
+    window.location.href="/";
+  }
+  const user_id=allItems['user_id'];
+  const [isClicked,setClick] = useState("inner");
+  const [isLoading, setIsLoading] = useState(true);
+  const [markingScheme,setMarkingScheme] = useState({});
+  
   const name=`${subjectId}---- ${year} ---Marking Scheme`
-  // useEffect(()=>{
-  //   try{
-  //     const response = axios.get(`http://localhost:5000/api/markingschemes/${year}/${subjectId}/${user_id}`);
-  //     const data = response.data;
-  //     setMarkingScheme(data);
-  //   }catch(error){
-  //     console.log(error);
-  //   }
-  // },[]);
+  
+  useEffect(()=>{
+    // console.log("DATA:");
+    fetchSubjects();
+  },[]);
+
+  const fetchSubjects = async () =>{
+    axios
+    .get(`http://127.0.0.1:8000/api_v1/markings/${subjectId}`)
+    .then((response) => {
+      const data = response.data
+      setMarkingScheme(data)
+      console.log("Data:",response.data)
+      setIsLoading(false);
+      // Process the response data or update your React component state
+    })
+    .catch((error) => {
+      console.error(error);
+      setMarkingScheme(null)
+      setIsLoading(false);
+      // Handle the error, e.g., display an error message to the user
+    });
+  }
+  console.log("Marking scheme:",markingScheme)
+
 
   // //Function to handle the click of the hamburger menu
   const handleClick = () => {
@@ -35,10 +57,11 @@ function MarkingSchemesPage() {
 
   return (
     <div>
-      <NavBar />
+      <NavBar clicked={isClicked}/>
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
-      <MarkingSchemes clicked={isClicked} data="hello"/>
-      
+      {isLoading ? <MoonLoader color="#4457FF" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 
+        :<MarkingSchemes clicked={isClicked} data={markingScheme}/>
+      }
     </div>
   )
 }

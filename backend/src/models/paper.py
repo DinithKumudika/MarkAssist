@@ -1,8 +1,10 @@
 from fastapi import Request
 from bson.objectid import ObjectId
-from typing import Optional
+from typing import Optional,Dict,List, Union
 from config.database import Database
 from schemas.paper import Paper,PaperCreate,PaperForm
+from pymongo import ReturnDocument
+
 
 class PaperModel():
      collection: str = "papers"
@@ -31,6 +33,22 @@ class PaperModel():
                paper["id"] = str(paper["_id"])
                paper["subjectId"] = str(paper["subjectId"]) 
           return papers
+
+     def papers_by_subjectId(self,request:Request,subject_id:str) -> list:
+          papers = list(self.get_collection(request).find({"subjectId": subject_id}))
+
+          for paper in papers:
+               paper["id"] = str(paper["_id"])
+               paper["subjectId"] = str(paper["subjectId"]) 
+          return papers
+     
+     def papers_by_subjectId_and_marksGenerated(self,request:Request,subject_id:str, marksGenerated:bool) -> list:
+          papers = list(self.get_collection(request).find({"subjectId": subject_id, "marksGenerated": marksGenerated}))
+
+          for paper in papers:
+               paper["id"] = str(paper["_id"])
+               paper["subjectId"] = str(paper["subjectId"]) 
+          return papers
      
      async def add_new_paper(self, request: Request, paper: PaperCreate) -> Paper:
           new_paper = self.get_collection(request).insert_one(paper.dict())
@@ -42,6 +60,22 @@ class PaperModel():
                # print("This is id",str(inserted_id));   
                return inserted_paper
           return None
+     
+     def update(self, request: Request, filters: Dict[str, Union[str, ObjectId]], data)-> Paper | bool:
+          print("filters", filters)
+          print("data", data)
+          updated_paper = self.get_collection(request).find_one_and_update(
+               filters, 
+               {'$set': data},
+               return_document=ReturnDocument.AFTER
+          )
+          
+          print("updated answer", updated_paper)
+          if updated_paper:
+               updated_paper["id"] = str(updated_paper["_id"])
+               return updated_paper
+          else:
+               return False
      
      
      def delete(self, request: Request, id: str):

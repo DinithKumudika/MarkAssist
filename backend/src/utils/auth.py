@@ -31,6 +31,9 @@ def verify_token(token:str, credentials_exception) -> TokenData:
      try:
           payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
           
+          if payload.get("exp") >= datetime.utcnow():
+               pass
+          
           id: str = payload.get("user_id")
           username: str = payload.get("username")
           user_role: str = payload.get("user_role")
@@ -57,6 +60,7 @@ async def get_current_user(request: Request, token: str = Depends(oauth2_scheme)
      )
      try:
           token_data = verify_token(token, credentials_exception)
+          print("token data: " + str(token_data.user_id))
      except JWTError:
           print("authorization error")
      

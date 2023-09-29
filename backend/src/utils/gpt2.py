@@ -4,10 +4,9 @@ from src.config.config import settings
 # from config.config import settings
 
 # Set up OpenAI API credentials\
-     
-openai.api_key = settings.OPENAI_API_KEY
 
 def compare_text_similarity(text1, text2):
+     openai.api_key = settings.OPENAI_API_KEY
      # Prepare the prompt
      prompt = f"Text 1: {text1}\nText 2: {text2}\nGive a similarity score for Text 1 and Text 2:"
 

@@ -1,34 +1,49 @@
 import NavBar from '../Components/NavBar'
 import SideBar from '../Components/SideBar'
 import Years from '../Components/Years'
-
 import { useParams, useNavigate } from 'react-router-dom'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
 function YearsPage() {
   const { subjectCode } = useParams()
   const allItems=JSON.parse(localStorage.getItem('tokenData'));
-  const user_id=allItems['id'];
-  const [isClicked,setClick] = useState("outer");
+  const accessToken = localStorage.getItem('accessToken')
+  if(!allItems){
+    window.location.href="/";
+  }
+  const user_id=allItems['user_id'];
+  const userType = allItems['user_role'];
+  const [isClicked,setClick] = useState("inner");
   const [years,setYears] = useState([]);
-
   useEffect(()=>{
     fetchYears();
   },[]);
 
   const fetchYears = async () =>{
-    try{
-      const config = {
-        headers: {
-          Authorization: `Bearer ${allItems['token']}`,
-        },
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+      };
+      if(userType==='teacher'){
+        axios
+        .get(`http://localhost:8000/api_v1/subjects/years/${user_id}/${subjectCode}`,{headers})
+        .then((response) => {
+          const data = response.data;
+          setYears(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      }else if(userType==='admin'){
+        axios
+        .get(`http://localhost:8000/api_v1/subjects/years/${subjectCode}`)
+        .then((response) => {
+          const data = response.data;
+          setYears(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
       }
-      const response = await axios.get(`http://localhost:8000/api_v1/subjects/years/${user_id}/${subjectCode}`,config);
-      const data = response.data;
-      setYears(data);
-    }catch(error){
-      console.log(error);
-    }
   }
 
   //Function to handle the click of the hamburger menu
@@ -43,7 +58,7 @@ function YearsPage() {
 
   return (
     <div>
-      <NavBar black />
+      <NavBar black clicked={isClicked} />
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
       <Years clicked={isClicked} data={years}/>
     </div>

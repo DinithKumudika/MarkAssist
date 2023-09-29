@@ -5,7 +5,7 @@ import Subjects from '../Components/Subjects/Subjects'
 import {useState} from 'react'
 function AdminDashboard() {
 
-  const [isClicked,setClick] = useState("outer")
+  const [isClicked,setClick] = useState("inner")
 
   //Function to handle the click of the hamburger menu
   const handleClick = () => {
@@ -19,7 +19,7 @@ function AdminDashboard() {
 
   return (
     <div>
-      <NavBar />
+      <NavBar clicked={isClicked}/>
       <SideBar dashboard subjects clicked={isClicked} onClickFunc={handleClick}/>
       {/* <Subjects clicked={isClicked}/> */}
     </div>
