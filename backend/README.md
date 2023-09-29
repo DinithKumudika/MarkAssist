@@ -17,13 +17,12 @@ git clone https://github.com/DinithKumudika/MarkAssist-API.git
 cd backend
 ```
 
-3. Create virtual environment
+3. Create a python virtual environment and activate it
 
 ```console
 $ python -m venv venv
 ```
 
-4. Got to virtual environment
 ```console
 (venv)$ venv/Scripts/activate
 ```
