@@ -2,7 +2,7 @@ import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {AiOutlineCheck ,AiOutlineClose} from 'react-icons/ai';
 import {ImCheckmark,ImCross} from 'react-icons/im';
 import { Fragment, useEffect, useState } from 'react';
-function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, role, date, subjects, select,configured, index, fileName, overallMark, MarkingSchemes,teachers, AnswerSheets, papers}) {
+function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, role, date, subjects, select,configured, index, fileName, overallMark, MarkingSchemes,teachers, AnswerSheets,Assignments_NonOCR, marks,papers}) {
   const navigate = useNavigate();
   console.log("teacher:",teachers)
   const handleSelect = () =>{
@@ -16,6 +16,7 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
   let markingscheme =""
   let paper =""
   let AnswerSheet =""
+  let AssignmentsNonOCR =""
   // const [Checked, setChecked] = useState({})
   // const [checkAll, setCheckAll] = useState(true)
   // useEffect(()=>{
@@ -131,6 +132,28 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
     })
   }
 
+  if(Assignments_NonOCR){
+    AssignmentsNonOCR = Assignments_NonOCR.map((Assignments_NonOCR) => {
+      // Create a Date object from the timestamp string
+      const dateObj = new Date(Assignments_NonOCR.createdAt);
+
+      // Get the year, month, and date from the Date object
+      const year = dateObj.getFullYear();
+      const month = dateObj.getMonth() + 1; // Months are zero-indexed, so add 1
+      const day = dateObj.getDate();
+      // console.log("year:",AnswerSheet)
+      return (
+        <Fragment key={Assignments_NonOCR.paper}>
+          <tr className="w-full " >
+              <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-2/5'>{Assignments_NonOCR.paper}</td>
+              <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-3/12'>{year}-{month.toString().padStart(2, '0')}-{day.toString().padStart(2, '0')}</td>
+              <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-3/12'>100</td>
+          </tr>
+        </Fragment>
+      )
+    })
+  }
+
     return (
     <div className='w-full max-sm:px-4 overflow-auto'>
       <table className='w-full'>
@@ -150,6 +173,7 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
           {index && <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Index</th>}
           {fileName && <th className='text-xl h-8 font-bold opacity-60 w-3/12'>File Name</th>}
           {overallMark && <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Overall Mark</th>}
+          {marks && <th className='text-xl h-8 font-bold opacity-60 w-1/5'>Marks</th>}
          
           {select && <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>}
 
@@ -175,6 +199,7 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
               {markingscheme}
               {paper}
               {AnswerSheet}
+              {AssignmentsNonOCR}
             {/* </tr> */}
         </tbody>
       </table>

@@ -328,7 +328,7 @@ async def calculate_marks(request: Request, markingSchemeId:str, subjectId: str,
                     # print("Marking answer", i+1, ":", markings_by_scheme_id[i]["text"])
 
                     if(markings_by_scheme_id[i]["selected"]):
-                         
+                         print("student answer:::", i+1)
                          marks_reserverd_in_marking = int(markings_by_scheme_id[i]["marks"])
                          markConfig = marking_scheme_by_id["markConfig"]
                          accuracy_percentage = float(answers_by_student[i]["accuracy"])*100

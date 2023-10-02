@@ -102,6 +102,52 @@ function DragDrop({children,closeFunc,data}) {
       }
       });
     }
+    else if(pathName[0]==="assignments"){
+      axios
+      .post(`http://127.0.0.1:8000/api_v1/papers/upload/file`,formData)
+      .then((response) => {
+        console.log("Hello:",response.data);
+        setUploading(false);
+        closeFunc()
+        window.location.reload();
+        // console.log(index)
+        // for (const [index, paper] of papers.entries()){
+      })
+      .catch((error) => {
+        if(error.response && error.response.status >=400 && error.response.status <500){
+          // console.log(error.response.data.message);
+          console.log(error.response.data.detail);
+          // alert('Something went wrong')
+          setUploading(false);
+          closeFunc()
+          alert('Something went wrong')
+          window.location.reload();
+      }
+      });
+    }
+    else if(pathName[0]==="nonocr"){
+      axios
+      .post(`http://127.0.0.1:8000/api_v1/papers/upload/file`,formData)
+      .then((response) => {
+        console.log("Hello:",response.data);
+        setUploading(false);
+        closeFunc()
+        window.location.reload();
+        // console.log(index)
+        // for (const [index, paper] of papers.entries()){
+      })
+      .catch((error) => {
+        if(error.response && error.response.status >=400 && error.response.status <500){
+          // console.log(error.response.data.message);
+          console.log(error.response.data.detail);
+          // alert('Something went wrong')
+          setUploading(false);
+          closeFunc()
+          alert('Something went wrong')
+          window.location.reload();
+      }
+      });
+    }
     // console.log("error:"+error.response.data.message);
   }
 
