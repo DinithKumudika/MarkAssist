@@ -1,0 +1,1 @@
+A router is a piece of hardware that links computer networks and controls data traffic between them. It chooses the most efficient route for data packets to take in order to get to their intended locations. It can also offer extra features like security and network administration.
