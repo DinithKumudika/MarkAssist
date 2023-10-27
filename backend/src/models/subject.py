@@ -1,10 +1,11 @@
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
-from typing import Optional
+from typing import Optional, Dict, List, Union
 from config.database import Database
 from schemas.subject import Subject, SubjectCreate
 import itertools
+from pymongo import ReturnDocument
 
 class SubjectModel():
      collection: str = "subjects"
@@ -306,3 +307,19 @@ class SubjectModel():
                     inserted_subject["nonEditingTeacher"] = str(inserted_subject["nonEditingTeacher"])
                     return Subject(**inserted_subject)
           return None
+     
+     def update(self, request: Request, filters: Dict[str, Union[str, ObjectId]], data)-> Subject | bool:
+          print("filters", filters)
+          print("data", data)
+          updated_subject = self.get_collection(request).find_one_and_update(
+               filters, 
+               {'$set': data},
+               return_document=ReturnDocument.AFTER
+          )
+          
+          print("updated subject", updated_subject)
+          if updated_subject:
+               updated_subject["id"] = str(updated_subject["_id"])
+               return updated_subject
+          else:
+               return False

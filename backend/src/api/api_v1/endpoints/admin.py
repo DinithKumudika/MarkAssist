@@ -131,7 +131,9 @@ async def get_all_courses(request:Request):
 #                editingTeacher = payload.editingTeacher,
 #                nonEditingTeaacher =payload.nonEditingTeaacher,
 #                createdAt =  datetime.now(),
-#                updatedAt = datetime.now()
+#                updatedAt = datetime.now(),
+#                finalAssignmentMarks: None
+                 
 #           )
           
 #           new_subject = await subject_model.add_new_subject(request, subject);
