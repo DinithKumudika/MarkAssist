@@ -1,3 +1,4 @@
+from fastapi import Request
 import time
 import pdf2image as p2i
 import cv2
@@ -17,11 +18,19 @@ from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from azure.cognitiveservices.vision.computervision.models import OperationStatusCodes
 
+from models.paper import PaperCreate
+
+from models.student_subject import StudentSubjectModel
+from schemas.student_subject import StudentSubjectCreate
+
+
 
 import os
 import io
 
 from config.config import settings
+
+student_subject_model = StudentSubjectModel()
 
 
 # Download NLTK resources if not already downloaded
@@ -226,3 +235,67 @@ def keywords_match(paragraph: str, keywords: list):
      else:
          print("No keywords found.")
          return 0
+   
+# add new document to student_subject collection 
+def add_student_subject(request: Request, subject: dict, index: str):
+     subject_list = [          
+          {
+               "subject_id": subject["id"],
+               "subject_code": subject["subjectCode"],
+               "no_of_credit": subject["no_credits"],
+               "academicYear": subject["academicYear"],
+               "semester": subject["semester"],
+               "assignment_marks": 0,
+               "ocr_marks": 0.0,
+               "non_ocr_marks": 0.0,
+               "total_marks":0.0,
+          }
+     ]
+                    
+     student_subject = StudentSubjectCreate(
+          index = index,
+          gpa = 0.0,
+          rank= 0,
+          total_credit= 0,
+          subject = subject_list
+     )
+     new_student_subject = student_subject_model.add_new_student_subject(request,student_subject)
+     return new_student_subject
+
+# add subject to student_subject collection's document
+def add_subject(request: Request,student_subject:dict, subject: dict, index: str):
+     #loop the subject list
+     print("This is student subject if close")
+     
+     new_subject_list = []
+     for item in student_subject['subject']:
+          # find if subject is in the schema
+          if item['subject_code'] == subject["subjectCode"] :
+               # if subject is alredy in the collection update it
+               pass
+          else:
+               # append the subject to list
+               new_subject = {
+                    "subject_id": subject["id"],
+                    "subject_code": subject["subjectCode"],
+                    "no_of_credit": subject["no_credits"],
+                    "academicYear": subject["academicYear"],
+                    "semester": subject["semester"],
+                    "assignment_marks": 0,
+                    "ocr_marks": 0.0,
+                    "non_ocr_marks": 0.0,
+                    "total_marks":0.0,
+               }
+               # print("is new subject", new_subject);
+               # print("this is current list", student_subject["subject"]);
+               
+               new_subject_list = student_subject['subject'];
+               new_subject_list.append(new_subject)
+     
+          # update the exixting
+          filters = {"index":index} 
+          data = {"subject":new_subject_list}
+          student_subject_update = student_subject_model.update(request, filters, data)
+          print("this is result after update", student_subject_update);
+                    
+

@@ -7,6 +7,8 @@ class StudentSubjectBase(BaseModel):
     subject_id:str
     subject_code:str
     no_of_credit:int
+    academicYear:int
+    semester:int
     assignment_marks:float
     ocr_marks:float
     non_ocr_marks:float
@@ -18,6 +20,8 @@ class StudentSubjectBase(BaseModel):
             "subject_id": "64882f6c32d15c1d89f06cdf",
             "subject_code": "SCS2213",
             "no_of_credit":3,
+            "academicYear":2,
+            "semester":1,
             "assignment_marks":30,
             "ocr_marks": 60,
             "non_ocr_marks":22 ,
@@ -46,6 +50,8 @@ class StudentSubject(BaseModel):
                             "subject_id": "64882f6c32d15c1d89f06cdf",
                             "subject_code": "SCS2213",
                             "no_of_credit":3,
+                            "academicYear":2,
+                            "semester":1,
                             "assignment_marks":30,
                             "ocr_marks": 60,
                             "non_ocr_marks":22 ,
@@ -55,6 +61,8 @@ class StudentSubject(BaseModel):
                             "subject_id": "64882f6c32d15c1d89f06cdf",
                             "subject_code": "SCS2213",
                             "no_of_credit":3,
+                            "academicYear":2,
+                            "semester":1,
                             "assignment_marks":30,
                             "ocr_marks": 60,
                             "non_ocr_marks":22 ,
@@ -64,6 +72,8 @@ class StudentSubject(BaseModel):
                             "subject_id": "64882f6c32d15c1d89f06cdf",
                             "subject_code": "SCS2213",
                             "no_of_credit":3,
+                            "academicYear":2,
+                            "semester":1,
                             "assignment_marks":30,
                             "ocr_marks": 60,
                             "non_ocr_marks":22 ,
@@ -94,6 +104,8 @@ class StudentSubjectCreate(BaseModel):
                             "subject_id": "64882f6c32d15c1d89f06cdf",
                             "subject_code": "SCS2213",
                             "no_of_credit":3,
+                            "academicYear":2,
+                            "semester":1,
                             "assignment_marks":30,
                             "ocr_marks": 60,
                             "non_ocr_marks":22 ,
@@ -115,6 +127,8 @@ class StudentSubjectUpdate(BaseModel):
                             "subject_id": "64882f6c32d15c1d89f06cdf",
                             "subject_code": "SCS2213",
                             "no_of_credit":3,
+                            "academicYear":2,
+                            "semester":1,
                             "assignment_marks":30,
                             "ocr_marks": 60,
                             "non_ocr_marks":22 ,

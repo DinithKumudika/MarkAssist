@@ -59,5 +59,18 @@ class StudentSubjectModel():
                return updated_student_subject
           else:
                return False
-     
+          
+     def get_semester_results(self, request: Request, userIndex: str, semester:int, academicYear:int) -> list:
+          student_subject = self.by_index(request, userIndex)
+          
+          subjects_results = []
+          
+          if student_subject:
+               for subject in student_subject['subject']:
+                    if subject['semester'] == semester and subject['academicYear'] == academicYear:
+                         subjects_results.append(subject)
+                    else:
+                         continue
+          
+          return subjects_results
      
