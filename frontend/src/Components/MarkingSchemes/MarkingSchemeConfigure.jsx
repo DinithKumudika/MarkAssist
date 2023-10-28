@@ -33,8 +33,11 @@ function MarkingSchemeConfigure({clicked, data,subjectId}) {
     console.log("DefinedData:",definedData);
     const allElementsFilled = definedData.every(item => {
       // Check if all required properties have values
+      console.log("ITEM::::",item.selected);
       if(item.selected){
         return item.questionNo && item.subQuestionNo && item.partNo && item.noOfPoints && item.marks && item.keywordsMarks;
+      }else{
+        return true;
       }
     });
     console.log("All elements filled:",allElementsFilled);

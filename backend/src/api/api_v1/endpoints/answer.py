@@ -168,8 +168,8 @@ async def check_similarity(request: Request, markingSchemeId:str, subjectId: str
                               "keywordsaccuracy":keywordsAccuracy
                               # "accuracy": "0.6"
                          })
-               print("key", key)
-               paper_filters = {"paper":key}
+               print("key:::::::::", key)
+               paper_filters = {"paper":key,"subjectId":subjectId}
                paper_data = {"marksGenerated":True}
                paper_model.update(request, paper_filters, paper_data)          
                
