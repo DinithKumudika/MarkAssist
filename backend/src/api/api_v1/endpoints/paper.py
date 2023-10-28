@@ -532,17 +532,18 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
                detail="Add subject First"
           )
           
-          
-@router.post('/upload/marks_type')
-async def upload_marks(request: Request, file: UploadFile = File(...), marks_type: str = Form(...), year: str = Form(...), subjectId: str = Form(...)):
+# @router.post('/upload/file/', response_description="Add new papers", response_model=List[Paper], status_code=status.HTTP_201_CREATED)
+# async def upload_files(request: Request, files: List[UploadFile] = File(...), year: str = Form(...), subjectId: str = Form(...)):          
+@router.post('/upload/marks_type',response_description="Add assignment marks", response_model=List[Paper], status_code=status.HTTP_201_CREATED)
+async def upload_marks(request: Request, files: List[UploadFile] = File(...), marks_type: str = Form(...), year: str = Form(...), subjectId: str = Form(...)):
      
      # Get the subjectCode and subjectName using subjectId
      subject = subject_model.subject_by_id(request, subjectId)
-
+     print("This is subject",subject)
      # Check if the uploaded file is a CSV file
-     if file.filename.endswith('.csv'):
+     if files.filename.endswith('.csv'):
         # Read the content of the CSV file
-        contents = await file.read()
+        contents = await files.read()
         contents_str = contents.decode('utf-8')  # Assuming the file is UTF-8 encoded
         
         # Split the CSV content by lines
@@ -584,8 +585,6 @@ async def upload_marks(request: Request, file: UploadFile = File(...), marks_typ
                pass
           
           
-                         
-     
           # Now csv file is generalised and stored in fullMarksList, now add that data into student_subject collection
           for studentMarks in fullMarksList:
                
@@ -616,10 +615,10 @@ async def upload_marks(request: Request, file: UploadFile = File(...), marks_typ
                     # print("this is end of else", new_student_subject)
                        
 
-        data = {
-            "status": 200,
-            "message": "File uploaded successfully",
-            "marks":fullMarksList,
-            "marksForSubjectCollection":fullMarksForSubjectCollection
-        }
+          data = {
+                 "status": 200,
+                 "message": "File uploaded successfully",
+                 "marks":fullMarksList,
+                 "marksForSubjectCollection":fullMarksForSubjectCollection
+             }
      return data

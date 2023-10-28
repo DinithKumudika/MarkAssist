@@ -15,6 +15,8 @@ function AnswerSheetsPage({page}) {
   const user_id=allItems['user_id'];
   const [isClicked,setClick] = useState("inner");
   const [answerSheet,setAnswerSheet] = useState([]);
+  const [assignmentMarks,setAssignmentMarks] = useState([]);
+  const [nonOcrMarks,setNonOcrMarks] = useState([]);
   const [markingScheme, setMarkingScheme] = useState()
   const [isLoading, setIsLoading] = useState(true);
   const name=`${subjectId}---- ${year} ---Marking Scheme`
@@ -31,25 +33,53 @@ function AnswerSheetsPage({page}) {
       console.log("Markingscheme:",response.data);
       setMarkingScheme(response.data);
       // setIsLoading(false);
-      axios
-      .get(`http://127.0.0.1:8000/api_v1/papers/subjects/${subjectId}`)
-      .then((response)=>{
-        console.log(response.data);
-        setAnswerSheet(response.data);
-        setIsLoading(false);
-      })
-      .catch((error)=>{
-        console.log(error);
-        setAnswerSheet(null)
-        setIsLoading(false);
-      })
+      if(page==='answersheets'){
+        axios
+        .get(`http://127.0.0.1:8000/api_v1/papers/subjects/${subjectId}`)
+        .then((response)=>{
+          console.log(response.data);
+          setAnswerSheet(response.data);
+          setIsLoading(false);
+        })
+        .catch((error)=>{
+          console.log(error);
+          setAnswerSheet(null)
+          setIsLoading(false);
+        })
+      }else if(page==='assignments'){
+        axios
+        .get(`http://127.0.0.1:8000/api_v1/papers/subjects/${subjectId}`)
+        .then((response)=>{
+          console.log(response.data);
+          setAssignmentMarks(response.data);
+          setIsLoading(false);
+        })
+        .catch((error)=>{
+          console.log(error);
+          setAssignmentMarks(null)
+          setIsLoading(false);
+        })
+      }else if(page==='nonocr'){
+        axios
+        .get(`http://127.0.0.1:8000/api_v1/papers/subjects/${subjectId}`)
+        .then((response)=>{
+          console.log(response.data);
+          setNonOcrMarks(response.data);
+          setIsLoading(false);
+        })
+        .catch((error)=>{
+          console.log(error);
+          setNonOcrMarks(null)
+          setIsLoading(false);
+        })
+      }
     })
     .catch((error)=>{
       console.log(error);
       setMarkingScheme(null)
       setIsLoading(false);
     })
-  },[]);
+  },[page]);
 
   // //Function to handle the click of the hamburger menu
   const handleClick = () => {
@@ -98,8 +128,8 @@ function AnswerSheetsPage({page}) {
           </div>
           {
             page==='answersheets' ? (<AnswerSheets page={page} clicked={isClicked} data={answerSheet} markingScheme={markingScheme} year={year} subjectId={subjectId}/>)
-            : page==='assignments' ? (<AnswerSheets page={page} clicked={isClicked} data={answerSheet} markingScheme={markingScheme} year={year} subjectId={subjectId}/>)
-            : (<AnswerSheets page={page} clicked={isClicked} data={answerSheet} markingScheme={markingScheme} year={year} subjectId={subjectId}/>)
+            : page==='assignments' ? (<AnswerSheets page={page} clicked={isClicked} data={assignmentMarks} markingScheme={markingScheme} year={year} subjectId={subjectId}/>)
+            : (<AnswerSheets page={page} clicked={isClicked} data={nonOcrMarks} markingScheme={markingScheme} year={year} subjectId={subjectId}/>)
           }
           
         </div>
