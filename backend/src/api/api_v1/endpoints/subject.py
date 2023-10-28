@@ -61,8 +61,8 @@ async def get_subjects(request: Request, user_id:str, limit: Optional[int] = Non
 
 
 # get years list according to a subject code in  descending order.
-@router.get('/years/{user_id}/{subjectCode}', response_description=" get list of subjects according to subjectCode and userId", response_model=List[Subject],status_code=status.HTTP_200_OK)
-async def get_years_list(request: Request,user_id:str, subjectCode: str):
+@router.get('/years/user/{user_id}/{subjectCode}', response_description=" get list of subjects according to subjectCode and userId", response_model=List[Subject],status_code=status.HTTP_200_OK)
+async def get_years_list_by_userId_subjectCode(request: Request,user_id:str, subjectCode: str):
      subject_list = subject_model.get_subject_by_subjectCode_userId(request,user_id, subjectCode)
      
      if subject_list:

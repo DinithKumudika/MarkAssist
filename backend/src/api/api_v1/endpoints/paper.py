@@ -291,70 +291,8 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
                               student_subject = student_subject_model.by_index(request, index)
                               
                               if student_subject:
-                                   # #loop the subject list
-                                   # # print("This is student subject if close")
-                         
-                                   # new_subject_list = []
-                                   # for item in student_subject['subject']:
-                                   #      # find if subject is in the schema
-                                   #      if item['subject_code'] == subject["subjectCode"] :
-                                   #           # if subject is alredy in the collection update it
-                                   #           pass
-                                   #      else:
-                                   #           # append the subject to list
-                                   #           new_subject = {
-                                   #                "subject_id": subject["id"],
-                                   #                "subject_code": subject["subjectCode"],
-                                   #                "no_of_credit": subject["no_credits"],
-                                   #                "academicYear": subject["academicYear"],
-                                   #                "semester": subject["semester"],
-                                   #                "assignment_marks": 0,
-                                   #                "ocr_marks": 0.0,
-                                   #                "non_ocr_marks": 0.0,
-                                   #                "total_marks":0.0,
-                                   #           }
-                                   #           # print("is new subject", new_subject);
-                                   #           # print("this is current list", student_subject["subject"]);
-                                             
-                                   #           new_subject_list = student_subject['subject'];
-                                   #           new_subject_list.append(new_subject)
-                         
-                                   # # update the exixting
-                                   # filters = {"index":index} 
-                                   # data = {"subject":new_subject_list}
-                                   # student_subject_update = student_subject_model.update(request, filters, data)
-                                   # # print("this is result after update", student_subject_update);
                                    add_subject(request,student_subject,subject,index)
-
-
                               else:
-                                   # create a new one
-                                   # print("This is student subject else close")
-                                   
-
-                                   # subject_list = [
-                                   #      {
-                                   #           "subject_id": subject["id"],
-                                   #           "subject_code": subject["subjectCode"],
-                                   #           "no_of_credit": subject["no_credits"],
-                                   #           "academicYear": subject["academicYear"],
-                                   #           "semester": subject["semester"],
-                                   #           "assignment_marks": 0,
-                                   #           "ocr_marks": 0.0,
-                                   #           "non_ocr_marks": 0.0,
-                                   #           "total_marks":0.0,
-                                   #      },
-                                   # ]
-                                   
-                                   # student_subject = StudentSubjectCreate(
-                                   #      index = index,
-                                   #      gpa = 0.0,
-                                   #      rank= 0,
-                                   #      total_credit= 0,
-                                   #      subject = subject_list
-                                   # )
-                                   # new_student_subject = student_subject_model.add_new_student_subject(request,student_subject)
-                                   
                                    new_student_subject = add_student_subject(request,subject,index)
                                    print("this is end of else", new_student_subject)
                                    
@@ -481,71 +419,10 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
                     print("This is student subject", student_subject)
                     
                     if student_subject:
-                         # #loop the subject list
-                         # print("This is student subject if close")
-                         
-                         # new_subject_list = []
-                         # for item in student_subject['subject']:
-                         #      # find if subject is in the schema
-                         #      if item['subject_code'] == subject["subjectCode"] :
-                         #           # if subject is alredy in the collection update it
-                         #           pass
-                         #      else:
-                         #           # append the subject to list
-                         #           new_subject = {
-                         #                "subject_id": subject["id"],
-                         #                "subject_code": subject["subjectCode"],
-                         #                "no_of_credit": subject["no_credits"],
-                         #                "academicYear": subject["academicYear"],
-                         #                "semester": subject["semester"],
-                         #                "assignment_marks": 0,
-                         #                "ocr_marks": 0.0,
-                         #                "non_ocr_marks": 0.0,
-                         #                "total_marks":0.0,
-                         #           }
-                         #           # print("is new subject", new_subject);
-                         #           # print("this is current list", student_subject["subject"]);
-                                   
-                         #           new_subject_list = student_subject['subject'];
-                         #           new_subject_list.append(new_subject)
-                         
-                         #      # update the exixting
-                         #      filters = {"index":index} 
-                         #      data = {"subject":new_subject_list}
-                         #      student_subject_update = student_subject_model.update(request, filters, data)
-                         #      print("this is result after update", student_subject_update);
-                         
                          add_subject(request,student_subject,subject,index)
-
-
                     else:
                          # create a new one
                          print("This is student subject else close")
-                         
-
-                         # subject_list = [
-                         #      {
-                         #           "subject_id": subject["id"],
-                         #           "subject_code": subject["subjectCode"],
-                         #           "no_of_credit": subject["no_credits"],
-                         #           "academicYear": subject["academicYear"],
-                         #           "semester": subject["semester"],
-                         #           "assignment_marks": 0,
-                         #           "ocr_marks": 0.0,
-                         #           "non_ocr_marks": 0.0,
-                         #           "total_marks":0.0,
-                         #      },
-                         # ]
-                         
-                         # student_subject = StudentSubjectCreate(
-                         #      index = index,
-                         #      gpa = 0.0,
-                         #      rank= 0,
-                         #      total_credit= 0,
-                         #      subject = subject_list
-                         # )
-                         # new_student_subject = student_subject_model.add_new_student_subject(request,student_subject)
-                         
                          new_student_subject = add_student_subject(request,subject,index)
                          print("this is end of else", new_student_subject)
                     
@@ -731,7 +608,13 @@ async def upload_marks(request: Request, file: UploadFile = File(...), marks_typ
                               filters = {"index":index} 
                               data = {"subject":subjectListOfStudent}
                               student_subject_update = student_subject_model.update(request, filters, data)
-                              # print("this is result after update", student_subject_update);                 
+                              # print("this is result after update", student_subject_update);    
+               else:
+                    # create new student_subject collection
+                    # print("This is student subject else close")
+                    new_student_subject = add_student_subject(request,subject,index)
+                    # print("this is end of else", new_student_subject)
+                       
 
         data = {
             "status": 200,
