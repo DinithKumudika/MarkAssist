@@ -655,88 +655,90 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
                detail="Add subject First"
           )
           
-          
-@router.post('/upload/marks_type')
-async def upload_marks(request: Request, file: UploadFile = File(...), marks_type: str = Form(...), year: str = Form(...), subjectId: str = Form(...)):
+# @router.post('/upload/file/', response_description="Add new papers", response_model=List[Paper], status_code=status.HTTP_201_CREATED)
+# async def upload_files(request: Request, files: List[UploadFile] = File(...), year: str = Form(...), subjectId: str = Form(...)):          
+@router.post('/upload/marks_type',response_description="Add assignment marks", response_model=List[Paper], status_code=status.HTTP_201_CREATED)
+async def upload_marks(request: Request, files: List[UploadFile] = File(...), marks_type: str = Form(...), year: str = Form(...), subjectId: str = Form(...)):
      
      # Get the subjectCode and subjectName using subjectId
      subject = subject_model.subject_by_id(request, subjectId)
-
+     print("This is subject",subject)
      # Check if the uploaded file is a CSV file
-     if file.filename.endswith('.csv'):
-        # Read the content of the CSV file
-        contents = await file.read()
-        contents_str = contents.decode('utf-8')  # Assuming the file is UTF-8 encoded
-        
-        # Split the CSV content by lines
-        lines = contents_str.split('\n')
-        
-        lineOne = lines[0].split(',')
-        # print("This is line one",lineOne)
-        fullMarksList = []
-        fullMarksForSubjectCollection = []
-        
-        # Skip the first line (header) and process the rest
-        for line in lines[1:]:
-          # Process the CSV data line by line here
-          # print("This is line :",line)
-            
-          marksList = line.split(',')
-          marksDict = { }
-          marksDictForSubjectCollection = {}
-          if(len(marksList)>0):
-               # print("This is marks list",marksList)
-               
-               for index, value in enumerate(marksList): 
-                    marksDict.update({lineOne[index]:value})
-                    
-                    # After 0 index ther values will be index and marks
-                    if(index>0):
-                         marksDictForSubjectCollection.update({lineOne[index]:value})
-                    
-          
-          fullMarksList.append(marksDict) 
-          
-          fullMarksForSubjectCollection.append(marksDictForSubjectCollection)
-          
-          if(marks_type=="assignmentMarks"):
-               filters = {"_id":ObjectId(subject['id'])} 
-               data = {"finalAssignmentMarks":fullMarksForSubjectCollection}
-               subject_model.update(request,filters, data)
-          else:
-               pass
-          
-          
-                         
-     
-          # Now csv file is generalised and stored in fullMarksList, now add that data into student_subject collection
-          for studentMarks in fullMarksList:
-               
-               # check if user details alredy in the student_subject collection
-               index = studentMarks['index']
-               student_subject = student_subject_model.by_index(request, index)
-               # print("This is student subject", student_subject)
-               
-               if student_subject:
-                    subjectListOfStudent = student_subject['subject']
-                    
-                    # get the subject by subject
-                    for subjectOfStudent in subjectListOfStudent:
-                         if subjectOfStudent['subject_code'] == subject['subjectCode']:
-                              # update the marks
-                              subjectOfStudent.update({marks_type: studentMarks[marks_type]})
-                              # print("this is subjectOfStudent",subjectOfStudent)
-                              
-                              # update the exixting
-                              filters = {"index":index} 
-                              data = {"subject":subjectListOfStudent}
-                              student_subject_update = student_subject_model.update(request, filters, data)
-                              # print("this is result after update", student_subject_update);                 
+     for file in files :
+          if file.filename.endswith('.csv'):
+             # Read the content of the CSV file
+             contents = await file.read()
+             contents_str = contents.decode('utf-8')  # Assuming the file is UTF-8 encoded
 
-        data = {
-            "status": 200,
-            "message": "File uploaded successfully",
-            "marks":fullMarksList,
-            "marksForSubjectCollection":fullMarksForSubjectCollection
-        }
+             # Split the CSV content by lines
+             lines = contents_str.split('\n')
+
+             lineOne = lines[0].split(',')
+             print("This is line one",lineOne)
+             fullMarksList = []
+             fullMarksForSubjectCollection = []
+
+             # Skip the first line (header) and process the rest
+             for line in lines[1:]:
+               # Process the CSV data line by line here
+               print("This is line :",line)
+
+               marksList = line.split(',')
+               marksDict = { }
+               marksDictForSubjectCollection = {}
+               if(len(marksList)>0):
+                    print("This is marks list",marksList)
+
+                    for index, value in enumerate(marksList): 
+                         marksDict.update({lineOne[index]:value})
+
+                         # After 0 index ther values will be index and marks
+                         if(index>0):
+                              marksDictForSubjectCollection.update({lineOne[index]:value})
+
+
+               fullMarksList.append(marksDict) 
+
+               fullMarksForSubjectCollection.append(marksDictForSubjectCollection)
+
+               if(marks_type=="assignmentMarks"):
+                    filters = {"_id":ObjectId(subject['id'])} 
+                    data = {"finalAssignmentMarks":fullMarksForSubjectCollection}
+                    subject_model.update(request,filters, data)
+               else:
+                    pass
+               
+               
+
+               
+               # Now csv file is generalised and stored in fullMarksList, now add that data into student_subject collection
+               for studentMarks in fullMarksList:
+
+                    # check if user details alredy in the student_subject collection
+                    index = studentMarks['index']
+                    student_subject = student_subject_model.by_index(request, index)
+                    print("This is student subject", student_subject)
+
+                    if student_subject:
+                         subjectListOfStudent = student_subject['subject']
+
+                         # get the subject by subject
+                         for subjectOfStudent in subjectListOfStudent:
+                              if subjectOfStudent['subject_code'] == subject['subjectCode']:
+                                   # update the marks
+                                   subjectOfStudent.update({marks_type: studentMarks[marks_type]})
+                                   print("this is subjectOfStudent",subjectOfStudent)
+
+                                   # update the exixting
+                                   filters = {"index":index} 
+                                   data = {"subject":subjectListOfStudent}
+                                   student_subject_update = student_subject_model.update(request, filters, data)
+                                   print("this is result after update", student_subject_update);                 
+
+             data = {
+                 "status": 200,
+                 "message": "File uploaded successfully",
+                 "marks":fullMarksList,
+                 "marksForSubjectCollection":fullMarksForSubjectCollection
+             }
      return data

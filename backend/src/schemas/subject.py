@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
 
-class finalAssignmentMarks(BaseModel):
+class finalAssignmentMark(BaseModel):
     index:str
     assignment_marks:str
     
@@ -21,7 +21,7 @@ class Subject(BaseModel):
     editingTeacher:str
     nonEditingTeacher:str
     backgroundImage: int = 1
-    finalAssignmentMarks: List[finalAssignmentMarks] | None
+    finalAssignmentMarks: List[finalAssignmentMark] | None
     
     
             # "subjectStream":"SCS",
@@ -79,7 +79,7 @@ class SubjectCreate(BaseModel):
     backgroundImage: int = 1 
     createdAt: Optional[datetime]
     updatedAt: Optional[datetime]
-    finalAssignmentMarks: List[finalAssignmentMarks] |None 
+    finalAssignmentMarks: List[finalAssignmentMark] |None 
 
             # "subjectStream":"SCS",
     class Config:
