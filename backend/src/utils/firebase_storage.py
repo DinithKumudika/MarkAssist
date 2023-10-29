@@ -32,6 +32,7 @@ async def upload_file(file: UploadFile, file_name: str):
     download_url = fb_storage.child(upload_path).get_url(None)
     return download_url
 
+
 async def upload_file2(file: UploadFile, path: str, folder: str, file_name: str):
     file_extension = file.filename.split(".")[-1]  # Get the file extension
     unique_filename = f"{uuid.uuid4()}_{file_name}.{file_extension}"  # Generate a unique file name
@@ -42,6 +43,7 @@ async def upload_file2(file: UploadFile, path: str, folder: str, file_name: str)
     fb_storage.child(upload_path).put(renamed_file.file)
     download_url = fb_storage.child(upload_path).get_url(None)
     return download_url
+
   
 async def save_file_to_local():
   pass

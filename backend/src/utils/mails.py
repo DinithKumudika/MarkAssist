@@ -17,7 +17,7 @@ def send_registration_email():
      pass
 
 def send_email_verification_email(to: str, name: str, url: str):
-    
+
      """
      Send email for verification
      """

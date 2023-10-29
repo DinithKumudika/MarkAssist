@@ -48,7 +48,8 @@ async def get_All(request: Request):
 async def add_marking(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...) ):
      
      # get the subjectCode and subjectName using subjectId
-     subject = subject_model.subject_by_id(request, subjectId)
+     # subject = subject_model.subject_by_id(request, subjectId)
+     subject = subject_model.find(request, "_id", ObjectId(subjectId))
      print(subject)
      if(subject):
           
@@ -262,18 +263,7 @@ async def get_marking_content(request: Request, sub: str = None, scheme: str = N
      raise HTTPException(
           status_code=status.HTTP_404_NOT_FOUND, 
           detail=f"there is no paper with given id"
-     )
-
-# @router.get("/{schemeId}/questions", response_description="get questions of a marking scheme by marking scheme id", response_model= List[Marking])
-# async def get_marking_content(request: Request, schemeId: str):
-#      marking_questions = marking_model.get_by_marking_scheme(request, schemeId)
-#      print(schemeId)
-#      if marking_questions:
-#           return marking_questions
-#      raise HTTPException(
-#           status_code=status.HTTP_404_NOT_FOUND, 
-#           detail=f"there is no paper with id of {schemeId}"
-#      )          
+     )        
 
 
 @router.get("/download/{scheme_id}", response_description="Download marking scheme from cloud storage")

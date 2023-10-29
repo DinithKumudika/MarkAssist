@@ -12,6 +12,15 @@ class SubjectModel():
      def get_collection(self, request: Request):
           return request.app.db[self.collection]
      
+     
+     def find(self, request: Request, key: str, value):
+          subject = self.get_collection(request).find_one({key: value})
+          if subject:
+               subject["id"] = str(subject["_id"]) 
+               subject["teacherId"] = str(subject["teacherId"]) 
+               return subject
+     
+     
      def list_subjects_by_user_id(self, request: Request,user_id:str) -> list:
           subjects = list(self.get_collection(request).find({'teacherId':user_id}))
           for subject in subjects:
@@ -71,6 +80,7 @@ class SubjectModel():
                subject["id"] = str(subject["_id"]) 
                subject["teacherId"] = str(subject["teacherId"]) 
                return subject
+          
           
      # get subject by subjectId and UserId
      def get_subject_by_id_user_id(self, request: Request,user_id:str, id: str) -> Subject:
