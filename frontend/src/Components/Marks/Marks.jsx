@@ -229,13 +229,21 @@ const handleProceed = () => {
     let hasError = false;
 
     for (const [index, markConfigure] of marksConfigure.entries()) {
+      console.log("<=:::",markConfigure.maximum <= markConfigure.minimum);
       if (markConfigure.maximum === "" || markConfigure.percentageOfMarks === "") {
+        console.log("error1")
         setError("Please fill all the fields");
         hasError = true;
         break;
       } else if (index === marksConfigure.length - 1) {
+        console.log("error2")
         if (markConfigure.maximum !== 100) {
           setError("Range Should be 0-100.");
+          hasError = true;
+          break;
+        }else if (markConfigure.maximum <= markConfigure.minimum) {
+          console.log("error4")
+          setError("Please enter valid range.");
           hasError = true;
           break;
         }
@@ -245,13 +253,14 @@ const handleProceed = () => {
         markConfigure.maximum > 100 ||
         markConfigure.maximum < 0 ||
         markConfigure.minimum > 100 ||
-        markConfigure.minimum < 0
+        markConfigure.minimum < 0 
       ) {
-        console.log(markConfigure);
+        console.log("error3")
         setError("Please enter valid marks.");
         hasError = true;
         break;
       } else if (markConfigure.maximum <= markConfigure.minimum) {
+        console.log("error4")
         setError("Please enter valid range.");
         hasError = true;
         break;

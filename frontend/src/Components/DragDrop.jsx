@@ -132,8 +132,13 @@ function DragDrop({children,closeFunc,data}) {
       });
     }
     else if(pathName[0]==="nonocr"){
+      console.log("PATH:::::",pathName[0]);
+      formData.append('marks_type', "non_ocr_marks");
+      formData.append('year', year);
+      formData.append('subjectId',subjectId);
+      console.log("Hello_assignment:",formData);
       axios
-      .post(`http://127.0.0.1:8000/api_v1/papers/upload/file`,formData)
+      .post(`http://127.0.0.1:8000/api_v1/papers/upload/marks_type`,formData)
       .then((response) => {
         console.log("Hello:",response.data);
         setUploading(false);
@@ -143,15 +148,13 @@ function DragDrop({children,closeFunc,data}) {
         // for (const [index, paper] of papers.entries()){
       })
       .catch((error) => {
-        if(error.response && error.response.status >=400 && error.response.status <=500){
-          // console.log(error.response.data.message);
-          console.log(error.response.data.detail);
-          // alert('Something went wrong')
-          setUploading(false);
-          closeFunc()
-          alert('Something went wrong')
-          window.location.reload();
-      }
+        console.log("ERRORRRR::::"+error);
+        // console.log(error.response.data.message);
+        // alert('Something went wrong')
+        setUploading(false);
+        closeFunc()
+        alert('Something went wrong')
+        window.location.reload();
       });
     }
     // console.log("error:"+error.response.data.message);

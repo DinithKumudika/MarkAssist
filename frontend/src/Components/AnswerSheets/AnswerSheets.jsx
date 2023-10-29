@@ -16,6 +16,7 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoading2, setIsLoading2] = useState(true);
   const [marks,setMarks] = useState([]);
+  const [search,setSearch] = useState('');
   const location = useLocation();
   let currentPath = location.pathname.split('/')?.[1];
 
@@ -110,7 +111,12 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
       </>
     )
 
-    table = <Table check={true} checked={true} Checked={Checked} checkAll={checkAll} name={true} handleCheck={handleCheck} handleAllCheck={handleAllCheck} date={true} select={true} AnswerSheets={data}/>
+    table = <Table check={true} checked={true} Checked={Checked} checkAll={checkAll} name={true} handleCheck={handleCheck} handleAllCheck={handleAllCheck} date={true} select={true} AnswerSheets={
+      data.filter((item)=>{
+        return search.toLowerCase() === '' ? item
+        : item.paper.toLowerCase().includes(search)
+      })
+    }/>
 
     dragdrop = 'Answer Sheets'
   } else if(page==='assignments'){
@@ -121,7 +127,12 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
       </>
     )
 
-    table = <Table name={true} date={true} marks={true} Assignments_NonOCR={data}/>
+    table = <Table name={true} date={true} marks={true} Assignments_NonOCR={
+        data.filter((item)=>{
+          return search.toLowerCase() === '' ? item
+          : item.index.includes(search)
+      })
+    }/>
 
     dragdrop='Assignment Marks'
   }else{
@@ -132,7 +143,12 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
       </>
     )
 
-    table = <Table name={true} date={true} marks={true} Assignments_NonOCR={data}/>
+    table = <Table name={true} date={true} marks={true} Assignments_NonOCR={
+      data.filter((item)=>{
+        return search.toLowerCase() === '' ? item
+        : item.index.includes(search)
+      })
+    }/>
 
     dragdrop='Non-OCR Marks'
   } 
@@ -158,7 +174,7 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
                 <button className="rounded rounded-sm w-fit bg-custom-blue-main max-sm:w-fill px-2 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleGenerateAccuracy}><BiFilter/><div className='ml-2'>Generate Accuracy</div></button>
               </div>
               <form className='lg:w-1/2 md:2/3 ' >
-                <input className="rounded shadow shadow-gray-600 w-full h-9 p-2 mb-4" type="text" placeholder='Search'/>
+                <input onChange={(e)=>setSearch(e.target.value)} className="rounded shadow shadow-gray-600 w-full h-9 p-2 mb-4" type="text" placeholder='Search'/>
               </form>
             </div>
             {table}

@@ -6,6 +6,7 @@ function MarkAccurcyConfigureBox({handleAddChild,handleRemoveChild,index,data,ad
   const [colorMarks,setColorMarks] = useState("");
   const handleClick = (event) => {
     const val = event.target.value
+    console.log("VAL:::"+val)
     if(val==="+"){
       // console.log("+",index)
       handleAddChild(index);
@@ -43,9 +44,9 @@ function MarkAccurcyConfigureBox({handleAddChild,handleRemoveChild,index,data,ad
       <input min="0" max="100" className={`w-[150px] bg-custom-gray-1 text-center rounded py-1 mr-2 max-md:w-[60px]`} type="number" name="minimum" value={data.minimum} disabled/>
       <input min="0" max="100" onChange={handleInputChange} className={`w-[150px]  bg-custom-gray-1 text-center rounded py-1 mr-2 max-md:w-[75px]  ${colorMax}`} type="number" name="maximum" value={data.maximum}/>
       <input min="0" max="100" onChange={handleInputChange} className={`w-[150px] bg-custom-gray-1 text-center rounded py-1 mr-2 max-md:w-[60px] ${colorMarks}`} type="number" name="percentageOfMarks" value={data.percentageOfMarks}/>
-      <div onClick={handleClick}>
-      <input onClick={handleClick} className="hover:cursor-pointer bg-custom-gray-1 text-center rounded py-1 w-[36px] font-bold mr-2" type="text" name="" value={add} disabled />
-      <input onClick={handleClick} className="hover:cursor-pointer bg-custom-gray-1 text-center rounded py-1 w-[36px] font-bold" type="text" name="" value={Minus} disabled />
+      <div onClick={handleClick} className="flex items-center">
+      <input onClick={handleClick} onChange={handleInputChange} className="hover:cursor-pointer bg-custom-gray-1 text-center rounded py-1 w-[36px] font-bold mr-2" type="button" name="" value={add}  />
+      <input onClick={handleClick} onChange={handleInputChange} className="hover:cursor-pointer bg-custom-gray-1 text-center rounded py-1 w-[36px] font-bold" type="button" name="" value={Minus}  />
       </div>
     </div>
   )

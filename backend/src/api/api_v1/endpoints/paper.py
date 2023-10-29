@@ -595,8 +595,8 @@ async def upload_marks(request: Request, files: List[UploadFile] = File(...), ma
           
           # Now csv file is generalised and stored in fullMarksList, now add that data into student_subject collection
           for studentMarks in fullMarksList:
-               print("This is student marks",studentMarks['index'])
-               print("This is student marks",studentMarks['assignment_marks'])
+               # print("This is student marks",studentMarks['index'])
+               # print("This is student marks",studentMarks['assignment_marks'])
                
                # check if user details alredy in the student_subject collection
                index = studentMarks['index']
@@ -605,7 +605,7 @@ async def upload_marks(request: Request, files: List[UploadFile] = File(...), ma
                
                if student_subject:
                     subjectListOfStudent = student_subject['subject']
-                    
+                    print("Student markss:::::",studentMarks)
                     # params = subject,subjectListOfStudent,index,marks_type,studentMarks
                     update_student_subject_collection(request,subject,index,marks_type,studentMarks,subjectListOfStudent)
                     
