@@ -156,7 +156,8 @@ async def add_a_subject(request:Request, payload: SubjectCreate = Body(...)):
                backgroundImage=random.randint(1, 17),
                createdAt =  datetime.now(),
                updatedAt = datetime.now(),
-               finalAssignmentMarks= None
+               finalAssignmentMarks= None,
+               nonOcrMarks= None
           )
           
           new_subject = await subject_model.add_new_subject(request, subject);

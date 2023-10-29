@@ -1,4 +1,5 @@
 from fastapi import Request
+from typing import Optional, List
 import time
 import pdf2image as p2i
 import cv2
@@ -299,3 +300,31 @@ def add_subject(request: Request,student_subject:dict, subject: dict, index: str
           print("this is result after update", student_subject_update);
                     
 
+# update student_subject collection's document
+def update_student_subject_collection(request: Request, subject: dict, index: str,marks_type:str,studentMarks:dict,subjectListOfStudent:List[dict]):
+     # get the subject by subject
+     for subjectOfStudent in subjectListOfStudent:
+          if subjectOfStudent['subject_code'] == subject['subjectCode']:
+               if(marks_type=="assignmentMarks"):
+                    # update the marks
+                    subjectOfStudent.update({"assignment_marks": studentMarks['assignment_marks']})
+                    # print("this is subjectOfStudent",subjectOfStudent)
+                    
+                    # update the exixting
+                    filters = {"index":index} 
+                    data = {"subject":subjectListOfStudent}
+                    student_subject_update = student_subject_model.update(request, filters, data)
+                    # print("this is result after update", student_subject_update);
+               else:
+                    # This is for nonOCR marks
+                    # update the marks
+                    subjectOfStudent.update({"non_ocr_marks": studentMarks['non_ocr_marks']})
+                    # print("this is subjectOfStudent",subjectOfStudent)
+                    
+                    # update the exixting
+                    filters = {"index":index} 
+                    data = {"subject":subjectListOfStudent}
+                    student_subject_update = student_subject_model.update(request, filters, data)
+                    # print("this is result after update", student_subject_update);
+    
+    

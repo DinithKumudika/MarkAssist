@@ -26,7 +26,7 @@ from schemas.student_subject import StudentSubjectBase, StudentSubject,StudentSu
 
 from models.subject import SubjectModel;
 
-from helpers import get_images, text_similarity, add_student_subject, add_subject
+from helpers import get_images, text_similarity, add_student_subject, add_subject,update_student_subject_collection
 from utils.firebase_storage import upload_file2
 
 from utils.auth import get_current_active_user
@@ -534,84 +534,113 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
           
 # @router.post('/upload/file/', response_description="Add new papers", response_model=List[Paper], status_code=status.HTTP_201_CREATED)
 # async def upload_files(request: Request, files: List[UploadFile] = File(...), year: str = Form(...), subjectId: str = Form(...)):          
-@router.post('/upload/marks_type',response_description="Add assignment marks", response_model=List[Paper], status_code=status.HTTP_201_CREATED)
+@router.post('/upload/marks_type',response_description="Add assignment marks", status_code=status.HTTP_201_CREATED)
 async def upload_marks(request: Request, files: List[UploadFile] = File(...), marks_type: str = Form(...), year: str = Form(...), subjectId: str = Form(...)):
+     print("This is marks type",marks_type)
+     print("This is year",year)
+     print("This is subjectId",subjectId)
      
      # Get the subjectCode and subjectName using subjectId
      subject = subject_model.subject_by_id(request, subjectId)
-     print("This is subject",subject)
+     # print("This is subject",subject)
      # Check if the uploaded file is a CSV file
-     if files.filename.endswith('.csv'):
-        # Read the content of the CSV file
-        contents = await files.read()
-        contents_str = contents.decode('utf-8')  # Assuming the file is UTF-8 encoded
+     if files[0].filename.endswith('.csv'):
+          # Read the content of the CSV file
+          contents = await files[0].read()
+          contents_str = contents.decode('utf-8')  # Assuming the file is UTF-8 encoded
         
-        # Split the CSV content by lines
-        lines = contents_str.split('\n')
+          # Split the CSV content by lines
+          lines = contents_str.split('\n')
+          
+          lineOne = lines[0].split(',')
         
-        lineOne = lines[0].split(',')
-        # print("This is line one",lineOne)
-        fullMarksList = []
-        fullMarksForSubjectCollection = []
+          # print("This is line one",lineOne)
+          fullMarksList = []
         
-        # Skip the first line (header) and process the rest
-        for line in lines[1:]:
-          # Process the CSV data line by line here
-          # print("This is line :",line)
-            
-          marksList = line.split(',')
-          marksDict = { }
-          marksDictForSubjectCollection = {}
-          if(len(marksList)>0):
-               # print("This is marks list",marksList)
+          # Skip the first line (header) and process the rest
+          for line in lines[1:]:
+               # Process the CSV data line by line here
+               # print("This is line :",len(line))
                
-               for index, value in enumerate(marksList): 
-                    marksDict.update({lineOne[index]:value})
-                    
-                    # After 0 index ther values will be index and marks
-                    if(index>0):
-                         marksDictForSubjectCollection.update({lineOne[index]:value})
-                    
+               if(len(line) !=0):            
+                    marksList = line.split(',')
+                    marksDict = { }
+                    if(len(marksList)>0 or len(marksList)!=0):
+                         # print("This is marks list",marksList)       
+                         for index, value in enumerate(marksList): 
+                              marksDict.update({lineOne[index].strip():value.strip()})
+                         fullMarksList.append(marksDict) 
           
-          fullMarksList.append(marksDict) 
           
-          fullMarksForSubjectCollection.append(marksDictForSubjectCollection)
-          
+          print("This is full marks",fullMarksList)
           if(marks_type=="assignmentMarks"):
                filters = {"_id":ObjectId(subject['id'])} 
-               data = {"finalAssignmentMarks":fullMarksForSubjectCollection}
-               subject_model.update(request,filters, data)
+               data = {"finalAssignmentMarks":fullMarksList}
+               updated_subject = subject_model.update(request,filters, data)
+               if not updated_subject:
+                    raise HTTPException(
+                         status_code=status.HTTP_304_NOT_MODIFIED, 
+                         detail="Error in updating subject collection"
+                    )
           else:
-               pass
+               filters = {"_id":ObjectId(subject['id'])} 
+               data = {"nonOcrMarks":fullMarksList}
+               updated_subject = subject_model.update(request,filters, data)
+               if not updated_subject:
+                    raise HTTPException(
+                         status_code=status.HTTP_304_NOT_MODIFIED, 
+                         detail="Error in updating subject collection"
+                    )
           
           
           # Now csv file is generalised and stored in fullMarksList, now add that data into student_subject collection
           for studentMarks in fullMarksList:
+               print("This is student marks",studentMarks['index'])
+               print("This is student marks",studentMarks['assignment_marks'])
                
                # check if user details alredy in the student_subject collection
                index = studentMarks['index']
                student_subject = student_subject_model.by_index(request, index)
-               # print("This is student subject", student_subject)
+               print("This is student subject", student_subject)
                
                if student_subject:
                     subjectListOfStudent = student_subject['subject']
                     
-                    # get the subject by subject
-                    for subjectOfStudent in subjectListOfStudent:
-                         if subjectOfStudent['subject_code'] == subject['subjectCode']:
-                              # update the marks
-                              subjectOfStudent.update({marks_type: studentMarks[marks_type]})
-                              # print("this is subjectOfStudent",subjectOfStudent)
-                              
-                              # update the exixting
-                              filters = {"index":index} 
-                              data = {"subject":subjectListOfStudent}
-                              student_subject_update = student_subject_model.update(request, filters, data)
-                              # print("this is result after update", student_subject_update);    
+                    # params = subject,subjectListOfStudent,index,marks_type,studentMarks
+                    update_student_subject_collection(request,subject,index,marks_type,studentMarks,subjectListOfStudent)
+                    
+                    # # get the subject by subject
+                    # for subjectOfStudent in subjectListOfStudent:
+                    #      if subjectOfStudent['subject_code'] == subject['subjectCode']:
+                    #           if(marks_type=="assignmentMarks"):
+                    #                # update the marks
+                    #                subjectOfStudent.update({"assignment_marks": studentMarks['assignment_marks']})
+                    #                # print("this is subjectOfStudent",subjectOfStudent)
+                                   
+                    #                # update the exixting
+                    #                filters = {"index":index} 
+                    #                data = {"subject":subjectListOfStudent}
+                    #                student_subject_update = student_subject_model.update(request, filters, data)
+                    #                # print("this is result after update", student_subject_update);
+                    #           else:
+                    #                # This is for nonOCR marks
+                    #                # update the marks
+                    #                subjectOfStudent.update({"non_ocr_marks": studentMarks['non_ocr_marks']})
+                    #                # print("this is subjectOfStudent",subjectOfStudent)
+                                   
+                    #                # update the exixting
+                    #                filters = {"index":index} 
+                    #                data = {"subject":subjectListOfStudent}
+                    #                student_subject_update = student_subject_model.update(request, filters, data)
+                    #                # print("this is result after update", student_subject_update);
+                                   
+
                else:
                     # create new student_subject collection
                     # print("This is student subject else close")
                     new_student_subject = add_student_subject(request,subject,index)
+                    if(new_student_subject):
+                         update_student_subject_collection(request,subject,index,marks_type,studentMarks,new_student_subject['subject'])
                     # print("this is end of else", new_student_subject)
                        
 
@@ -619,6 +648,6 @@ async def upload_marks(request: Request, files: List[UploadFile] = File(...), ma
                  "status": 200,
                  "message": "File uploaded successfully",
                  "marks":fullMarksList,
-                 "marksForSubjectCollection":fullMarksForSubjectCollection
+                 "marksForSubjectCollection":fullMarksList
              }
      return data

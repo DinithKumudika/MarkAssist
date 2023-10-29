@@ -22,6 +22,7 @@ class Subject(BaseModel):
     nonEditingTeacher:str
     backgroundImage: int = 1
     finalAssignmentMarks: Optional[List[finalAssignmentMarks]] |None 
+    nonOcrMarks: Optional[List[finalAssignmentMarks]] |None 
     
     
             # "subjectStream":"SCS",
@@ -80,6 +81,8 @@ class SubjectCreate(BaseModel):
     createdAt: Optional[datetime]
     updatedAt: Optional[datetime]
     finalAssignmentMarks: Optional[List[finalAssignmentMarks]] |None 
+    nonOcrMarks: Optional[List[finalAssignmentMarks]] |None 
+    
 
             # "subjectStream":"SCS",
     class Config:
