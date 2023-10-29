@@ -601,38 +601,13 @@ async def upload_marks(request: Request, files: List[UploadFile] = File(...), ma
                # check if user details alredy in the student_subject collection
                index = studentMarks['index']
                student_subject = student_subject_model.by_index(request, index)
-               print("This is student subject", student_subject)
+               # print("This is student subject", student_subject)
                
                if student_subject:
                     subjectListOfStudent = student_subject['subject']
                     print("Student markss:::::",studentMarks)
                     # params = subject,subjectListOfStudent,index,marks_type,studentMarks
                     update_student_subject_collection(request,subject,index,marks_type,studentMarks,subjectListOfStudent)
-                    
-                    # # get the subject by subject
-                    # for subjectOfStudent in subjectListOfStudent:
-                    #      if subjectOfStudent['subject_code'] == subject['subjectCode']:
-                    #           if(marks_type=="assignmentMarks"):
-                    #                # update the marks
-                    #                subjectOfStudent.update({"assignment_marks": studentMarks['assignment_marks']})
-                    #                # print("this is subjectOfStudent",subjectOfStudent)
-                                   
-                    #                # update the exixting
-                    #                filters = {"index":index} 
-                    #                data = {"subject":subjectListOfStudent}
-                    #                student_subject_update = student_subject_model.update(request, filters, data)
-                    #                # print("this is result after update", student_subject_update);
-                    #           else:
-                    #                # This is for nonOCR marks
-                    #                # update the marks
-                    #                subjectOfStudent.update({"non_ocr_marks": studentMarks['non_ocr_marks']})
-                    #                # print("this is subjectOfStudent",subjectOfStudent)
-                                   
-                    #                # update the exixting
-                    #                filters = {"index":index} 
-                    #                data = {"subject":subjectListOfStudent}
-                    #                student_subject_update = student_subject_model.update(request, filters, data)
-                    #                # print("this is result after update", student_subject_update);
                                    
 
                else:

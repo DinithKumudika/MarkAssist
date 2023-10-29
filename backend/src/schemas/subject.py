@@ -5,6 +5,10 @@ from datetime import datetime
 class finalAssignmentMarks(BaseModel):
     index:Optional[str]|None
     assignment_marks:Optional[str]|None
+
+class finalNonOcrMarks(BaseModel):
+    index:Optional[str]|None
+    non_ocr_marks:Optional[str]|None
     
 
     # subjectStream:str
@@ -22,7 +26,7 @@ class Subject(BaseModel):
     nonEditingTeacher:str
     backgroundImage: int = 1
     finalAssignmentMarks: Optional[List[finalAssignmentMarks]] |None 
-    nonOcrMarks: Optional[List[finalAssignmentMarks]] |None 
+    nonOcrMarks: Optional[List[finalNonOcrMarks]] |None 
     
     
             # "subjectStream":"SCS",
@@ -81,7 +85,7 @@ class SubjectCreate(BaseModel):
     createdAt: Optional[datetime]
     updatedAt: Optional[datetime]
     finalAssignmentMarks: Optional[List[finalAssignmentMarks]] |None 
-    nonOcrMarks: Optional[List[finalAssignmentMarks]] |None 
+    nonOcrMarks: Optional[List[finalNonOcrMarks]] |None 
     
 
             # "subjectStream":"SCS",

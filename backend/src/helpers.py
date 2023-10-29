@@ -239,6 +239,7 @@ def keywords_match(paragraph: str, keywords: list):
    
 # add new document to student_subject collection 
 def add_student_subject(request: Request, subject: dict, index: str):
+     # print("This is add student_subject function")
      subject_list = [          
           {
                "subject_id": subject["id"],
@@ -303,6 +304,7 @@ def add_subject(request: Request,student_subject:dict, subject: dict, index: str
 # update student_subject collection's document
 def update_student_subject_collection(request: Request, subject: dict, index: str,marks_type:str,studentMarks:dict,subjectListOfStudent:List[dict]):
      # get the subject by subject
+     # print("This function calls update_student_subject_collection")
      for subjectOfStudent in subjectListOfStudent:
           if subjectOfStudent['subject_code'] == subject['subjectCode']:
                if(marks_type=="assignmentMarks"):

@@ -7,7 +7,7 @@ from datetime import datetime
 import random
 
 from schemas.user import User
-from schemas.subject import Subject, SubjectYearsByCode,YearsListResponse, SubjectCreate,GroupedSubject 
+from schemas.subject import Subject, SubjectYearsByCode,YearsListResponse, SubjectCreate,GroupedSubject,finalAssignmentMarks 
 from models.subject import SubjectModel
 from utils.auth import get_current_active_user
 
@@ -15,6 +15,25 @@ router = APIRouter()
 subject_model = SubjectModel()
 
 
+# get editing/non edinting subjects list by user id(subject of current teacher)
+# edinting is always true, if want to get non editing subjects, pass editing = false
+@router.get('{subject_id}/marks/{marks_type}', response_description="Get Subjects assignment/nonOCR marks by user",status_code=status.HTTP_200_OK)
+async def get_assignment_marks(request: Request, subject_id:str, marks_type:str,  limit: Optional[int] = None):
+     print("get assignment marks",subject_id, marks_type)  
+
+     subject = subject_model.subject_by_id(request, subject_id)
+     
+     if subject:
+          print('Called get_subjects function',subject['finalAssignmentMarks'])
+          if(marks_type=="assignmentMarks"):
+               return subject['finalAssignmentMarks']
+          else:
+               return subject['nonOcrMarks']
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail="no editing subjects found"
+     )
+     
 # get editing/non edinting subjects list by user id(subject of current teacher)
 # edinting is always true, if want to get non editing subjects, pass editing = false
 @router.get('/{user_id}/teacher_type/', response_description="Get editing Subjects by user", response_model=List[Subject],status_code=status.HTTP_200_OK)
