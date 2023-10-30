@@ -11,7 +11,10 @@ from models.answer import AnswerModel, extract_answers, read_answers
 from models.marking import MarkingModel
 from models.marking_scheme import MarkingSchemeModel
 from models.paper import PaperModel
-from helpers import check_keywords_in_paragraph, get_images, text_similarity, keywords_match
+from models.subject import SubjectModel
+from models.user import UserModel
+from models.student_subject import StudentSubjectModel
+from helpers import get_images, text_similarity, keywords_match,update_student_subject_collection_given_field
 from utils.firebase_storage import upload_file2
 
 router = APIRouter()
@@ -19,6 +22,9 @@ answer_model = AnswerModel()
 marking_model = MarkingModel()
 marking_scheme_model = MarkingSchemeModel()
 paper_model = PaperModel()
+subject_model = SubjectModel()
+user_model = UserModel()
+student_subject_model = StudentSubjectModel()
 
 
 @router.get('/{paper_no}', response_description="get answer images from database", response_model=List[Answer])
@@ -331,6 +337,7 @@ async def calculate_marks(request: Request, markingSchemeId:str, subjectId: str,
      papers_list = paper_model.papers_by_subjectId_and_marksGenerated(request, subjectId, True)
      
      if(papers_list):
+          userId = ""
           # loop the papers_list
           for paper in papers_list:
                userId = paper['paper'][:-4]; # 20001721.pdf ---> 20001721
@@ -339,6 +346,7 @@ async def calculate_marks(request: Request, markingSchemeId:str, subjectId: str,
                # sorting student answers by question no's
                answers_by_student = sorted(answers_by_student, key=lambda x:int(x["questionNo"]))
                
+               totalMarksForPaper = 0
                answers = []
                for i, el in enumerate(answers_by_student):
                     # print("student answer", i+1, ":", answers_by_student[i]["text"])
@@ -362,6 +370,8 @@ async def calculate_marks(request: Request, markingSchemeId:str, subjectId: str,
                          marks = (marks_reserverd_in_marking * mark_percentage)/100
                          print("marks",marks)
                          
+                         totalMarksForPaper+=marks
+                         
                          # here we should by questionNo,userId,subjectId
                          filters = {"userId":userId, "questionNo":str(i+1), "subjectId":subjectId}
                          data = {"marks":marks}
@@ -375,6 +385,18 @@ async def calculate_marks(request: Request, markingSchemeId:str, subjectId: str,
                               "marks":marks
                               
                          })
+          # get subject by subject id
+          subject = subject_model.by_id(request, subjectId)
+          # get student subject by student index
+          student_subject = student_subject_model.by_index(request, userId)
+          # get student subject list
+          subjectListOfStudent = student_subject['subject']
+          
+          field = 'ocr_marks'
+          field_value = totalMarksForPaper
+
+          # in here user id means index
+          update_student_subject_collection_given_field(request, subject, userId, subjectListOfStudent,field,field_value)
                     
           return JSONResponse({
                     "similarity percentages": "ok"

@@ -118,6 +118,7 @@ async def get_subject_by_id_user_id(request: Request, user_id:str ,id: str):
           detail=f"couldn't find a subject by id of {id}"
      )
 
+
 # need to improve this 
 @router.delete('/{id}', response_description="delete a subject",status_code=status.HTTP_204_NO_CONTENT)
 async def delete_subject(request: Request, id: str):
