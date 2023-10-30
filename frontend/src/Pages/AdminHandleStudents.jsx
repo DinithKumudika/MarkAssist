@@ -159,7 +159,6 @@ const AdminHandleStudents2 = () => {
       <h1>G.P.A.</h1>
       <h1 className="ml-12 text-4xl font-semibold bg-cover sm:mb-6" style={{marginTop: "-6px"}}>3.065</h1>
     </div>
-    {/* <div className="pr-3 text-4xl">3.065</div> */}
   </div>
    {/* third compo */}
   <div class="p-6 md:p-10 rounded-md bg-blue-700 sm:h-3/6 lg:h-3/6 grid grid-cols-2 ">
@@ -189,11 +188,6 @@ const AdminHandleStudents2 = () => {
   </div>
 </div>
 </div>
-      {/* state background */}
-      {/* <div className="m-3 text-lg font-semibold text-gray-900">
-    
-      </div> */}
-      
       
     </div>
     </div>
