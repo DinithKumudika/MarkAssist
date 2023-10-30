@@ -4,17 +4,21 @@ import classnames from 'classnames'
 import { AiOutlinePlus } from "react-icons/ai";
 import Modal from '../Modal';
 import { BiFilter } from "react-icons/bi";
+import { MoonLoader } from 'react-spinners';
 import { useState,useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-function AnswerSheets({clicked, data,markingScheme}) {
+function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
   const navigate = useNavigate();
   const [markings,setMarkings] = useState([]);
   const [answers,setAnswers] = useState([]);
   const [markingschemeID,setmarkingschemeID] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isLoading2, setIsLoading2] = useState(true);
   const [marks,setMarks] = useState([]);
+  const [search,setSearch] = useState('');
+  const location = useLocation();
+  let currentPath = location.pathname.split('/')?.[1];
 
   const [Checked, setChecked] = useState({})
   const [checkAll, setCheckAll] = useState(false)
@@ -49,7 +53,6 @@ function AnswerSheets({clicked, data,markingScheme}) {
 
 
   console.log("DAaaTA:"+markingScheme?.isProceeded)
-  const classes = classnames('sidebar static max-sm:ml-16 pt-[80px]');
   const [show, setShow] = useState(false);
   // console.log("DATA:"+data.id)
   const handleCKick = () => {
@@ -62,10 +65,11 @@ function AnswerSheets({clicked, data,markingScheme}) {
   }
 
   const handleLink = () =>{
-    navigate(`/markingschemes/${markingScheme?.year}/${markingScheme?.subjectId}`)
+    navigate(`/markingschemes/${year}/${subjectId}`)
   }
 
   const handleGenerateAccuracy= ()=>{
+    setIsLoading(true);
     console.log("data::",data);
     console.log("checked::",Checked);
     // data.forEach((data,index)=>{
@@ -78,10 +82,15 @@ function AnswerSheets({clicked, data,markingScheme}) {
               // setMarkings(marking)
               // markingschemeID = marking[0].markingScheme
               console.log("Markkkkkkssssss:",marks)
+              setIsLoading(false);
+              window.location.reload();
     
             })
             .catch((error) => {
               console.error(error);
+              alert('Something went wrong')
+              setIsLoading(false);
+              window.location.reload();
               // setMarks(null)
               // Handle the error, e.g., display an error message to the user
             });
@@ -91,13 +100,72 @@ function AnswerSheets({clicked, data,markingScheme}) {
     // console.log("Markingsss:",answers)
   }
 
+  var main_topic = "";
+  var table = "";
+  var dragdrop = "";
+  if(page==='answersheets'){
+    main_topic=(
+      <>
+        <p className='text-xl font-bold text-[#191854]'>Answer Sheets</p>
+        <p className='text-lg text-black opacity-60'>Upload answer papers</p>
+      </>
+    )
+
+    table = <Table check={true} checked={true} Checked={Checked} checkAll={checkAll} name={true} handleCheck={handleCheck} handleAllCheck={handleAllCheck} date={true} select={true} AnswerSheets={
+      data.filter((item)=>{
+        return search.toLowerCase() === '' ? item
+        : item.paper.toLowerCase().includes(search)
+      })
+    }/>
+
+    dragdrop = 'Answer Sheets'
+  } else if(page==='assignments'){
+    main_topic=(
+      <>
+        <p className='text-xl font-bold text-[#191854]'>Final Total Assignment Marks</p>
+        <p className='text-lg text-black opacity-60'>Upload assignment marks</p>
+      </>
+    )
+
+    table = <Table name={true} date={true} marks={true} Assignments_NonOCR={
+        data.filter((item)=>{
+          return search.toLowerCase() === '' ? item
+          : item.index.includes(search)
+      })
+    }/>
+
+    dragdrop='Assignment Marks'
+  }else{
+    main_topic=(
+      <>
+        <p className='text-xl font-bold text-[#191854]'>Final Total Non-OCR Marks</p>
+        <p className='text-lg text-black opacity-60'>Upload non-ocr marks</p>
+      </>
+    )
+
+    table = <Table name={true} date={true} marks={true} Assignments_NonOCR={
+      data.filter((item)=>{
+        return search.toLowerCase() === '' ? item
+        : item.index.includes(search)
+      })
+    }/>
+
+    dragdrop='Non-OCR Marks'
+  } 
+
+
+
+
   return (
-    <div className={`${classes} ${clicked === 'outer' ? ' ml-16 outer w-[calc(100vw-64px)]' : 'ml-64 w-[calc(100vw-256px)] inner'} max-sm:16 max-sm:w-[calc(100vw-64px)]`}>
+    <div>
+      {isLoading && (<div className='z-30 absolute top-[15vw] left-[50%] bg-gray-300 rounded rounded-[50%] p-2'>
+        {isLoading && <MoonLoader color="#4457FF" loading={isLoading} size={80} className='z-30'/>}
+
+      </div>)}
       {data ? (
         <div className=' flex flex-col items-center justify-top w-full h-full px-10 max-sm:px-4 py-8'>
             <div className='mb-12 text-center  w-full'>
-              <p className='text-xl font-bold text-[#191854]'>Answer Sheets</p>
-              <p className='text-lg text-black opacity-60'>Upload answer papers</p>
+              {main_topic}
             </div>
             <div className=' max-sm:px-4 flex flex-col lg:flex-row justify-between w-full md:flex-col'>
               <div className='flex lg:w-1/2 mb-2  md:[90%] md:mb-2 md-max:justify-between'>
@@ -106,15 +174,18 @@ function AnswerSheets({clicked, data,markingScheme}) {
                 <button className="rounded rounded-sm w-fit bg-custom-blue-main max-sm:w-fill px-2 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleGenerateAccuracy}><BiFilter/><div className='ml-2'>Generate Accuracy</div></button>
               </div>
               <form className='lg:w-1/2 md:2/3 ' >
-                <input className="rounded shadow shadow-gray-600 w-full h-9 p-2 mb-4" type="text" placeholder='Search'/>
+                <input onChange={(e)=>setSearch(e.target.value)} className="rounded shadow shadow-gray-600 w-full h-9 p-2 mb-4" type="text" placeholder='Search'/>
               </form>
             </div>
-            <Table check={true} checked={true} Checked={Checked} checkAll={checkAll} name={true} handleCheck={handleCheck} handleAllCheck={handleAllCheck} date={true} select={true} AnswerSheets={data}/>
+            {table}
         </div>
       ): ( 
         <DragDrop closeFunc={closeModal}>Answer Sheets</DragDrop>
       )}
-        {!markingScheme?.isProceeded ? <Modal handleLink={handleLink} message="Configure the marking scheme before uploading answer sheets."/> : show && <DragDrop closeFunc={closeModal}>Answer Sheets</DragDrop>}
+        {
+          !markingScheme?.isProceeded ? <Modal handleLink={handleLink} message="Configure/upload the marking scheme before uploading answer sheets."/> 
+          : show && <DragDrop closeFunc={closeModal}>{dragdrop}</DragDrop>
+        }
        {/* {(markingScheme?.isProceeded && <Modal handleLink={handleLink} message="Configure the marking scheme before uploading answer sheets."/>) && show && <DragDrop closeFunc={closeModal}>Answer Sheets</DragDrop>} */}
     </div>
   )

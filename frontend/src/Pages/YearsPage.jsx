@@ -23,9 +23,10 @@ function YearsPage() {
       const headers = {
         Authorization: `Bearer ${accessToken}`,
       };
+      console.log("HEADERS::::"+subjectCode,user_id);
       if(userType==='teacher'){
         axios
-        .get(`http://localhost:8000/api_v1/subjects/years/${user_id}/${subjectCode}`,{headers})
+        .get(`http://127.0.0.1:8000/api_v1/subjects/years/user/${user_id}/${subjectCode}`)
         .then((response) => {
           const data = response.data;
           setYears(data);
@@ -35,7 +36,7 @@ function YearsPage() {
         });
       }else if(userType==='admin'){
         axios
-        .get(`http://localhost:8000/api_v1/subjects/years/${subjectCode}`)
+        .get(`http://127.0.0.1:8000/api_v1/subjects/years/${subjectCode}`)
         .then((response) => {
           const data = response.data;
           setYears(data);

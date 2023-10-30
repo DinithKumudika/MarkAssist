@@ -10,20 +10,19 @@ import cv2
 import numpy as np
 from google.cloud import vision
 
-import cv2
-import numpy as np
-from google.cloud import vision
+from msrest.authentication import CognitiveServicesCredentials
+from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 
 import os
+from config.config import settings
 
 from models.marking_scheme import MarkingSchemeModel
 from schemas.marking_scheme import MarkingScheme, MarkingSchemeCreate, MarkPercentage
-from schemas.marking import MarkingUpdate
+from schemas.marking import MarkingUpdate, Marking, MarkingCreate
 from models.marking import MarkingModel
 from models.subject import SubjectModel
 
 from schemas.user import User
-from schemas.marking import Marking, MarkingCreate
 from utils.auth import get_current_active_user
 from utils.firebase_storage import upload_file, upload_file2 
 import helpers
@@ -171,12 +170,14 @@ async def add_marking(request: Request, files: UploadFile = File(...), year: str
                     answers = []
                     keywords = []
                     client = vision.ImageAnnotatorClient()
+                    # cv_client = ComputerVisionClient(settings.VISION_ENDPOINT, CognitiveServicesCredentials(settings.VISION_API_KEY))
                     # answer_path = os.path.join(f'./../data/markings/{marking_id}', "answers")
                     # keyword_path = os.path.join(f'./../data/markings/{marking_id}', "keywords")
                     answer_images = helpers.get_images(answer_path)
                     keyword_images = helpers.get_images(keyword_path)
                     
                     for i, image in enumerate(answer_images):
+                         # scanned_text = helpers.read_text(client, image)
                          scanned_text = helpers.read_text(client, image)
                          answers.append({
                               "question no": i+1, 
@@ -184,6 +185,7 @@ async def add_marking(request: Request, files: UploadFile = File(...), year: str
                          })
                     
                     for i, image in enumerate(keyword_images):
+                         # scanned_text = helpers.read_text(client, image)
                          scanned_text = helpers.read_text(client, image)
                          keywords_arr = scanned_text.split(',')
                          keywords.append({

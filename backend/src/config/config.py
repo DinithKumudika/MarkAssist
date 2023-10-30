@@ -12,6 +12,8 @@ class CommonSettings(BaseSettings):
      ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
      REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
      OPENAI_API_KEY: str = env.get('OPENAI_API_KEY')
+     AZURE_API_KEY:str = env.get('AZURE_API_KEY')
+     AZURE_ENDPOINT:str = env.get('AZURE_ENDPOINT')
      
      class Config:
           case_sensitive = True
@@ -41,6 +43,11 @@ class GoogleServiceSettings(BaseSettings):
           case_sensitive = True
 
 
+class AzureServiceSettings(BaseSettings):
+     VISION_API_KEY: str = env.get('AZURE_API_KEY')
+     VISION_ENDPOINT: str = env.get('AZURE_ENDPOINT')
+
+
 class DatabaseSettings(BaseSettings):
      DB_URI: str = env.get('MONGO_URI')
      DB_NAME: str = env.get('DB_NAME')
@@ -61,7 +68,7 @@ class MailSettings(BaseSettings):
           case_sensitive = True
 
 
-class Settings(CommonSettings, ServerSettings, DatabaseSettings, GoogleServiceSettings, MailSettings):
+class Settings(CommonSettings, ServerSettings, DatabaseSettings, GoogleServiceSettings, AzureServiceSettings, MailSettings):
      pass
 
 

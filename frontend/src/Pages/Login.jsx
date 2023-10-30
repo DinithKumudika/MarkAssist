@@ -62,14 +62,14 @@ function Login(){
                     break;
                 case "admin":
                     console.log(response.data.access_token);
-                    navigate('/admin/dashboard');
+                    navigate('/subjects');
                     break;
                 default:
                     break;
             }
         }catch(error){
             // console.log("error:"+error.response.data.message);
-            if(error.response && error.response.status >=400 && error.response.status <500){
+            if(error.response && error.response.status >=400 && error.response.status <=500){
                 // console.log(error.response.data.message);
                 setError(error.response.data.message);
             }

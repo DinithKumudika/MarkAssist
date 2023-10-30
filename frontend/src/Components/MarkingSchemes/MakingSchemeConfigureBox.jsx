@@ -46,10 +46,15 @@ function MakingSchemeConfigureBox({ index, formData, onChange,showImages}) {
              {showImages ? <img  className="w-full h-fit " src={formData.uploadUrl} alt="Marking scheme"/>
                 : showImage && <img  className="w-full h-fit " src={formData.uploadUrl} alt="Marking scheme"/>}
             <div className="flex flex-col">
-              <p className="text-xl text-[#191854] text-center font-bold my-2">Keywords</p>
-              <div className="w-full flex justify-between flex-wrap p-2 bg-gray-100">
-                {keywords}
-              </div>
+              {/* <p className="text-xl text-[#191854] text-center font-bold my-2">Keywords</p> */}
+              {/* <div className="w-full flex justify-between flex-wrap p-2 bg-gray-100"> */}
+                {formData?.keywords[0] !== ""  && (<div className="flex flex-col">
+                  <p className="text-xl text-[#191854] text-center font-bold my-2">Keywords</p>
+                  <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-2 p-2 bg-gray-100">
+                    {keywords}
+                  </div>
+                </div>)}
+              {/* </div> */}
             </div>
           </div>
           <div className='basis-[5%]'>

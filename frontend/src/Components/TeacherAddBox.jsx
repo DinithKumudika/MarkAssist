@@ -61,11 +61,12 @@ function TeacherAddBox({closeFunc}) {
             .post('http://127.0.0.1:8000/api_v1/auth/register?type=teacher',formData)
             .then((response) => {
                 // console.log("Hello:",response);
+                window.location.reload();
                 setadding(false);
                 closeFunc()
                 })
                 .catch((error) => {
-                  if(error.response && error.response.status >=400 && error.response.status <500){
+                  if(error.response && error.response.status >=400 && error.response.status <=500){
                     // console.log(error.response.data.message);
                     console.log(error.response.data.detail);
                     setError(error.response.data.detail);
@@ -79,7 +80,7 @@ function TeacherAddBox({closeFunc}) {
         //     // navigate('/subjects');
         // }catch(error){
         //     // console.log("error:"+error.response.data.message);
-        //     if(error.response && error.response.status >=400 && error.response.status <500){
+        //     if(error.response && error.response.status >=400 && error.response.status <=500){
         //         // console.log(error.response.data.message);
         //         setError(error.response.data.message);
         //     }
