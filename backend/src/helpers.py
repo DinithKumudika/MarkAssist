@@ -17,6 +17,7 @@ from nltk.corpus import stopwords
 from thefuzz import process
 # from thefuzz import fuzz
 from fuzzywuzzy import fuzz
+import re
 from itertools import product
 from pytesseract import Output
 from msrest.authentication import CognitiveServicesCredentials
@@ -274,27 +275,37 @@ def keywords_match(paragraph: str, keywords: list):
 
 def check_keywords_in_paragraph(paragraph, keywords, threshold=80):
     # Initialize a dictionary to store keyword matches
+    paragraph_words = paragraph.split(" ")
+    paragraph_length = len(paragraph_words)
+    keywords = [item for item in keywords if item != '' or item != ''] #remove empty strings
     keyword_matches = {keyword: [] for keyword in keywords}
-    print("This is check_keywords_in_paragraph function::",paragraph)
-    print("This is check_keywords_in_paragraph function::",keywords)
 
     # Split the paragraph into words
     paragraph_words = paragraph.split()
-
+    print("This is keywords_length",len(keywords),"::",keywords)
     for keyword in keywords:
-        keyword_words = keyword.split()
-        keyword_variations = [' '.join(perm) for perm in product(*[word.split() for word in keyword_words])]
-        print("This is keyword_variations",keyword_variations)
-        
-        for variation in keyword_variations:
-            print("This is variation",variation)
-            for word in paragraph_words:
-                print("This is word",word)
-                similarity = fuzz.ratio(variation.lower(), word.lower())
-                print(f"Similarity score {variation.lower()} => [{word.lower()}]: {similarity}")
-                if similarity >= threshold:
-                    keyword_matches[keyword].append(word)
-
+        if keyword == "" or keyword == " ":
+             continue
+        keyword_words = keyword.split(" ")
+        keyword_words = [re.sub(r'[\s.]', '', word) for word in keyword_words if re.sub(r'[\s.]', '', word)] #remove empty strings and spaces
+    #     print("This is keyword_words",keyword_words)
+        keywords_length = len(keyword_words)
+     #    keyword_variations = [' '.join(perm) for perm in product(*[word.split() for word in keyword_words])]
+    #     print("This is keyword_variations",keyword_variations)    
+     #    for variation in keyword_variations:
+     #        print("This is variation",variation)
+        for i in range(paragraph_length - keywords_length + 1):
+             word = ""
+             for j in range(keywords_length):
+                  if j == keywords_length - 1:
+                    word += paragraph_words[i + j].lower()
+                  else:
+                    word += paragraph_words[i + j].lower() + " "
+         #     print("This is word",word)
+             similarity = fuzz.ratio(keyword.lower(), word.lower()) #compare similarity between keyword and word
+          #    print(f"Similarity score {keyword.lower()} => [{word.lower()}]: {similarity}")
+             if similarity >= threshold:
+                  keyword_matches[keyword].append(word)
     return keyword_matches
 
 # add new document to student_subject collection 
@@ -362,41 +373,42 @@ def add_subject(request: Request,student_subject:dict, subject: dict, index: str
                     
 
 # update student_subject collection's document
-def update_student_subject_collection(request: Request, subject: dict, index: str,marks_type:str,studentMarks:dict,subjectListOfStudent:List[dict]):
+def update_student_subject_collection(request: Request, subjectOfStudent:dict ,subject: dict, index: str,marks_type:str,studentMarks:dict,subjectListOfStudent:List[dict],total_marks:float):
      # get the subject by subject
      # print("This function calls update_student_subject_collection")
-     for subjectOfStudent in subjectListOfStudent:
-          if subjectOfStudent['subject_code'] == subject['subjectCode']:
-               if(marks_type=="assignmentMarks"):
-                    # update the marks
-                    subjectOfStudent.update({"assignment_marks": studentMarks['assignment_marks']})
-                    # print("this is subjectOfStudent",subjectOfStudent)
-                    
-                    # update the exixting
-                    filters = {"index":index} 
-                    data = {"subject":subjectListOfStudent}
-                    student_subject_update = student_subject_model.update(request, filters, data)
-                    # print("this is result after update", student_subject_update);
-               else:
-                    # This is for nonOCR marks
-                    # update the marks
-                    subjectOfStudent.update({"non_ocr_marks": studentMarks['non_ocr_marks']})
-                    # print("this is subjectOfStudent",subjectOfStudent)
-                    
-                    # update the exixting
-                    filters = {"index":index} 
-                    data = {"subject":subjectListOfStudent}
-                    student_subject_update = student_subject_model.update(request, filters, data)
-                    # print("this is result after update", student_subject_update);
+     if(marks_type=="assignmentMarks"):
+          # update the marks
+          subjectOfStudent.update({"assignment_marks": float(studentMarks['assignment_marks']), "total_marks":total_marks})
+          # print("this is subjectOfStudent",subjectOfStudent)
+          
+          # update the exixting
+          filters = {"index":index} 
+          data = {"subject":subjectListOfStudent}
+          student_subject_update = student_subject_model.update(request, filters, data)
+          # print("this is result after update", student_subject_update);
+     else:
+          # This is for nonOCR marks
+          # update the marks
+          subjectOfStudent.update({"non_ocr_marks": float(studentMarks['non_ocr_marks']), "total_marks":total_marks})
+          # print("this is subjectOfStudent",subjectOfStudent)
+          
+          # update the exixting
+          filters = {"index":index} 
+          data = {"subject":subjectListOfStudent}
+          student_subject_update = student_subject_model.update(request, filters, data)
+          # print("this is result after update", student_subject_update);
 
 # update student_subject collection's subject fields
-def update_student_subject_collection_given_field(request: Request, subject: dict, index: str,subjectListOfStudent:List[dict],field:str,field_value:str):
+def update_student_subject_collection_given_field(request: Request, subject: dict, index: str,subjectListOfStudent:List[dict],field:List[str],field_value:dict):
      # get the subject by subject
      # print("This function calls update_student_subject_collection")
+     print("This is field",field)
+     print("This is field_value",field_value)
      for subjectOfStudent in subjectListOfStudent:
           if subjectOfStudent['subject_code'] == subject['subjectCode']:
                # update the marks
-               subjectOfStudent.update({field: field_value})
+               for field in field:
+                    subjectOfStudent.update({field: field_value[field]})
                # print("this is subjectOfStudent",subjectOfStudent)
                
                # update the exixting

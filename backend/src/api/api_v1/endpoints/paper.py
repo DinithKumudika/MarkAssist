@@ -596,7 +596,7 @@ async def upload_marks(request: Request, files: List[UploadFile] = File(...), ma
           # Now csv file is generalised and stored in fullMarksList, now add that data into student_subject collection
           for studentMarks in fullMarksList:
                # print("This is student marks",studentMarks['index'])
-               # print("This is student marks",studentMarks['assignment_marks'])
+               print("This is student marks",studentMarks)
                
                # check if user details alredy in the student_subject collection
                index = studentMarks['index']
@@ -607,7 +607,21 @@ async def upload_marks(request: Request, files: List[UploadFile] = File(...), ma
                     subjectListOfStudent = student_subject['subject']
                     print("Student markss:::::",studentMarks)
                     # params = subject,subjectListOfStudent,index,marks_type,studentMarks
-                    update_student_subject_collection(request,subject,index,marks_type,studentMarks,subjectListOfStudent)
+
+                    for subjectOfStudent in subjectListOfStudent:
+                         if subjectOfStudent['subject_code'] == subject['subjectCode']:
+                              if(marks_type=="assignmentMarks"):
+                                   #Remove currently added marks
+                                   current_total_mark_of_assignments = float(subjectOfStudent['assignment_marks']) * float(subject['assignmentMarks']/100)
+                                   total_mark_of_assignments = float(studentMarks['assignment_marks']) * float(subject['assignmentMarks']/100)
+                                   total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_assignments + total_mark_of_assignments # calculate total marks of student by adding new marks
+                                   update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,total_marks)
+                              else:
+                                   current_total_mark_of_nonocr = float(subjectOfStudent['non_ocr_marks']) * float(subject['paperMarks']/100)
+                                   total_mark_of_nonocr = float(studentMarks['non_ocr_marks']) * float(subject['paperMarks']/100)
+                                   total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_nonocr + total_mark_of_nonocr # calculate total marks of student by adding new marks
+                                   update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,total_marks)
+                         
                                    
 
                else:
