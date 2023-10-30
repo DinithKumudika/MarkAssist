@@ -96,7 +96,7 @@ function SubjectsPage() {
   ]
 
   return (
-    <div>
+    <div className='h-[100vh]'>
       <NavBar black onClickFunc={handleClick} clicked={isClicked}/>
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
       {isLoading ? <MoonLoader color="#4457FF" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 

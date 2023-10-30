@@ -56,7 +56,14 @@ class UserModel():
           for user in users:
                user["id"] = str(user["_id"]) 
           return users
-     
+
+
+     def list_students(self, request: Request) -> list:
+          users = list(self.get_collection(request).find({'userType':'student'}))
+          for user in users:
+               user["id"] = str(user["_id"]) 
+          return users
+          
      
      def find(self, request: Request, field: str, value) -> User:
           user = self.get_collection(request).find_one({field: value})
@@ -113,3 +120,4 @@ class UserModel():
                return True
           else:
                return False
+     

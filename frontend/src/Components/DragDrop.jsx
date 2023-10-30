@@ -53,11 +53,11 @@ function DragDrop({children,closeFunc,data}) {
     if(!files?.length) return
     const formData = new FormData()
     files.forEach(file => formData.append('files', file))
-    formData.append('year', year);
-    formData.append('subjectId',subjectId);
     console.log("form data",formData.get('files'))
     setUploading(true);
     if(pathName[0]==="markingschemes"){
+      formData.append('year', year);
+      formData.append('subjectId',subjectId);
       axios
       .post(`http://127.0.0.1:8000/api_v1/markings`,formData)
       .then((response) => {
@@ -69,7 +69,7 @@ function DragDrop({children,closeFunc,data}) {
 
       })
       .catch((error) => {
-        if(error.response && error.response.status >=400 && error.response.status <500){
+        if(error.response && error.response.status >=400 && error.response.status <=500){
           // console.log(error.response.data.message);
           console.log(error.response.data.detail);
           setUploading(false);
@@ -80,6 +80,8 @@ function DragDrop({children,closeFunc,data}) {
       });
     }
     else if(pathName[0]==="answersheets"){
+      formData.append('year', year);
+      formData.append('subjectId',subjectId);
       axios
       .post(`http://127.0.0.1:8000/api_v1/papers/upload/file`,formData)
       .then((response) => {
@@ -91,7 +93,7 @@ function DragDrop({children,closeFunc,data}) {
         // for (const [index, paper] of papers.entries()){
       })
       .catch((error) => {
-        if(error.response && error.response.status >=400 && error.response.status <500){
+        if(error.response && error.response.status >=400 && error.response.status <=500){
           // console.log(error.response.data.message);
           console.log(error.response.data.detail);
           // alert('Something went wrong')
@@ -100,6 +102,59 @@ function DragDrop({children,closeFunc,data}) {
           alert('Something went wrong')
           window.location.reload();
       }
+      });
+    }
+    else if(pathName[0]==="assignments"){
+      formData.append('marks_type', "assignmentMarks");
+      formData.append('year', year);
+      formData.append('subjectId',subjectId);
+      console.log("Hello_assignment:",formData);
+      axios
+      .post(`http://127.0.0.1:8000/api_v1/papers/upload/marks_type`,formData)
+      .then((response) => {
+        console.log("Hello:",response.data);
+        setUploading(false);
+        closeFunc()
+        window.location.reload();
+        // console.log(index)
+        // for (const [index, paper] of papers.entries()){
+      })
+      .catch((error) => {
+        if(error.response && error.response.status >=400 && error.response.status <=500){
+          // console.log(error.response.data.message);
+          console.log(error.response.data.detail);
+          // alert('Something went wrong')
+          setUploading(false);
+          closeFunc()
+          alert('Something went wrong')
+          window.location.reload();
+      }
+      });
+    }
+    else if(pathName[0]==="nonocr"){
+      console.log("PATH:::::",pathName[0]);
+      formData.append('marks_type', "non_ocr_marks");
+      formData.append('year', year);
+      formData.append('subjectId',subjectId);
+      console.log("Hello_assignment:",formData);
+      axios
+      .post(`http://127.0.0.1:8000/api_v1/papers/upload/marks_type`,formData)
+      .then((response) => {
+        console.log("Hello:",response.data);
+        setUploading(false);
+        closeFunc()
+        window.location.reload();
+        // console.log(index)
+        // for (const [index, paper] of papers.entries()){
+      })
+      .catch((error) => {
+        console.log("ERRORRRR::::"+error);
+        // console.log(error.response.data.message);
+        // alert('Something went wrong')
+        setUploading(false);
+        closeFunc()
+        alert('Something went wrong')
+        window.location.reload();
       });
     }
     // console.log("error:"+error.response.data.message);
