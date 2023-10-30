@@ -5,6 +5,7 @@ import Register from './Pages/Register';
 import EmailVerifiedPage from './Pages/EmailVerifiedPage';
 import TeacherPasswordChangePage from './Pages/TeacherPasswordChangePage';
 import AdminDashboard from './Pages/AdminDashboard';
+import TeacherDashboard from './Pages/TeacherDashboard';
 import SubjectsPage from './Pages/SubjectsPage';
 import SubjectPage from './Pages/SubjectPage';
 import YearsPage from './Pages/YearsPage';
@@ -50,6 +51,7 @@ function App(){
 
         
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
         <Route path="/admin/teachers" element={<TeachersPage />} />
 
 

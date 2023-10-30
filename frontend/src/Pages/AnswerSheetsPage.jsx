@@ -62,6 +62,7 @@ function AnswerSheetsPage() {
       {isLoading ? <MoonLoader color="#4457FF" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 
         :<AnswerSheets clicked={isClicked} data={answerSheet} markingScheme={markingScheme}/>
       }
+
     </div>
   )
 }

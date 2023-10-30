@@ -22,6 +22,9 @@ function AdminDashboard() {
       <NavBar clicked={isClicked}/>
       <SideBar dashboard subjects clicked={isClicked} onClickFunc={handleClick}/>
       {/* <Subjects clicked={isClicked}/> */}
+      <div>
+        blaaaaaaaaaaaaaaa
+      </div>
     </div>
   )
 }
