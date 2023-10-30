@@ -53,7 +53,7 @@ function MarksBox({markingScheme_URL, answersheet_URL,answer,marking,showImages}
         </div>
         <div  className="bg-[#EDEDED] px-2 rounded rounded-xl w-56 flex flex-row items-center justify-center mb-2 max-md:justify-between max-md:px-4">
           <label className="mr-2">Keywords Accuracy:</label>
-          <input type="text" value="0" className="bg-[#EDEDED] mr-2 h-12 text-center rounded rounded-lg font-bold w-12" disabled/>
+          <input type="text" value={answer?.keywordsaccuracy} className="bg-[#EDEDED] mr-2 h-12 text-center rounded rounded-lg font-bold w-12" disabled/>
         </div>
         <div className="bg-[#EDEDED] px-2 rounded rounded-xl w-52 flex flex-row items-center justify-center mb-2 max-md:justify-between max-md:px-4">
           <label className="mr-2">Text Accuracy:</label>

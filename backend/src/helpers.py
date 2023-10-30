@@ -14,6 +14,10 @@ import textdistance
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
+from thefuzz import process
+# from thefuzz import fuzz
+from fuzzywuzzy import fuzz
+from itertools import product
 from pytesseract import Output
 from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
@@ -236,7 +240,63 @@ def keywords_match(paragraph: str, keywords: list):
      else:
          print("No keywords found.")
          return 0
-   
+
+# def keyword_accuracy(answer_student: str, keywords: list):
+#      keywordsAccuracy=0
+#      # keywordsAccuracy
+#      collection = ["AFC Barcelona", "Barcelona AFC", "barcelona fc", "afc barcalona"]
+#      print(process.extract(answer_student["text"], keywords, scorer=fuzz.ratio))
+#      # print(f"Partial ratio similarity score: {fuzz.partial_ratio(keywords[0], answer_student['text'])}")
+#      # But order will not effect simple ratio if strings do not match
+#      for keyword in keywords:
+#           print(f"Partial ratio similarity score {keyword.lower()} => [{answer_student['text'].lower()}]: {fuzz.partial_ratio(keyword.lower(), answer_student['text'].lower())}")
+#           if fuzz.ratio(keyword, answer_student['text']) > 50:
+#                keywordsAccuracy+=100/len(keywords)
+#      print(f"Simple ratio similarity score: {fuzz.ratio(keywords[0], answer_student['text'])}")
+#      result_string = ' '.join(keywords)
+#      no_keywords= len(keywords)
+#      print("no_keywords",no_keywords)
+#      keywords=[]
+#      for keyword in keywords:
+#           print("keyword",keyword)
+#           if keyword.lower() in answer_student["text"].lower():
+#               print(f"'{keyword}' is present in the paragraph.")
+#               if keyword in keywords:
+#                    print(keywords)
+#                #     pass
+#               else:
+#                    print("Keywords::",keywords)
+#                    keywords.append(keyword)
+#                    keywordsAccuracy+=100/no_keywords
+#           else:
+#               print(f"'{keyword}' is not present in the paragraph.")
+#      print("keywordsAccuracy",keywordsAccuracy)
+
+def check_keywords_in_paragraph(paragraph, keywords, threshold=80):
+    # Initialize a dictionary to store keyword matches
+    keyword_matches = {keyword: [] for keyword in keywords}
+    print("This is check_keywords_in_paragraph function::",paragraph)
+    print("This is check_keywords_in_paragraph function::",keywords)
+
+    # Split the paragraph into words
+    paragraph_words = paragraph.split()
+
+    for keyword in keywords:
+        keyword_words = keyword.split()
+        keyword_variations = [' '.join(perm) for perm in product(*[word.split() for word in keyword_words])]
+        print("This is keyword_variations",keyword_variations)
+        
+        for variation in keyword_variations:
+            print("This is variation",variation)
+            for word in paragraph_words:
+                print("This is word",word)
+                similarity = fuzz.ratio(variation.lower(), word.lower())
+                print(f"Similarity score {variation.lower()} => [{word.lower()}]: {similarity}")
+                if similarity >= threshold:
+                    keyword_matches[keyword].append(word)
+
+    return keyword_matches
+
 # add new document to student_subject collection 
 def add_student_subject(request: Request, subject: dict, index: str):
      # print("This is add student_subject function")
@@ -328,5 +388,21 @@ def update_student_subject_collection(request: Request, subject: dict, index: st
                     data = {"subject":subjectListOfStudent}
                     student_subject_update = student_subject_model.update(request, filters, data)
                     # print("this is result after update", student_subject_update);
+
+# update student_subject collection's subject fields
+def update_student_subject_collection_given_field(request: Request, subject: dict, index: str,subjectListOfStudent:List[dict],field:str,field_value:str):
+     # get the subject by subject
+     # print("This function calls update_student_subject_collection")
+     for subjectOfStudent in subjectListOfStudent:
+          if subjectOfStudent['subject_code'] == subject['subjectCode']:
+               # update the marks
+               subjectOfStudent.update({field: field_value})
+               # print("this is subjectOfStudent",subjectOfStudent)
+               
+               # update the exixting
+               filters = {"index":index} 
+               data = {"subject":subjectListOfStudent}
+               student_subject_update = student_subject_model.update(request, filters, data)
+
     
     
