@@ -11,7 +11,7 @@ from models.answer import AnswerModel, extract_answers, read_answers
 from models.marking import MarkingModel
 from models.marking_scheme import MarkingSchemeModel
 from models.paper import PaperModel
-from helpers import get_images, text_similarity, keywords_match
+from helpers import check_keywords_in_paragraph, get_images, text_similarity, keywords_match
 from utils.firebase_storage import upload_file2
 
 router = APIRouter()
@@ -106,28 +106,28 @@ async def save_answers(request: Request, paper_no, sub, stu):
 
 @router.patch('/compare/{markingSchemeId}/{subjectId}', response_description="compare between question text and marking scheme then returns similarity")
 async def check_similarity(request: Request, markingSchemeId:str, subjectId: str,  payload: dict = Body(...)):
-     print("marking scheme id", markingSchemeId)
-     # print("student id", stu)
-     print("sub id", subjectId)
-     print("payload", payload)
+     # print("marking scheme id", markingSchemeId)
+     # # print("student id", stu)
+     # print("sub id", subjectId)
+     # print("payload", payload)
 
 
      markings_by_scheme_id = marking_model.get_by_marking_scheme(request, markingSchemeId)
      # sorting marking scheme answers by question no's
      markings_by_scheme_id = sorted(markings_by_scheme_id, key=lambda x:int(x["questionNo"]))
-     print("no of marking answers", markings_by_scheme_id)
+     # print("no of marking answers", markings_by_scheme_id)
 
      #loop payload
      for key, value in payload.items():
           studentIndex = key.split('.')[0]
-          print("Student::",studentIndex)
+          # print("Student::",studentIndex)
           if(value):
 
                answers_by_student = answer_model.get_by_subject_student(request, studentIndex, subjectId)
                # sorting student answers by question no's
                answers_by_student = sorted(answers_by_student, key=lambda x:int(x["questionNo"]))
 
-               print("no of student answers",len(answers_by_student))
+               # print("no of student answers",len(answers_by_student))
 
                percentages = []
                for i, el in enumerate(answers_by_student):
@@ -140,22 +140,39 @@ async def check_similarity(request: Request, markingSchemeId:str, subjectId: str
                          # print("Percentage:",percentage)
 
                          no_of_matched_keywords = keywords_match(answers_by_student[i]["text"],markings_by_scheme_id[i]["keywords"])
-                         print("no_of_matched_keywords",no_of_matched_keywords)
+
+                         # Sample paragraph and keywords
+                         paragraph = "This is an example paragraf with some misspelled words."
+                         keywords = ["paragraph", "example", "spelling mistakes", "some words"]
+                         
+                         # Set a similarity threshold (adjust as needed)
+                         threshold = 80
+                         
+                         # Check for keywords in the paragraph
+                         matches = check_keywords_in_paragraph(answers_by_student[i]["text"], markings_by_scheme_id[i]["keywords"], threshold)
+                         
+                         # Print the matches
+                         for keyword, matched_words in matches.items():
+                             if matched_words:
+                                 print(f"Keyword '{keyword}' found as: {', '.join(matched_words)}")
+                             else:
+                                 print(f"Keyword '{keyword}' not found in the paragraph.")
+                         # print("no_of_matched_keywords",no_of_matched_keywords)
                          no_of_keywords = len(markings_by_scheme_id[i]["keywords"])
-                         print("no_of_keywords",no_of_keywords)
+                         # print("no_of_keywords",no_of_keywords)
                          if(no_of_keywords != 0):
                               keywordsAccuracy = (no_of_matched_keywords/no_of_keywords)*100
                          elif (no_of_keywords == 0):
                               keywordsAccuracy = 0
                          elif (no_of_matched_keywords == 0):
                               keywordsAccuracy = 0
-                         print("keywordsAccuracy",keywordsAccuracy)
+                         # print("keywordsAccuracy",keywordsAccuracy)
 
                          # here we should by questionNo,userId,subjectId
                          filters = {"userId":studentIndex, "questionNo":str(i+1), "subjectId":subjectId}
                          data = {"accuracy":percentage.split(": ")[-1], "keywordsaccuracy":keywordsAccuracy}
                          # data = {"accuracy":"0.6"}
-                         print("filters", data)
+                         # print("filters", data)
 
                          answer_model.update(request, filters , data)
                 
@@ -168,7 +185,7 @@ async def check_similarity(request: Request, markingSchemeId:str, subjectId: str
                               "keywordsaccuracy":keywordsAccuracy
                               # "accuracy": "0.6"
                          })
-               print("key:::::::::", key)
+               # print("key:::::::::", key)
                paper_filters = {"paper":key,"subjectId":subjectId}
                paper_data = {"marksGenerated":True}
                paper_model.update(request, paper_filters, paper_data)          
@@ -180,7 +197,7 @@ async def check_similarity(request: Request, markingSchemeId:str, subjectId: str
      )
                # # keywordsAccuracy
                # collection = ["AFC Barcelona", "Barcelona AFC", "barcelona fc", "afc barcalona"]
-          #      print(process.extract(answers_by_student[i]["text"], markings_by_scheme_id[i]['keywords'], scorer=fuzz.ratio))
+               # print(process.extract(answers_by_student[i]["text"], markings_by_scheme_id[i]['keywords'], scorer=fuzz.ratio))
           #      # print(f"Partial ratio similarity score: {fuzz.partial_ratio(markings_by_scheme_id[i]['keywords'][0], answers_by_student[i]['text'])}")
           #     # But order will not effect simple ratio if strings do not match
           #      for keyword in markings_by_scheme_id[i]["keywords"]:

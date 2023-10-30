@@ -48,9 +48,9 @@ function AnswerSheetsPage({page}) {
         })
       }else if(page==='assignments'){
         axios
-        .get(`http://127.0.0.1:8000/api_v1/papers/subjects/${subjectId}`)
+        .get(`http://127.0.0.1:8000/api_v1/subjects/${subjectId}/marks/assignmentMarks`)
         .then((response)=>{
-          console.log(response.data);
+          console.log("ASSIGNMENT:::",response.data);
           setAssignmentMarks(response.data);
           setIsLoading(false);
         })
@@ -61,9 +61,9 @@ function AnswerSheetsPage({page}) {
         })
       }else if(page==='nonocr'){
         axios
-        .get(`http://127.0.0.1:8000/api_v1/papers/subjects/${subjectId}`)
+        .get(`http://127.0.0.1:8000/api_v1/subjects/${subjectId}/marks/nonocrMarks`)
         .then((response)=>{
-          console.log(response.data);
+          console.log("NONOCR:::",response.data);
           setNonOcrMarks(response.data);
           setIsLoading(false);
         })

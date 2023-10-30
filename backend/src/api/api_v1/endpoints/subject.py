@@ -17,7 +17,7 @@ subject_model = SubjectModel()
 
 # get editing/non edinting subjects list by user id(subject of current teacher)
 # edinting is always true, if want to get non editing subjects, pass editing = false
-@router.get('{subject_id}/marks/{marks_type}', response_description="Get Subjects assignment/nonOCR marks by user",status_code=status.HTTP_200_OK)
+@router.get('/{subject_id}/marks/{marks_type}', response_description="Get Subjects assignment/nonOCR marks by user",status_code=status.HTTP_200_OK)
 async def get_assignment_marks(request: Request, subject_id:str, marks_type:str,  limit: Optional[int] = None):
      print("get assignment marks",subject_id, marks_type)  
 
