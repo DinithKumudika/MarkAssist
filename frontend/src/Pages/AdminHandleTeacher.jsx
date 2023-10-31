@@ -14,8 +14,7 @@ import YearsDropdown from "../Components/YearsDropdown"
 const AdminHandleTeacher2 = () => {
   const menus = [
     { name: "dashboard", link: "/", icon: MdOutlineDashboard },
-    // { name: "MCQ", link: "/", icon: AiOutlineUser },
-    // { name: "messages", link: "/", icon: FiMessageSquare },
+    
     { name: "Subjects", link: "/", icon: TbReportAnalytics, margin: true },
     { name: "Teachers", link: "/", icon: FiFolder },
     { name: "Students", link: "/", icon: FiShoppingCart },
