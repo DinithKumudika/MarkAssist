@@ -16,7 +16,9 @@ const AdminHandleStudents2 = () => {
     // { name: "messages", link: "/", icon: FiMessageSquare },
     { name: "Subjects", link: "/", icon: TbReportAnalytics, margin: true },
     { name: "Teachers", link: "/", icon: FiFolder },
+    
     { name: "Students", link: "/", icon: FiShoppingCart },
+    
     // { name: "Saved", link: "/", icon: AiOutlineHeart, margin: true },
     { name: "Setting", link: "/", icon: RiSettings4Line },
   ];
