@@ -322,6 +322,8 @@ def add_student_subject(request: Request, subject: dict, index: str):
                "ocr_marks": 0.0,
                "non_ocr_marks": 0.0,
                "total_marks":0.0,
+               "gpv":0.0,
+               "grade":""
           }
      ]
                     
@@ -358,6 +360,8 @@ def add_subject(request: Request,student_subject:dict, subject: dict, index: str
                     "ocr_marks": 0.0,
                     "non_ocr_marks": 0.0,
                     "total_marks":0.0,
+                    "gpv":0.0,
+                    "grade":""
                }
                # print("is new subject", new_subject);
                # print("this is current list", student_subject["subject"]);
@@ -413,6 +417,7 @@ def update_student_subject_collection_given_field(request: Request,subjectOfStud
      filters = {"index":index} 
      data = {"subject":subjectListOfStudent}
      student_subject_update = student_subject_model.update(request, filters, data)
+     return student_subject_update
 
     
     

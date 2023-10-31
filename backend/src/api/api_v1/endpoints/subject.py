@@ -177,7 +177,8 @@ async def add_a_subject(request:Request, payload: SubjectCreate = Body(...)):
                createdAt =  datetime.now(),
                updatedAt = datetime.now(),
                finalAssignmentMarks= None,
-               nonOcrMarks= None
+               nonOcrMarks= None,
+               finalTotalMarks = None
           )
           
           new_subject = await subject_model.add_new_subject(request, subject);

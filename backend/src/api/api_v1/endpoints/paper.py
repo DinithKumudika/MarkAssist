@@ -26,7 +26,9 @@ from schemas.student_subject import StudentSubjectBase, StudentSubject,StudentSu
 
 from models.subject import SubjectModel;
 
-from helpers import get_images, text_similarity, add_student_subject, add_subject,update_student_subject_collection
+from models.grade import GradeModel;
+
+from helpers import get_images, text_similarity, add_student_subject, add_subject,update_student_subject_collection,update_student_subject_collection_given_field
 from utils.firebase_storage import upload_file2
 
 from utils.auth import get_current_active_user
@@ -40,6 +42,7 @@ subject_model = SubjectModel()
 answer_model = AnswerModel()
 user_model = UserModel()
 student_subject_model = StudentSubjectModel()
+grade_model = GradeModel()
 
 @router.get("/", response_description="Get all papers", response_model=List[Paper])
 async def get_all_papers(request: Request, current_user: User = Depends(get_current_active_user)):
@@ -610,18 +613,24 @@ async def upload_marks(request: Request, files: List[UploadFile] = File(...), ma
 
                     for subjectOfStudent in subjectListOfStudent:
                          if subjectOfStudent['subject_code'] == subject['subjectCode']:
+                              student_subject_update = {}
                               if(marks_type=="assignmentMarks"):
                                    #Remove currently added marks
                                    current_total_mark_of_assignments = float(subjectOfStudent['assignment_marks']) * float(subject['assignmentMarks']/100)
                                    total_mark_of_assignments = float(studentMarks['assignment_marks']) * float(subject['assignmentMarks']/100)
                                    total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_assignments + total_mark_of_assignments # calculate total marks of student by adding new marks
-                                   update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,total_marks)
+                                   student_subject_update = update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,total_marks)
+
+                                   
                               else:
                                    current_total_mark_of_nonocr = float(subjectOfStudent['non_ocr_marks']) * float(subject['paperMarks']/100)
                                    total_mark_of_nonocr = float(studentMarks['non_ocr_marks']) * float(subject['paperMarks']/100)
                                    total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_nonocr + total_mark_of_nonocr # calculate total marks of student by adding new marks
-                                   update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,total_marks)
-                         
+                                   student_subject_update = update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,total_marks)
+
+                              grade = grade_model.grade_and_gpv(request, student_subject_update['total_marks'])
+                              update_student_subject_collection_given_field(request,subjectOfStudent, subject, index, subjectListOfStudent,'grade',grade['grade'])
+                              update_student_subject_collection_given_field(request,subjectOfStudent, subject, index, subjectListOfStudent,"gpv",grade['gpv'])
                                    
 
                else:
