@@ -1,6 +1,5 @@
 import NavBar from '../Components/NavBar'
 import SideBar from '../Components/SideBar'
-import Subjects from '../Components/Subjects/Subjects'
 import Teachers from '../Components/Teachers'
 import {useEffect, useState} from 'react'
 import axios from 'axios'
