@@ -399,22 +399,20 @@ def update_student_subject_collection(request: Request, subjectOfStudent:dict ,s
           # print("this is result after update", student_subject_update);
 
 # update student_subject collection's subject fields
-def update_student_subject_collection_given_field(request: Request, subject: dict, index: str,subjectListOfStudent:List[dict],field:List[str],field_value:dict):
+def update_student_subject_collection_given_field(request: Request,subjectOfStudent:dict , subject: dict, index: str,subjectListOfStudent:List[dict],field:List[str],field_value:dict):
      # get the subject by subject
      # print("This function calls update_student_subject_collection")
      print("This is field",field)
      print("This is field_value",field_value)
-     for subjectOfStudent in subjectListOfStudent:
-          if subjectOfStudent['subject_code'] == subject['subjectCode']:
-               # update the marks
-               for field in field:
-                    subjectOfStudent.update({field: field_value[field]})
-               # print("this is subjectOfStudent",subjectOfStudent)
-               
-               # update the exixting
-               filters = {"index":index} 
-               data = {"subject":subjectListOfStudent}
-               student_subject_update = student_subject_model.update(request, filters, data)
+     
+     # update the marks
+     for field in field:
+          subjectOfStudent.update({field: field_value[field]})
+     # print("this is subjectOfStudent",subjectOfStudent)
+     # update the exixting
+     filters = {"index":index} 
+     data = {"subject":subjectListOfStudent}
+     student_subject_update = student_subject_model.update(request, filters, data)
 
     
     

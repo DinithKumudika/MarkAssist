@@ -402,10 +402,16 @@ async def calculate_marks(request: Request, markingSchemeId:str, subjectId: str,
                
                #TODO: Methana total marks hadanna. thiyena total marks wakin thiyena ocr marks adu karala aluth eka add karanna
 
-               field_value = {'ocr_marks':totalMarksForPaper,'total_marks':totalMarksForPaper*subject['paperMarks']/100}
-               print("This is total marks",totalMarksForPaper)
+               
                # in here user id means index
-               update_student_subject_collection_given_field(request, subject, userId, subjectListOfStudent,field,field_value)
+               for subjectOfStudent in subjectListOfStudent:
+                    if subjectOfStudent['subject_code'] == subject['subjectCode']:
+                         current_total_mark_of_ocr = float(subjectOfStudent['ocr_marks']) * float(subject['paperMarks']/100)
+                         total_mark_of_ocr = float(totalMarksForPaper) * float(subject['paperMarks']/100)
+                         total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_ocr + total_mark_of_ocr 
+                         field_value = {'ocr_marks':totalMarksForPaper,'total_marks':total_marks}
+                         print("This is total marks",totalMarksForPaper)
+                         update_student_subject_collection_given_field(request,subjectOfStudent, subject, userId, subjectListOfStudent,field,field_value)
                     
           return JSONResponse({
                     "similarity percentages": "ok"
