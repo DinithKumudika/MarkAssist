@@ -8,13 +8,14 @@ import classnames from 'classnames';
 // import { AuthContext } from '../Contexts/AuthContext';
 import axios from 'axios';
 import jwt_decode from "jwt-decode";
+import getGoogleOAuthURL from '../utils/GoogleOAuth';
 function Login(){
     const navigate = useNavigate();
 
     const classes= classnames('rounded shadow shadow-gray-400 w-full h-9 p-2 mb-4');
 
     const handleClick=()=>{
-        alert("clicked");
+        window.location.href = getGoogleOAuthURL();
     }
 
     // const {auth, setAuth} = useContext(AuthContext)
@@ -60,16 +61,17 @@ function Login(){
                     navigate('/subjects');
                     break;
                 case "admin":
-                    navigate('/admin/dashboard');
+                    console.log(response.data.access_token);
+                    navigate('/subjects');
                     break;
                 default:
                     break;
             }
         }catch(error){
-            // console.log("error:"+error.response.data.message);
-            if(error.response && error.response.status >=400 && error.response.status <500){
-                // console.log(error.response.data.message);
-                setError(error.response.data.message);
+            console.log("error:"+error.response.data.detail);
+            if(error.response && error.response.status >=400 && error.response.status <=500){
+                console.log(error.response.data.detail);
+                setError(error.response.data.detail);
             }
         }
     }
@@ -93,7 +95,7 @@ function Login(){
                         {error && <div className="bg-red-500 text-white text-sm mb-2 w-full p-2 rounded text-center mb-6">{error}</div>}
                         <input className={classes} name="username" type="email" value={username} placeholder="E-mail address" onChange={onChange}/>
                         <input className={classes} name="password" type="password" value={password} placeholder="Confirm password" onChange={onChange}/>
-                        <SubmitButton type="submit">Continue</SubmitButton>
+                        <SubmitButton type="submit" classes="rounded">Continue</SubmitButton>
                     </form>
                 </div>
                 <div className="text-sm text-slate-500 mt-7">Don't have an account?</div>

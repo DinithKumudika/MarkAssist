@@ -2,26 +2,84 @@ import NavBar from '../Components/NavBar'
 import SideBar from '../Components/SideBar'
 import AnswerSheets from '../Components/AnswerSheets/AnswerSheets'
 import {useEffect, useState} from 'react'
-import {useParams} from 'react-router-dom'
+import {useLocation, useParams,Link} from 'react-router-dom'
+import { MoonLoader } from 'react-spinners';
 import axios from 'axios'
-function AnswerSheetsPage() {
+import classNames from 'classnames'
+function AnswerSheetsPage({page}) {
   const { year,subjectId} = useParams()
-  const allItems=JSON.parse(localStorage.getItem('token'));
-  const user_id=allItems['_id'];
-  const [isClicked,setClick] = useState("outer");
-  const [markingScheme,setMarkingScheme] = useState([]);
-
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
+  if(!allItems){
+    window.location.href="/";
+  }
+  const user_id=allItems['user_id'];
+  const [isClicked,setClick] = useState("inner");
+  const [answerSheet,setAnswerSheet] = useState([]);
+  const [assignmentMarks,setAssignmentMarks] = useState([]);
+  const [nonOcrMarks,setNonOcrMarks] = useState([]);
+  const [markingScheme, setMarkingScheme] = useState()
+  const [isLoading, setIsLoading] = useState(true);
   const name=`${subjectId}---- ${year} ---Marking Scheme`
+  const classes = classNames('sidebar static max-sm:ml-16 pt-[52px]');
+  const location = useLocation();
+  let currentPath = location.pathname.split('/')?.[1];
+  console.log("currentPath:",currentPath);
 
-  // useEffect(()=>{
-  //   try{
-  //     const response = axios.get(`http://localhost:5000/api/answersheets/${year}/${subjectId}/${user_id}`);
-  //     const data = response.data;
-  //     setMarkingScheme(data);
-  //   }catch(error){
-  //     console.log(error);
-  //   }
-  // },[]);
+
+  useEffect(()=>{
+    axios
+    .get(`http://127.0.0.1:8000/api_v1/markings/${subjectId}`)
+    .then((response)=>{
+      console.log("Markingscheme:",response.data);
+      setMarkingScheme(response.data);
+      // setIsLoading(false);
+      if(page==='answersheets'){
+        axios
+        .get(`http://127.0.0.1:8000/api_v1/papers/subjects/${subjectId}`)
+        .then((response)=>{
+          console.log(response.data);
+          setAnswerSheet(response.data);
+          setIsLoading(false);
+        })
+        .catch((error)=>{
+          console.log(error);
+          setAnswerSheet(null)
+          setIsLoading(false);
+        })
+      }else if(page==='assignments'){
+        axios
+        .get(`http://127.0.0.1:8000/api_v1/subjects/${subjectId}/marks/assignmentMarks`)
+        .then((response)=>{
+          console.log("ASSIGNMENT:::",response.data);
+          setAssignmentMarks(response.data);
+          setIsLoading(false);
+        })
+        .catch((error)=>{
+          console.log(error);
+          setAssignmentMarks(null)
+          setIsLoading(false);
+        })
+      }else if(page==='nonocr'){
+        axios
+        .get(`http://127.0.0.1:8000/api_v1/subjects/${subjectId}/marks/nonocrMarks`)
+        .then((response)=>{
+          console.log("NONOCR:::",response.data);
+          setNonOcrMarks(response.data);
+          setIsLoading(false);
+        })
+        .catch((error)=>{
+          console.log(error);
+          setNonOcrMarks(null)
+          setIsLoading(false);
+        })
+      }
+    })
+    .catch((error)=>{
+      console.log(error);
+      setMarkingScheme(null)
+      setIsLoading(false);
+    })
+  },[page]);
 
   // //Function to handle the click of the hamburger menu
   const handleClick = () => {
@@ -32,12 +90,50 @@ function AnswerSheetsPage() {
     }
   }
 
+  function linkClasses(type=null){
+    console.log("type:",type);
+    let classes = 'shadow shadow-gray-500 font-bold flex flex-row justify-center items-center h-12 w-full text-center ';
+    if(type===page){
+      classes+= ' bg-gray-400 ';
+    }else{
+      classes+=' bg-gray-200 '
+    }
+    return classes;
+  }
+
   return (
     <div>
-      <NavBar />
+      <NavBar clicked={isClicked}/>
       <SideBar mcq subjects markingSchemes answerPapers onClickFunc={handleClick} clicked={isClicked}/>
-      <AnswerSheets clicked={isClicked} data="hello"/>
-      
+      {/* <AnswerSheets clicked={isClicked} data={answerSheet} markingScheme={markingScheme}/> */}
+      {isLoading ? <MoonLoader color="#4457FF" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 
+        :
+        <div className={`${classes} ${isClicked === 'outer' ? ' ml-16 outer w-[calc(100vw-64px)]' : 'ml-64 w-[calc(100vw-256px)] inner'} max-sm:16 max-sm:w-[calc(100vw-64px)]`}>
+          <div className='flex flex-row justify-between items-center h-12'>
+            <Link className={`${linkClasses('answersheets')} `} to={`/answersheets/${year}/${subjectId}`}>
+              <div>
+                Answer Sheets
+              </div>
+            </Link>
+            <Link className={`${linkClasses('assignments')} `} to={`/assignments/${year}/${subjectId}`}>
+              <div>
+                Assignment Marks
+              </div>
+            </Link>
+            <Link className={`${linkClasses('nonocr')} `} to={`/nonocr/${year}/${subjectId}`}>
+              <div >
+                Non-OCR Marks
+              </div>
+            </Link>
+          </div>
+          {
+            page==='answersheets' ? (<AnswerSheets page={page} clicked={isClicked} data={answerSheet} markingScheme={markingScheme} year={year} subjectId={subjectId}/>)
+            : page==='assignments' ? (<AnswerSheets page={page} clicked={isClicked} data={assignmentMarks} markingScheme={markingScheme} year={year} subjectId={subjectId}/>)
+            : (<AnswerSheets page={page} clicked={isClicked} data={nonOcrMarks} markingScheme={markingScheme} year={year} subjectId={subjectId}/>)
+          }
+          
+        </div>
+      }
     </div>
   )
 }

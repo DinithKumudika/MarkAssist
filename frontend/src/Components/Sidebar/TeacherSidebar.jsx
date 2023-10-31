@@ -5,17 +5,29 @@ import { IoNewspaperOutline ,IoStatsChart } from "react-icons/io5";
 import classnames from 'classnames';
 import { Link ,useLocation } from 'react-router-dom';
 function TeacherSidebar({clicked}) {
+  const allItems=JSON.parse(localStorage.getItem('tokenData'));
+  // console.log(allItems);
+  if(allItems){
+    const userType = allItems['user_role'];
+    if(userType!=="teacher"){
+      window.location.href="/";
+      // console.log("error");
+    }
+  }else{
+    window.location.href="/";
+  }
+  const user_id=allItems['user_id'];
   const location = useLocation();
   const pathName = location.pathname.split('/').filter((path) => path !== '')
-  const classes = classnames('flex flex-col pl-1 justify-center cursor-pointer py-3 hover:bg-white hover:bg-opacity-30 rounded rounded-lg my-2');
+  const classes = classnames('flex flex-col justify-center max-sm:items-center max-sm:pl-0 pl-1 cursor-pointer py-3 hover:bg-white hover:bg-opacity-30 rounded rounded-lg my-2');
   const backGroundColor = classnames('bg-white bg-opacity-30 rounded rounded-lg');
   return (
     <div>
-        <div className={`${classes} ${clicked === "outer" ? 'items-center': ""} ${pathName[1] === "dashboard" ? backGroundColor : ""}`}><Link to="/teacher/dashboard" className='flex items-center'><div className='ml-1 block text-3xl pr-1'><IoStatsChart/></div>{clicked==="inner" ? <div className='ml-1 max-sm:hidden'>Dashboard</div> : ""}</Link></div>
-        <div className={`${classes} ${clicked === "outer" ? 'items-center': ""} ${pathName[0] === "subjects" ? backGroundColor : ""}`}><Link to="/subjects" className='flex items-center'><div className='ml-1 block text-3xl pr-1'><MdSubject/></div>{clicked==="inner" ? <div className='ml-1 max-sm:hidden'>Subjects</div> : ""}</Link></div>
-        <div className={`${classes} ${clicked === 'outer' ? 'items-center': ""} ${pathName[0] === "markingschemes" ? backGroundColor : ""}`}><Link to="/markingschemes" className='flex items-center'><div className='ml-1 block text-3xl pr-1'><BsFillBookFill/></div>{clicked==="inner" ? <div className='ml-1 max-sm:hidden'>Marking Schemes</div> : ""}</Link></div>
-        <div className={`${classes} ${clicked === 'outer' ? 'items-center': ""} ${pathName[0] === "answersheets" ? backGroundColor : ""}`}><Link to="/answersheets" className='flex items-center'><div className='ml-1 block text-3xl pr-1'><IoNewspaperOutline/></div>{clicked==="inner" ?  <div className='ml-1 max-sm:hidden'>Answer Papers</div> : ""}</Link></div>
-        <div className={`${classes} ${clicked === 'outer' ? 'items-center': ""} ${pathName[0] === "mcq" ? backGroundColor : ""}`}><Link to="/mcq" className='flex items-center'><div className='ml-1 block text-3xl pr-1'><BiAlarmOff/></div>{clicked==="inner" ? <div className='ml-1 max-sm:hidden'>MCQ</div> : ""}</Link></div>
+        <div className={`${classes} ${clicked === "outer" ? 'items-center': ""} ${pathName[1] === "dashboard" ? backGroundColor : ""}`}><Link to="/teacher/dashboard" className='flex gap-4 items-center'><div className={`${clicked==="outer" ? ' ml-0 ' : ' ml-4 '} block text-3xl pr-1 max-sm:ml-1`}><img className="w-6" src="http://localhost:3000/chartsquare.svg" alt="logot" /></div>{clicked==="inner" ? <div className='max-sm:hidden'>Dashboard</div> :""}</Link></div>
+        <div className={`${classes} ${clicked === "outer" ? 'items-center': ""} ${pathName[0] === "subjects" ? backGroundColor : ""}`}><Link to="/subjects" className='flex gap-4 items-center'><div className={`${clicked==="outer" ? ' ml-0 ' : ' ml-4 '} block text-3xl pr-1 max-sm:ml-1`}><img className="w-6" src="http://localhost:3000/cards.svg" alt="logot" /></div>{clicked==="inner" ? <div className='max-sm:hidden'>Subjects</div> : ""}</Link></div>
+        <div className={`${classes} ${clicked === 'outer' ? 'items-center': ""} ${pathName[0] === "markingschemes" ? backGroundColor : ""}`}><Link to="/markingschemes" className='flex gap-4 items-center'><div className={`${clicked==="outer" ? ' ml-0 ' : ' ml-4 '} block text-3xl pr-1 max-sm:ml-1`}><img className="w-5" src="http://localhost:3000/bookmark.svg" alt="logot" /></div>{clicked==="inner" ? <div className='max-sm:hidden'>Marking Schemes</div> : ""}</Link></div>
+        <div className={`${classes} ${clicked === 'outer' ? 'items-center': ""} ${pathName[0] === "answersheets" || pathName[0] === "assignments" || pathName[0] === "nonocr" ? backGroundColor : ""}`}><Link to="/answersheets" className='flex gap-4 items-center'><div className={`${clicked==="outer" ? ' ml-0 ' : ' ml-4 '} block text-3xl pr-1 max-sm:ml-1`}><img className="w-6" src="http://localhost:3000/note-alt.svg" alt="logot" /></div>{clicked==="inner" ?  <div className='max-sm:hidden'>Answer Sheets</div> : ""}</Link></div>
+        <div className={`${classes} ${clicked === 'outer' ? 'items-center': ""} ${pathName[0] === "mcq" ? backGroundColor : ""}`}><Link to="/mcq" className='flex gap-4 items-center'><div className={`${clicked==="outer" ? ' ml-0 ' : ' ml-4 '} block text-3xl pr-1 max-sm:ml-1`}><img className="w-6" src="http://localhost:3000/mcq.svg" alt="logot"/></div>{clicked==="inner" ? <div className='max-sm:hidden'>MCQ</div> : ""}</Link></div>
     </div>
   )
 }
