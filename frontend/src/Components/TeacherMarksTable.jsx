@@ -1,4 +1,4 @@
-// TableComponent.js
+
 import React from 'react';
 
 const TeacherMarksTable = ({ data, columns }) => {
