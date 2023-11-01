@@ -7,6 +7,9 @@ import { MoonLoader } from 'react-spinners';
 import Modal from "../Modal";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Error from "../../utils/Error";
 // import { set } from "mongoose";
 function Marks({clicked,answers,markings}) {
   const navigate = useNavigate();
@@ -203,7 +206,7 @@ const handleProceed = () => {
     })
     .catch((error)=>{
       console.log(error)
-      alert("Something went wrong")
+      Error("error","Error occured!")
       setIsLoadingProceed(false);
     })
     // Process the response data or update your React component state
@@ -212,7 +215,7 @@ const handleProceed = () => {
     console.error(error);
     setmarksConfigure(null)
     setShowConfirmation(false);
-    alert("Something went wrong")
+    Error("error","Error occured!")
     setIsLoadingProceed(false);
     // Handle the error, e.g., display an error message to the user
   });
@@ -284,7 +287,7 @@ const handleProceed = () => {
         console.error(error);
         setmarksConfigure(null)
         setIsLoadingProceed(false);
-        alert("Something went wrong")
+        Error("error","Error occured!")
         // Handle the error, e.g., display an error message to the user
       });
     }
@@ -331,6 +334,7 @@ const handleProceed = () => {
       {isLoadingProceed ? <MoonLoader color="#4457FF" loading={isLoadingProceed} size={50} className='absolute top-[8vw] left-[50%]'/> : ""}
 
       {showConfirmation && <Modal handleProceed={handleProceed} onClose={handleProceedClose}/>}
+      <ToastContainer />
     </div>
   )
 }

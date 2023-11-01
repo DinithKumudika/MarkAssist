@@ -8,6 +8,9 @@ import { MoonLoader } from 'react-spinners';
 import { useState,useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Error from '../../utils/Error';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
   const navigate = useNavigate();
   const [markings,setMarkings] = useState([]);
@@ -83,12 +86,13 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
               // markingschemeID = marking[0].markingScheme
               console.log("Markkkkkkssssss:",marks)
               setIsLoading(false);
+              Error("success","Accuracy Generated Suceessfully!")
               window.location.reload();
     
             })
             .catch((error) => {
               console.error(error);
-              alert('Something went wrong')
+              Error("error","Error occured!")
               setIsLoading(false);
               window.location.reload();
               // setMarks(null)
@@ -191,6 +195,7 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
           : show && <DragDrop closeFunc={closeModal}>{dragdrop}</DragDrop>
         }
        {/* {(markingScheme?.isProceeded && <Modal handleLink={handleLink} message="Configure the marking scheme before uploading answer sheets."/>) && show && <DragDrop closeFunc={closeModal}>Answer Sheets</DragDrop>} */}
+       <ToastContainer />
     </div>
   )
 }
