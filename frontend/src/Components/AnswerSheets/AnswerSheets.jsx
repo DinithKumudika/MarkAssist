@@ -79,7 +79,7 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
       // if(Checked[data.paper]){
         
             axios
-            .patch(`http://127.0.0.1:8000/api_v1/answers/compare/${markingScheme.id}/${data[0].subjectId}`,Checked)
+            .patch(`/answers/compare/${markingScheme.id}/${data[0].subjectId}`,Checked)
             .then((response)=>{
               const marks = response.data
               // setMarkings(marking)
@@ -87,14 +87,21 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
               console.log("Markkkkkkssssss:",marks)
               setIsLoading(false);
               Error("success","Accuracy Generated Suceessfully!")
-              window.location.reload();
+              setTimeout(function(){
+                window.location.reload();
+             }, 2001);
     
             })
             .catch((error) => {
-              console.error(error);
-              Error("error","Error occured!")
+              console.error("ERRROOwtretOORRR:::",error);
               setIsLoading(false);
-              window.location.reload();
+              Error("error","Error occured!")
+              setTimeout(function(){
+                window.location.reload();
+             }, 2001);
+              // clearInterval(id);
+              // setTimeout(window.location.reload(), 5000);
+              
               // setMarks(null)
               // Handle the error, e.g., display an error message to the user
             });

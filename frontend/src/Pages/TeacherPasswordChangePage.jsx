@@ -41,7 +41,7 @@ function TeacherPasswordChangePage(){
         loginData.append('password', formData.password);
         console.log(formData)
         axios
-        .post(`http://127.0.0.1:8000/api_v1/auth/complete-registration/${token}`,{password:formData.password})
+        .post(`/auth/complete-registration/${token}`,{password:formData.password})
         .then((response)=>{
             navigate('/');
         })

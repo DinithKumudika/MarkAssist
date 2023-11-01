@@ -50,7 +50,7 @@ function Teachers({clicked,data}) {
                 <Button onClick={handleClick}> Add a Person</Button>
               }
             </div>
-            <Table name={true} role={true} date={true} subjects={true} teachers={data}/>
+            <Table name={true} role={true} date={true}  teachers={data}/>
           </div>
       </div>
       {show && <TeacherAddBox closeFunc={closeModal}/>}

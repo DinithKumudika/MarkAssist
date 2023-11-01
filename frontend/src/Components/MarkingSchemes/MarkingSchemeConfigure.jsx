@@ -50,7 +50,7 @@ function MarkingSchemeConfigure({clicked, data,subjectId}) {
       return;
     }
     axios
-    .put(`http://127.0.0.1:8000/api_v1/markings/update/${subjectId}`,definedData)
+    .put(`/markings/update/${subjectId}`,definedData)
     .then((response)=>{
       console.log(response);
       setShowConfirmation(false);

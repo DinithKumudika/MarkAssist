@@ -194,6 +194,7 @@ def text_similarity(text1: str, text2: str)->str:
      response = openai.Completion.create(
           engine='text-davinci-003',
           prompt=prompt,
+          temperature=0,
      )
 
      # Retrieve and process the response
