@@ -16,7 +16,6 @@ class StudentSubjectModel():
           student_subjects = list(self.get_collection(request).find())
           for student_subject in student_subjects:
                student_subject["id"] = str(student_subject["_id"])
-
           return student_subjects
      
      def by_id(self, request: Request, id: str) -> StudentSubject:
@@ -73,4 +72,85 @@ class StudentSubjectModel():
                          continue
           
           return subjects_results
+     
+     def calculateGPA(self, request: Request):
+          # get all student_subject collection
+          student_subject_list = self.list_student_subject(request)
+     
+          # print("This is student_subject_list", student_subject_list)
+     
+          final_updated_student_subject_list = []
+          # get one student's subjects list
+          for student_subject in student_subject_list:
+              student_subject['id'] = str(student_subject['_id'])
+              gpa = 0
+              total_credit = 0
+              # get the student's subject list
+              subjects_results_list = student_subject['subject']
+              # print("\n\nThis is subjects_results_list", subjects_results_list, "\n\n")
+     
+              # loop through the subjects of one student
+              for subject in subjects_results_list:
+                  total_credit += subject['no_of_credit']
+                  gpa += subject['gpv'] * subject['no_of_credit']
+              gpa = gpa / total_credit
+     
+              # update student_subject collection
+              filters = {"index": student_subject['index']}
+              data = {"gpa": gpa, "total_credit": total_credit}
+     
+          #     print("1")
+     
+              updated_student_subject_collection = self.get_collection(request).find_one_and_update(
+                  filters,
+                  {'$set': data},
+                  return_document=ReturnDocument.AFTER
+              )
+     
+          #     print("2")
+     
+              # Convert ObjectId to string for serialization
+              updated_student_subject_collection["id"] = str(updated_student_subject_collection["_id"])
+              updated_student_subject_collection.pop("_id")
+          #     print("\n\nThis is updated_student_subject_collection", updated_student_subject_collection)
+          #     print("This is updated_student_subject_collection id", updated_student_subject_collection['id'], "\n\n")
+              final_updated_student_subject_list.append(updated_student_subject_collection)
+     
+          #     print("4")
+     
+          return final_updated_student_subject_list
+     
+     def list_of_index_gpa(self, request: Request):
+          # get all student_subject collection
+          student_subject_list = self.list_student_subject(request)
+     
+          # print("This is student_subject_list", student_subject_list)
+     
+          final_updated_student_subject_list_of_gpa_index = []
+          # get one student's subjects list
+          for student_subject in student_subject_list:
+              student_subject['id'] = str(student_subject['_id'])
+              
+              index = student_subject['index'];
+              gpa = student_subject['gpa'];
+              
+              final_updated_student_subject_list_of_gpa_index.append({'index': index, 'gpa': gpa})
+              
+          # sort the final_updated_student_subject_list_of_gpa_index list
+          final_updated_student_subject_list_of_gpa_index = sorted(final_updated_student_subject_list_of_gpa_index, key=lambda x: x["gpa"], reverse=True)
+          
+          # now update the rank of each student
+          for index,student in final_updated_student_subject_list_of_gpa_index:
+               # update student_subject collection
+               filters = {"index": student['index']}
+               data = {"rank": index+1 }
+     
+               updated_student_subject_collection = self.get_collection(request).find_one_and_update(
+                   filters,
+                   {'$set': data},
+                   return_document=ReturnDocument.AFTER
+               )
+
+
+
      

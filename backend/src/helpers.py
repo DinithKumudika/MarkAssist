@@ -390,6 +390,8 @@ def update_student_subject_collection(request: Request, subjectOfStudent:dict ,s
           filters = {"index":index} 
           data = {"subject":subjectListOfStudent}
           student_subject_update = student_subject_model.update(request, filters, data)
+          return student_subject_update
+          
           # print("this is result after update", student_subject_update);
      else:
           # This is for nonOCR marks
@@ -401,6 +403,7 @@ def update_student_subject_collection(request: Request, subjectOfStudent:dict ,s
           filters = {"index":index} 
           data = {"subject":subjectListOfStudent}
           student_subject_update = student_subject_model.update(request, filters, data)
+          return student_subject_update
           # print("this is result after update", student_subject_update);
 
 # update student_subject collection's subject fields
@@ -412,6 +415,8 @@ def update_student_subject_collection_given_field(request: Request,subjectOfStud
      
      # update the marks
      for field in field:
+          print("This is field",field)
+          print("This is field value:::",field_value[field])
           subjectOfStudent.update({field: field_value[field]})
      # print("this is subjectOfStudent",subjectOfStudent)
      # update the exixting
