@@ -142,15 +142,7 @@ const AdminHandleStudents2 = () => {
         </div>
       </div>
       <div className="flex flex-col w-full h-full mt-10 mb-5 ml-5 mr-5 gap-y-4 ">
-      {/* <div class=" grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8 bg-white h-auto flex justify-between rounded p-5">
-  
-  <div className="text-base text-gray-500">
-    11.30 AM
-    <div className="">
-      08/08/2023
-    </div>
-  </div>
-</div> */}
+      
       {/* Stats components */}
       <div className="w-full bg-white">
       
