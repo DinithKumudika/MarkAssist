@@ -28,7 +28,7 @@ from models.subject import SubjectModel;
 
 from models.grade import GradeModel;
 
-from helpers import get_images, text_similarity, add_student_subject, add_subject,update_student_subject_collection,update_student_subject_collection_given_field
+from helpers import get_images, text_similarity, add_student_subject, add_subject,update_student_subject_collection,update_student_subject_collection_given_field,add_perfomance_student
 from utils.firebase_storage import upload_file2
 
 from utils.auth import get_current_active_user
@@ -578,7 +578,7 @@ async def upload_marks(request: Request, files: List[UploadFile] = File(...), ma
           print("This is full marks",fullMarksList)
           if(marks_type=="assignmentMarks"):
                filters = {"_id":ObjectId(subject['id'])} 
-               data = {"finalAssignmentMarks":round(fullMarksList,2)}
+               data = {"finalAssignmentMarks":fullMarksList}
                updated_subject = subject_model.update(request,filters, data)
                if not updated_subject:
                     raise HTTPException(
@@ -621,12 +621,20 @@ async def upload_marks(request: Request, files: List[UploadFile] = File(...), ma
                                    total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_assignments + total_mark_of_assignments # calculate total marks of student by adding new marks
                                    student_subject_update = update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,round(total_marks,2))
 
+                                   # now add the total marks, grade, and index to subject collection 
+                                   perfomance = {'index':student_subject_update['index'],'gpa':student_subject_update['gpa'],'total_marks':total_marks}
+                                   add_perfomance_student(request,subject['id'],index,perfomance)
                                    
                               else:
                                    current_total_mark_of_nonocr = float(subjectOfStudent['non_ocr_marks']) * float(subject['paperMarks']/100)
                                    total_mark_of_nonocr = float(studentMarks['non_ocr_marks']) * float(subject['paperMarks']/100)
                                    total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_nonocr + total_mark_of_nonocr # calculate total marks of student by adding new marks
                                    student_subject_update = update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,round(total_marks,2))
+                                   
+                                   # now add the total marks, grade, and index to subject collection 
+                                   perfomance = {'index':student_subject_update['index'],'gpa':student_subject_update['gpa'],'total_marks':total_marks}
+                                   add_perfomance_student(request,subject['id'],index,perfomance)
+                                   
                               print("This is student subject update",student_subject_update)
                               for updated_subjectOfStudent in student_subject_update['subject']:
                                   if updated_subjectOfStudent['subject_code'] == subject['subjectCode']:
@@ -654,6 +662,10 @@ async def upload_marks(request: Request, files: List[UploadFile] = File(...), ma
                                         total_mark_of_assignments = float(studentMarks['assignment_marks']) * float(subject['assignmentMarks']/100)
                                         total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_assignments + total_mark_of_assignments # calculate total marks of student by adding new marks
                                         student_subject_update = update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,round(total_marks,2))
+                                        
+                                        # now add the total marks, grade, and index to subject collection 
+                                        perfomance = {'index':student_subject_update['index'],'gpa':student_subject_update['gpa'],'total_marks':total_marks}
+                                        add_perfomance_student(request,subject['id'],index,perfomance)
      
                                         
                                    else:
@@ -661,6 +673,11 @@ async def upload_marks(request: Request, files: List[UploadFile] = File(...), ma
                                         total_mark_of_nonocr = float(studentMarks['non_ocr_marks']) * float(subject['paperMarks']/100)
                                         total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_nonocr + total_mark_of_nonocr # calculate total marks of student by adding new marks
                                         student_subject_update = update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,round(total_marks,2))
+                                        
+                                        # now add the total marks, grade, and index to subject collection 
+                                        perfomance = {'index':student_subject_update['index'],'gpa':student_subject_update['gpa'],'total_marks':total_marks}
+                                        add_perfomance_student(request,subject['id'],index,perfomance)
+                                        
                                    print("This is student subject update",student_subject_update)
                                    for updated_subjectOfStudent in student_subject_update['subject']:
                                        if updated_subjectOfStudent['subject_code'] == subject['subjectCode']:
