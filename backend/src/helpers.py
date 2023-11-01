@@ -1,5 +1,6 @@
-from fastapi import Request
+from fastapi import Request,HTTPException,status
 from typing import Optional, List
+from bson.objectid import ObjectId
 import time
 import pdf2image as p2i
 import cv2
@@ -29,6 +30,8 @@ from models.paper import PaperCreate
 from models.student_subject import StudentSubjectModel
 from schemas.student_subject import StudentSubjectCreate
 
+from models.subject import SubjectModel
+
 
 
 import os
@@ -37,6 +40,7 @@ import io
 from config.config import settings
 
 student_subject_model = StudentSubjectModel()
+subject_model = SubjectModel()
 
 
 # Download NLTK resources if not already downloaded
@@ -425,5 +429,73 @@ def update_student_subject_collection_given_field(request: Request,subjectOfStud
      student_subject_update = student_subject_model.update(request, filters, data)
      return student_subject_update
 
+def add_perfomance_student(request: Request, subjectId: str, index: str, perfomance: dict):
+     print("\n\nThis is add_performance function\n\n")
+
+
     
+     # Get the subject
+     subject = subject_model.subject_by_id(request, subjectId)
+     print("\n\nThis is subject in add_perfomance_student function",perfomance,"\n\n")
+    
+     # Print the subject to verify its content
+     print("subject:", subject)
+
+     if 'finalTotalMarks' in subject:
+          performance_of_students = subject['finalTotalMarks']
+     else:
+          performance_of_students = []
+          
+     print("\n\nperformance_of_students:", performance_of_students, "\n\n")
+
+     # Convert 'index' to integer
+     index = int(index)
+
+     # Get one student at a time
+     if (performance_of_students != None and performance_of_students != [] and len(performance_of_students) > 0):
+          print("\n\nperformance_of_students is not empty\n\n")
+          for performance_of_single_student in performance_of_students:
+               if (performance_of_single_student['index'] == index):
+                    # If found, update the performance
+                    performance_of_single_student.update({'total_marks': perfomance['total_marks'], 'grade': perfomance['grade']})
+
+                    filters = {"_id": ObjectId(subjectId)}
+                    data = {'finalTotalMarks': performance_of_students}
+
+                    updated_subject = subject_model.update(request, filters, data)
+
+                    if not updated_subject:
+                       raise HTTPException(
+                            status_code=status.HTTP_304_NOT_MODIFIED,
+                            detail="Error in updating subject collection"
+                       )
+               else:
+                    if (performance_of_students == None):
+                         performance_of_students = []
+                         
+                    updated_perfomance_of_student = performance_of_students.append(perfomance)     
+                    filters = {"_id": ObjectId(subjectId)}
+                    data = {'finalTotalMarks': updated_perfomance_of_student}  
+                    updated_subject = subject_model.update(request, filters, data)   
+                    if not updated_subject:
+                         raise HTTPException(
+                              status_code=status.HTTP_304_NOT_MODIFIED,
+                              detail="Error in updating subject collection"
+                         )
+     else:
+          print("\n\nperformance_of_students is empty\n\n")
+          a = []
+          print("\n\na.append(perfomance)",a.append(perfomance),"\n\n")
+          filters = {"_id": ObjectId(subjectId)}
+          data = {'finalTotalMarks': a.append(perfomance)}  
+          updated_subject = subject_model.update(request, filters, data)   
+          if not updated_subject:
+               raise HTTPException(
+                    status_code=status.HTTP_304_NOT_MODIFIED,
+                    detail="Error in updating subject collection"
+               )
+     
+
+
+     
     
