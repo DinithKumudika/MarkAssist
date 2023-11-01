@@ -37,65 +37,7 @@ function AnswerSheets({clicked, data}) {
                 <tr>
                   <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
                   <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
-                  
+                  <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>                  
                 </tr>
                 </thead>
                 <tbody>
