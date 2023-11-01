@@ -94,7 +94,7 @@ function Login(){
                     <form className="flex flex-col items-center justify-center w-full" onSubmit={handleSubmit}>
                         {error && <div className="bg-red-500 text-white text-sm mb-2 w-full p-2 rounded text-center mb-6">{error}</div>}
                         <input className={classes} name="username" type="email" value={username} placeholder="E-mail address" onChange={onChange}/>
-                        <input className={classes} name="password" type="password" value={password} placeholder="Confirm password" onChange={onChange}/>
+                        <input className={classes} name="password" type="password" value={password} placeholder="Password" onChange={onChange}/>
                         <SubmitButton type="submit" classes="rounded">Continue</SubmitButton>
                     </form>
                 </div>
