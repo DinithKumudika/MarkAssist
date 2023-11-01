@@ -10,15 +10,18 @@ class GradeModel():
     def get_collection(self, request: Request):
         return request.app.db[self.collection]
     
-    def list_grades(self, request: Request) -> list:
-        gradeList = self.get_collection(request).find() 
-        return gradeList
+    def list_grades(self, request: Request):
+        gradeList = self.get_collection(request).find({"_id": ObjectId("6541049ecee01459b6ad7055")})
+        grades = [grade for grade in gradeList]
+        return grades
+
     
     def grade_and_gpv(self, request: Request, marks: str):
         grade_list = self.list_grades(request)
-        print("GRade List::::",grade_list)
-        for grade in grade_list['grades']:
-            if marks >= grade['start'] and marks <= grade['end']:
+        print("GRade List::::", grade_list[0]['grades'])
+        print("Marks::::", marks)
+        for grade in grade_list[0]['grades']:
+            if float(marks) >= grade['start'] and float(marks) <= grade['end']:
                 return {"grade":grade['grade'], "gpv":grade['gpv']}
         return {"grade":"F", "gpv":0.0}
     
