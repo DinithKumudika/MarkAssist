@@ -173,10 +173,6 @@ const AdminHandleStudents2 = () => {
    <div className="grid grid-cols-1 mr-2">
     
     <div className="flex justify-center w-5/6 ">
-    {/* <div>
-      <h1>Sample Table</h1>
-      <TeacherMarksTable data={data} columns={columns} />
-    </div> */}
     <table class="shadow-lg bg-white border-separate border-spacing-x-14 border-spacing-y-2 rounded text-center mt-5 w-5/6 justify-center">
   <tr className="h-8">
     <th class=" px-8 py-4 rounded text-center ">Mark Range</th>
