@@ -219,11 +219,6 @@ const AdminHandleStudents2 = () => {
   </div>
 </div>
 </div>
-      {/* state background */}
-      {/* <div className="m-3 text-lg font-semibold text-gray-900">
-    
-      </div> */}
-      
       
     </div>
     </div>
