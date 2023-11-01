@@ -35,8 +35,6 @@ function AnswerSheets({clicked, data}) {
               <table className='w-full'>
                 <thead className='bg-[#D9D9D9] sticky'>
                 <tr>
-                  <th className='text-xl h-8 font-bold opacity-60 w-2/5'>Name</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-2/6'>Date Added</th>
                   <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
                 </tr>
                 </thead>

@@ -35,8 +35,6 @@ function AnswerSheets({clicked, data}) {
               <table className='w-full'>
                 <thead className='bg-[#D9D9D9] sticky'>
                 <tr>
-                  <th className='text-xl h-8 font-bold opacity-60 w-2/5'>Name</th>
-                  <th className='text-xl h-8 font-bold opacity-60 w-2/6'>Date Added</th>
                   <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>
                 </tr>
                 </thead>
@@ -49,7 +47,7 @@ function AnswerSheets({clicked, data}) {
                       </tr>
                     ))} */}
                     <tr>
-                      <td className='text-lg px-4 max-sm:px-1 h-10 border-y-2 border-x-2 font-medium opacity-60'>SCS2213-DSA-2023</td>
+                      
                       <td className='text-lg px-4 max-sm:px-1 h-10 border-y-2 border-x-4 font-medium opacity-60'>10/06/2023</td>
                       <td className='flex justify-center text-sm px-4 h-10 border-y-2 border-x-2 font-medium'><button className="rounded rounded-xl bg-[#4457FF] w-32 max-sm:w-20 h-8 mr-2 text-white flex justify-center items-center flex-row"><div className='ml-2'>Select</div></button></td>
                     </tr>
