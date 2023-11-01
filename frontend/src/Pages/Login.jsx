@@ -55,7 +55,7 @@ function Login(){
 
             switch (allItems['user_role']) {
                 case "student":
-                    navigate('/subjects');
+                    navigate('/student/dashboard');
                     break;
                 case "teacher":
                     navigate('/subjects');

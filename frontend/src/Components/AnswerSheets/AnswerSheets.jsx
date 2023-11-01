@@ -116,7 +116,7 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
     )
 
     table = <Table check={true} checked={true} Checked={Checked} checkAll={checkAll} name={true} handleCheck={handleCheck} handleAllCheck={handleAllCheck} date={true} select={true} AnswerSheets={
-      data.filter((item)=>{
+      data?.filter((item)=>{
         return search.toLowerCase() === '' ? item
         : item.paper.toLowerCase().includes(search)
       })
@@ -132,7 +132,7 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
     )
 
     table = <Table index={true} marks={true} Assignments_NonOCR={
-        data.filter((item)=>{
+        data?.filter((item)=>{
           return search.toLowerCase() === '' ? item
           : item.index.includes(search)
       })
@@ -148,7 +148,7 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
     )
 
     table = <Table index={true} marks={true} Assignments_NonOCR={
-      data.filter((item)=>{
+      data?.filter((item)=>{
         return search.toLowerCase() === '' ? item
         : item.index.includes(search)
       })

@@ -16,6 +16,7 @@ class GradeModel():
     
     def grade_and_gpv(self, request: Request, marks: str):
         grade_list = self.list_grades(request)
+        print("GRade List::::",grade_list)
         for grade in grade_list['grades']:
             if marks >= grade['start'] and marks <= grade['end']:
                 return {"grade":grade['grade'], "gpv":grade['gpv']}

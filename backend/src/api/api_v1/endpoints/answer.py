@@ -411,11 +411,14 @@ async def calculate_marks(request: Request, markingSchemeId:str, subjectId: str,
                          field_value = {'ocr_marks':totalMarksForPaper,'total_marks':total_marks}
                          print("This is total marks",totalMarksForPaper)
                          student_subject_update =  update_student_subject_collection_given_field(request,subjectOfStudent, subject, userId, subjectListOfStudent,field,field_value)
+                         print("student subject update:::",student_subject_update)
                          
-                         
-                         grade = grade_model.grade_and_gpv(request, student_subject_update['total_marks'])
-                         update_student_subject_collection_given_field(request,subjectOfStudent, subject, userId, subjectListOfStudent,'grade',grade['grade'])
-                         update_student_subject_collection_given_field(request,subjectOfStudent, subject, userId, subjectListOfStudent,"gpv",grade['gpv'])
+                         updated_subjectListOfStudent = student_subject_update['subject']
+                         for updated_subjectOfStudent in updated_subjectListOfStudent:
+                              if updated_subjectOfStudent['subject_code'] == subject['subjectCode']:
+                                   grade = grade_model.grade_and_gpv(request, updated_subjectOfStudent['total_marks'])
+                                   update_student_subject_collection_given_field(request,subjectOfStudent, subject, userId, subjectListOfStudent,'grade',grade['grade'])
+                                   update_student_subject_collection_given_field(request,subjectOfStudent, subject, userId, subjectListOfStudent,"gpv",grade['gpv'])
                          
           return JSONResponse({
                     "similarity percentages": "ok"
