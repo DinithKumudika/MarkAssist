@@ -67,10 +67,6 @@ function App(){
         <Route path="/admin/grades" element={<TeachersPage />} />
 
 
-        <Route path="/" element={<AdminHandleStudents2 />} />
-        <Route path="/adminhandleteacher2" element={<AdminHandleTeacher2 />} />
-        <Route path="/adminhandlestudents" element={<AdminHandleStudents />} />
-
       </Routes>
     </div>
   );
