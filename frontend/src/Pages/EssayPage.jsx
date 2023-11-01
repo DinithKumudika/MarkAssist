@@ -1,10 +1,10 @@
 import React from 'react'
-import NavBar from '../Components/NavBar'
+import DragDrop2 from '../Components/DragDrop2'
 
 function EssayPage() {
   return (
     <div>
-      <NavBar/>
+      <DragDrop2 />
     </div>
   )
 }
