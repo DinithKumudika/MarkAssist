@@ -26,7 +26,9 @@ from schemas.student_subject import StudentSubjectBase, StudentSubject,StudentSu
 
 from models.subject import SubjectModel;
 
-from helpers import get_images, text_similarity, add_student_subject, add_subject,update_student_subject_collection
+from models.grade import GradeModel;
+
+from helpers import get_images, text_similarity, add_student_subject, add_subject,update_student_subject_collection,update_student_subject_collection_given_field
 from utils.firebase_storage import upload_file2
 
 from utils.auth import get_current_active_user
@@ -40,6 +42,7 @@ subject_model = SubjectModel()
 answer_model = AnswerModel()
 user_model = UserModel()
 student_subject_model = StudentSubjectModel()
+grade_model = GradeModel()
 
 @router.get("/", response_description="Get all papers", response_model=List[Paper])
 async def get_all_papers(request: Request, current_user: User = Depends(get_current_active_user)):
@@ -575,7 +578,7 @@ async def upload_marks(request: Request, files: List[UploadFile] = File(...), ma
           print("This is full marks",fullMarksList)
           if(marks_type=="assignmentMarks"):
                filters = {"_id":ObjectId(subject['id'])} 
-               data = {"finalAssignmentMarks":fullMarksList}
+               data = {"finalAssignmentMarks":round(fullMarksList,2)}
                updated_subject = subject_model.update(request,filters, data)
                if not updated_subject:
                     raise HTTPException(
@@ -610,18 +613,27 @@ async def upload_marks(request: Request, files: List[UploadFile] = File(...), ma
 
                     for subjectOfStudent in subjectListOfStudent:
                          if subjectOfStudent['subject_code'] == subject['subjectCode']:
+                              student_subject_update = {}
                               if(marks_type=="assignmentMarks"):
                                    #Remove currently added marks
                                    current_total_mark_of_assignments = float(subjectOfStudent['assignment_marks']) * float(subject['assignmentMarks']/100)
                                    total_mark_of_assignments = float(studentMarks['assignment_marks']) * float(subject['assignmentMarks']/100)
                                    total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_assignments + total_mark_of_assignments # calculate total marks of student by adding new marks
-                                   update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,total_marks)
+                                   student_subject_update = update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,round(total_marks,2))
+
+                                   
                               else:
                                    current_total_mark_of_nonocr = float(subjectOfStudent['non_ocr_marks']) * float(subject['paperMarks']/100)
                                    total_mark_of_nonocr = float(studentMarks['non_ocr_marks']) * float(subject['paperMarks']/100)
                                    total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_nonocr + total_mark_of_nonocr # calculate total marks of student by adding new marks
-                                   update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,total_marks)
-                         
+                                   student_subject_update = update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,round(total_marks,2))
+                              print("This is student subject update",student_subject_update)
+                              for updated_subjectOfStudent in student_subject_update['subject']:
+                                  if updated_subjectOfStudent['subject_code'] == subject['subjectCode']:
+                                   grade = grade_model.grade_and_gpv(request, updated_subjectOfStudent['total_marks'])
+                                   # grade = grade_model.grade_and_gpv(request, student_subject_update['total_marks'])
+                                   update_student_subject_collection_given_field(request,subjectOfStudent, subject, index, subjectListOfStudent,{'grade'},{'grade':grade['grade']})
+                                   update_student_subject_collection_given_field(request,subjectOfStudent, subject, index, subjectListOfStudent,{"gpv"},{"gpv":grade['gpv']})
                                    
 
                else:
@@ -629,7 +641,34 @@ async def upload_marks(request: Request, files: List[UploadFile] = File(...), ma
                     # print("This is student subject else close")
                     new_student_subject = add_student_subject(request,subject,index)
                     if(new_student_subject):
-                         update_student_subject_collection(request,subject,index,marks_type,studentMarks,new_student_subject['subject'])
+                         subjectListOfStudent = student_subject['subject']
+                         print("Student markss:::::",studentMarks)
+                         # params = subject,subjectListOfStudent,index,marks_type,studentMarks
+     
+                         for subjectOfStudent in subjectListOfStudent:
+                              if subjectOfStudent['subject_code'] == subject['subjectCode']:
+                                   student_subject_update = {}
+                                   if(marks_type=="assignmentMarks"):
+                                        #Remove currently added marks
+                                        current_total_mark_of_assignments = float(subjectOfStudent['assignment_marks']) * float(subject['assignmentMarks']/100)
+                                        total_mark_of_assignments = float(studentMarks['assignment_marks']) * float(subject['assignmentMarks']/100)
+                                        total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_assignments + total_mark_of_assignments # calculate total marks of student by adding new marks
+                                        student_subject_update = update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,round(total_marks,2))
+     
+                                        
+                                   else:
+                                        current_total_mark_of_nonocr = float(subjectOfStudent['non_ocr_marks']) * float(subject['paperMarks']/100)
+                                        total_mark_of_nonocr = float(studentMarks['non_ocr_marks']) * float(subject['paperMarks']/100)
+                                        total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_nonocr + total_mark_of_nonocr # calculate total marks of student by adding new marks
+                                        student_subject_update = update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,round(total_marks,2))
+                                   print("This is student subject update",student_subject_update)
+                                   for updated_subjectOfStudent in student_subject_update['subject']:
+                                       if updated_subjectOfStudent['subject_code'] == subject['subjectCode']:
+                                        grade = grade_model.grade_and_gpv(request, updated_subjectOfStudent['total_marks'])
+                                        # grade = grade_model.grade_and_gpv(request, student_subject_update['total_marks'])
+                                        update_student_subject_collection_given_field(request,subjectOfStudent, subject, index, subjectListOfStudent,{'grade'},{'grade':grade['grade']})
+                                        update_student_subject_collection_given_field(request,subjectOfStudent, subject, index, subjectListOfStudent,{"gpv"},{"gpv":grade['gpv']})
+                         
                     # print("this is end of else", new_student_subject)
                        
 

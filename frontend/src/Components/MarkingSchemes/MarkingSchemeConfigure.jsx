@@ -7,6 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import MakingSchemeConfigureBox from './MakingSchemeConfigureBox'
 import Button from '../Button';
 import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Error from '../../utils/Error';
 function MarkingSchemeConfigure({clicked, data,subjectId}) {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState([]);
@@ -43,11 +46,11 @@ function MarkingSchemeConfigure({clicked, data,subjectId}) {
     console.log("All elements filled:",allElementsFilled);
     if(!allElementsFilled){
       console.log("Please fill all the fields");
-      alert("Please fill all the fields");
+      Error("error","Please fill all the fields")
       return;
     }
     axios
-    .put(`http://127.0.0.1:8000/api_v1/markings/update/${subjectId}`,definedData)
+    .put(`/markings/update/${subjectId}`,definedData)
     .then((response)=>{
       console.log(response);
       setShowConfirmation(false);
@@ -109,7 +112,7 @@ function MarkingSchemeConfigure({clicked, data,subjectId}) {
             <Button onClick={handleClose} classNames="bg-custom-blue-main">Cancel</Button>
         </div>
         {showConfirmation && <Modal handleProceed={handleProceed} onClose={handleProceedClose}/>}
-
+        <ToastContainer />
     </div>
   )
 }

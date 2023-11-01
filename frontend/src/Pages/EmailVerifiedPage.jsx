@@ -6,7 +6,7 @@ function EmailVerifiedPage() {
   const { token } = useParams();
   const handleClick = ()=>{
     axios
-    .get(`http://127.0.0.1:8000/api_v1/auth/verify-email/${token}`)
+    .get(`/auth/verify-email/${token}`)
     .then((response)=>{
       console.log(response.data);
       window.location.href = '/';

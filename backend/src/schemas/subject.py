@@ -9,8 +9,13 @@ class finalAssignmentMarks(BaseModel):
 class finalNonOcrMarks(BaseModel):
     index:Optional[str]|None
     non_ocr_marks:Optional[str]|None
-    
 
+class finalTotalMarks(BaseModel):
+    index:Optional[str]|None
+    total_marks:Optional[str]|None
+    grade:Optional[str]|None
+    gpv :Optional[str]|None
+    
     # subjectStream:str
 class Subject(BaseModel):
     id: str
@@ -27,6 +32,7 @@ class Subject(BaseModel):
     backgroundImage: int = 1
     finalAssignmentMarks: Optional[List[finalAssignmentMarks]] |None 
     nonOcrMarks: Optional[List[finalNonOcrMarks]] |None 
+    finalTotalMarks: Optional[List[finalTotalMarks]] |None 
     
     
             # "subjectStream":"SCS",
@@ -86,6 +92,7 @@ class SubjectCreate(BaseModel):
     updatedAt: Optional[datetime]
     finalAssignmentMarks: Optional[List[finalAssignmentMarks]] |None 
     nonOcrMarks: Optional[List[finalNonOcrMarks]] |None 
+    finalTotalMarks: Optional[List[finalTotalMarks]] |None 
     
 
             # "subjectStream":"SCS",

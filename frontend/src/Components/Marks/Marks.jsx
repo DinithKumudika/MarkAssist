@@ -7,6 +7,9 @@ import { MoonLoader } from 'react-spinners';
 import Modal from "../Modal";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Error from "../../utils/Error";
 // import { set } from "mongoose";
 function Marks({clicked,answers,markings}) {
   const navigate = useNavigate();
@@ -29,7 +32,7 @@ function Marks({clicked,answers,markings}) {
 
   const fetchSubjects = async () =>{
     axios
-    .get(`http://127.0.0.1:8000/api_v1/markings/${markings[0].subjectId}`)
+    .get(`/markings/${markings[0].subjectId}`)
     .then((response) => {
       const data = response.data
       setmarksConfigure(data.markConfig)
@@ -125,7 +128,7 @@ function Marks({clicked,answers,markings}) {
   //   }
       //Ok link call
       // axios
-      // .put(`http://127.0.0.1:8000/api_v1/markings/update/grading/${markings[0].markingScheme}`,marksConfigure)
+      // .put(`/markings/update/grading/${markings[0].markingScheme}`,marksConfigure)
       // .then((response) => {
       //   const data = response.data
       //   console.log("Data:",data)
@@ -191,11 +194,11 @@ const handleProceed = () => {
   console.log("clicked",isLoadingProceed)
   console.log("clicked:",markings[0].markingScheme)
   axios
-  .put(`http://127.0.0.1:8000/api_v1/markings/update/grading/${markings[0].markingScheme}`,marksConfigure)
+  .put(`/markings/update/grading/${markings[0].markingScheme}`,marksConfigure)
   .then((response) => {
     const data = response.data
     console.log("Data:",data)
-    axios.patch(`http://127.0.0.1:8000/api_v1/answers/calculate_marks/${markings[0].markingScheme}/${markings[0].subjectId}`)
+    axios.patch(`/answers/calculate_marks/${markings[0].markingScheme}/${markings[0].subjectId}`)
     .then((response)=>{
         console.log("Marks calculated:",response.data)
         setIsLoadingProceed(false);
@@ -203,7 +206,11 @@ const handleProceed = () => {
     })
     .catch((error)=>{
       console.log(error)
-      alert("Something went wrong")
+      Error("error","Error occured!")
+      setTimeout(function(){
+                window.location.reload();
+             }, 2001);
+
       setIsLoadingProceed(false);
     })
     // Process the response data or update your React component state
@@ -212,7 +219,11 @@ const handleProceed = () => {
     console.error(error);
     setmarksConfigure(null)
     setShowConfirmation(false);
-    alert("Something went wrong")
+    Error("error","Error occured!")
+    setTimeout(function(){
+                window.location.reload();
+             }, 2001);
+
     setIsLoadingProceed(false);
     // Handle the error, e.g., display an error message to the user
   });
@@ -271,7 +282,7 @@ const handleProceed = () => {
 
     if (!hasError) {
       axios
-      .put(`http://127.0.0.1:8000/api_v1/markings/update/grading/${markings[0].markingScheme}`,marksConfigure)
+      .put(`/markings/update/grading/${markings[0].markingScheme}`,marksConfigure)
       .then((response) => {
         const data = response.data
         console.log("Data:",data)
@@ -284,7 +295,11 @@ const handleProceed = () => {
         console.error(error);
         setmarksConfigure(null)
         setIsLoadingProceed(false);
-        alert("Something went wrong")
+        Error("error","Error occured!")
+        setTimeout(function(){
+                window.location.reload();
+             }, 2001);
+
         // Handle the error, e.g., display an error message to the user
       });
     }
@@ -331,6 +346,7 @@ const handleProceed = () => {
       {isLoadingProceed ? <MoonLoader color="#4457FF" loading={isLoadingProceed} size={50} className='absolute top-[8vw] left-[50%]'/> : ""}
 
       {showConfirmation && <Modal handleProceed={handleProceed} onClose={handleProceedClose}/>}
+      <ToastContainer />
     </div>
   )
 }

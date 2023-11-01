@@ -35,7 +35,7 @@ function SubjectsPage() {
       // console.log(headers)
       if(userType==="admin"){
         axios
-        .get(`http://127.0.0.1:8000/api_v1/admins/subjects`, {headers})
+        .get(`/admins/subjects`, {headers})
         .then((response) => {
           const data = response.data;
           console.log(data);
@@ -54,7 +54,7 @@ function SubjectsPage() {
       }else if(userType==="teacher"){
         // console.log(headers);
         axios
-        .get(`http://127.0.0.1:8000/api_v1/subjects/${user_id}`, {headers})
+        .get(`/subjects/${user_id}`, {headers})
         .then((response) => {
           const data = response.data;
           setSubjects(data);

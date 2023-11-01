@@ -20,6 +20,7 @@ import PapersPage from './Pages/PapersPage';
 import './Components/TopBar.css';
 import TeachersDashboard from './Pages/TeachersDashboard';
 import AdminsDashboard from './Pages/AdminsDashboard';
+import StudentsDashboard from './Pages/StudentsDashboard';
 
 function App(){
   return(
@@ -57,6 +58,9 @@ function App(){
         
         <Route path="/admin/dashboard" element={<AdminsDashboard />} />
         <Route path="/teacher/dashboard" element={<TeachersDashboard />} />
+        <Route path="/student/dashboard" element={<StudentsDashboard />} />
+
+        <Route path="/student/results" element={<StudentsDashboard />} />
         {/* <Route path="/student/dashboard" element={<AdminDashboard />} /> */}
 
         <Route path="/admin/teachers" element={<TeachersPage />} />

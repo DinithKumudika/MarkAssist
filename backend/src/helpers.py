@@ -180,19 +180,20 @@ def show_text(image, options):
 def text_similarity(text1: str, text2: str)->str:
      openai.api_key = settings.OPENAI_API_KEY
      # Prepare the prompt
-     prompt = f"""Text 1: {text1}\nText 2: {text2}\n
-               You are a marker who mark exam papers by comparing student answer and marking scheme answer. 
-               Text 1 is the answer of the marking scheme and Text 2 is the answer written by the student for a question.
-               Compare both Text 1 and Text 2 using both cosine similarity and semantic analysis techniques together with the context. 
-               then provide me a score as a percentage between 0 and 1 in below format. Overall score is: score after comparison"""
+     prompt = f"""
+               You are a assistant who evaluate exam papers by comparing student answer with the marking scheme answer. 
+               marking scheme is denoted by Text 1 and the answer written by the student for a question is denoted by the Text 2.
+               Text 1: {text1}
+               Text 2: {text2}
+               Compare both Text 1 and Text 2 using semantic analysis techniques considering their context. 
+               then provide me a cosine similarity score as a percentage between 0 and 1 in below format. 
+               Overall score is: <score after comparison>
+               """
 
      # Make an API request
      response = openai.Completion.create(
           engine='text-davinci-003',
           prompt=prompt,
-          max_tokens=256,
-          n=1,
-          stop=None,
           temperature=0,
      )
 
@@ -322,6 +323,8 @@ def add_student_subject(request: Request, subject: dict, index: str):
                "ocr_marks": 0.0,
                "non_ocr_marks": 0.0,
                "total_marks":0.0,
+               "gpv":0.0,
+               "grade":""
           }
      ]
                     
@@ -358,6 +361,8 @@ def add_subject(request: Request,student_subject:dict, subject: dict, index: str
                     "ocr_marks": 0.0,
                     "non_ocr_marks": 0.0,
                     "total_marks":0.0,
+                    "gpv":0.0,
+                    "grade":""
                }
                # print("is new subject", new_subject);
                # print("this is current list", student_subject["subject"]);
@@ -385,6 +390,8 @@ def update_student_subject_collection(request: Request, subjectOfStudent:dict ,s
           filters = {"index":index} 
           data = {"subject":subjectListOfStudent}
           student_subject_update = student_subject_model.update(request, filters, data)
+          return student_subject_update
+          
           # print("this is result after update", student_subject_update);
      else:
           # This is for nonOCR marks
@@ -396,6 +403,7 @@ def update_student_subject_collection(request: Request, subjectOfStudent:dict ,s
           filters = {"index":index} 
           data = {"subject":subjectListOfStudent}
           student_subject_update = student_subject_model.update(request, filters, data)
+          return student_subject_update
           # print("this is result after update", student_subject_update);
 
 # update student_subject collection's subject fields
@@ -407,12 +415,15 @@ def update_student_subject_collection_given_field(request: Request,subjectOfStud
      
      # update the marks
      for field in field:
+          print("This is field",field)
+          print("This is field value:::",field_value[field])
           subjectOfStudent.update({field: field_value[field]})
      # print("this is subjectOfStudent",subjectOfStudent)
      # update the exixting
      filters = {"index":index} 
      data = {"subject":subjectListOfStudent}
      student_subject_update = student_subject_model.update(request, filters, data)
+     return student_subject_update
 
     
     

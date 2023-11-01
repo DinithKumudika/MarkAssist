@@ -10,6 +10,7 @@ import { CgProfile } from "react-icons/cg";
 import {useState} from 'react';
 import AdminSidebar from './Sidebar/AdminSidebar';  
 import TeacherSidebar from './Sidebar/TeacherSidebar';
+import StudentSidebar from './Sidebar/StudentSidebar';
 function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onClickFunc}) {
   //Gets details from local storage
   const allItems=JSON.parse(localStorage.getItem('tokenData'));
@@ -38,6 +39,8 @@ function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onC
     sidebarComponent = <AdminSidebar clicked={clicked} />;
   }else if (userType === "teacher") {
     sidebarComponent = <TeacherSidebar clicked={clicked} />;
+  }else if (userType === "student") {
+    sidebarComponent = <StudentSidebar clicked={clicked} />;
   }
   //  else {
   //   sidebarComponent = <DefaultSidebar clicked={clicked} />;

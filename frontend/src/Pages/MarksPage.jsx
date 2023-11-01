@@ -28,7 +28,7 @@ function MarksPage() {
 
   const fetchData = async () =>{
     axios
-    .get(`http://127.0.0.1:8000/api_v1/answers/${paperId}`)
+    .get(`/answers/${paperId}`)
     .then((response) => {
       const answer = response.data
       setAnswers(answer)
@@ -36,7 +36,7 @@ function MarksPage() {
       // console.log("Answers:",answer)
       // Process the response data or update your React component state
       axios
-      .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${subjectId}`)
+      .get(`/markings/questions?sub=${subjectId}`)
       .then((response)=>{
         const marking = response.data
         // console.log("Markasdfghings:",answers)
@@ -45,7 +45,7 @@ function MarksPage() {
         setIsLoading2(false);
         setmarkingschemeID(marking[0].markingScheme) 
         // axios
-        // .get(`http://127.0.0.1:8000/api_v1/answers/compare/${marking[0].markingScheme}?sub=${subjectId}&stu=${answer[0].userId}`)
+        // .get(`/answers/compare/${marking[0].markingScheme}?sub=${subjectId}&stu=${answer[0].userId}`)
         // .then((response)=>{
         //   const marks = response.data
         //   // setMarkings(marking)
@@ -77,12 +77,12 @@ function MarksPage() {
 
   // const fetchData = async () => {
   //   try {
-  //     const answerResponse = await axios.get(`http://127.0.0.1:8000/api_v1/answers/${paperId}`);
+  //     const answerResponse = await axios.get(`/answers/${paperId}`);
   //     const answer = answerResponse.data;
   //     setAnswers(answer);
   //     // console.log("Answers:", answer);
   
-  //     const markingResponse = await axios.get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${subjectId}`);
+  //     const markingResponse = await axios.get(`/markings/questions?sub=${subjectId}`);
   //     const marking = markingResponse.data;
   //     setMarkings(marking);
   //     // console.log("Markings:", marking);

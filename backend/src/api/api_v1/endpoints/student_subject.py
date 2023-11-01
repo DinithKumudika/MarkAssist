@@ -46,3 +46,23 @@ async def get_by_id(request: Request, user_id: str):
           status_code=status.HTTP_404_NOT_FOUND, 
           detail=f"There is no details with the index of {user['studentIndex']}"
      )
+     
+
+#calculate student gpa
+@router.post("/gpa", response_description="calculate student gpa", status_code=status.HTTP_200_OK)
+async def calculate_gpa(request: Request):
+
+     student_subject = student_subject_model.calculateGPA(request)
+     # print("\n\nThis is student_subject in endpoint",student_subject,"\n\n")
+     # print("5")
+     if student_subject:
+          print("6")
+          return JSONResponse({
+               "detail": "answers saved",
+               "data": student_subject
+          }, 
+          status_code=status.HTTP_201_CREATED)
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail=f"There is no details with"
+     )    

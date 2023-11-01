@@ -14,6 +14,7 @@ from models.paper import PaperModel
 from models.subject import SubjectModel
 from models.user import UserModel
 from models.student_subject import StudentSubjectModel
+from models.grade import GradeModel
 from helpers import check_keywords_in_paragraph, get_images, text_similarity, keywords_match,update_student_subject_collection_given_field
 from utils.firebase_storage import upload_file2
 
@@ -25,6 +26,7 @@ paper_model = PaperModel()
 subject_model = SubjectModel()
 user_model = UserModel()
 student_subject_model = StudentSubjectModel()
+grade_model = GradeModel()
 
 
 @router.get('/{paper_no}', response_description="get answer images from database", response_model=List[Answer])
@@ -374,8 +376,10 @@ async def calculate_marks(request: Request, markingSchemeId:str, subjectId: str,
                                    mark_percentage = value['percentageOfMarks']
                                    print("mark_percentage",mark_percentage)
                          marks = (marks_reserverd_in_marking * mark_percentage)/100
+                         print("Previosmarks::::::",marks)
                          marks += (keywords_marks_reserverd_in_marking * keywords_accuracy_percentage)/100
-                         print("marks",marks)
+                         print("Afterrrrrmarks::::::",marks)
+
                          
                          totalMarksForPaper+=marks
                          
@@ -400,19 +404,29 @@ async def calculate_marks(request: Request, markingSchemeId:str, subjectId: str,
                subjectListOfStudent = student_subject['subject']
                field = ['ocr_marks','total_marks']
                
-               #TODO: Methana total marks hadanna. thiyena total marks wakin thiyena ocr marks adu karala aluth eka add karanna
-
-               
                # in here user id means index
                for subjectOfStudent in subjectListOfStudent:
                     if subjectOfStudent['subject_code'] == subject['subjectCode']:
                          current_total_mark_of_ocr = float(subjectOfStudent['ocr_marks']) * float(subject['paperMarks']/100)
                          total_mark_of_ocr = float(totalMarksForPaper) * float(subject['paperMarks']/100)
                          total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_ocr + total_mark_of_ocr 
-                         field_value = {'ocr_marks':totalMarksForPaper,'total_marks':total_marks}
+                         # print("DATA1:::::",current_total_mark_of_ocr)
+                         # print("DATA3:::::",total_mark_of_ocr)
+                         # print("DATA2:::::",total_marks)
+                         # print("DATA4:::::",subjectOfStudent['total_marks'])
+                         
+                         field_value = {'ocr_marks':round(totalMarksForPaper,2),'total_marks':round(total_marks,2)}
                          print("This is total marks",totalMarksForPaper)
-                         update_student_subject_collection_given_field(request,subjectOfStudent, subject, userId, subjectListOfStudent,field,field_value)
-                    
+                         student_subject_update =  update_student_subject_collection_given_field(request,subjectOfStudent, subject, userId, subjectListOfStudent,field,field_value)
+                         print("student subject update:::",student_subject_update)
+                         
+                         updated_subjectListOfStudent = student_subject_update['subject']
+                         for updated_subjectOfStudent in updated_subjectListOfStudent:
+                              if updated_subjectOfStudent['subject_code'] == subject['subjectCode']:
+                                   grade = grade_model.grade_and_gpv(request, updated_subjectOfStudent['total_marks'])
+                                   update_student_subject_collection_given_field(request,subjectOfStudent, subject, userId, subjectListOfStudent,{'grade'},{'grade':grade['grade']})
+                                   update_student_subject_collection_given_field(request,subjectOfStudent, subject, userId, subjectListOfStudent,{"gpv"},{"gpv":grade['gpv']})
+                         
           return JSONResponse({
                     "similarity percentages": "ok"
                },
