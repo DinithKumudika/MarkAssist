@@ -215,10 +215,7 @@ const AdminHandleStudents2 = () => {
   </tr>
 </table>
   </div>
-  {/* <div
-   className="w-auto " >
-  <DashboardTable2 />
-  </div> */}
+
   </div>
 </div>
 </div>
