@@ -26,6 +26,7 @@ function AnswerSheetsPage({page}) {
   console.log("currentPath:",currentPath);
 
 
+  
   useEffect(()=>{
     axios
     .get(`/markings/${subjectId}`)
@@ -33,6 +34,7 @@ function AnswerSheetsPage({page}) {
       console.log("Markingscheme:",response.data);
       setMarkingScheme(response.data);
       // setIsLoading(false);
+      
       if(page==='answersheets'){
         axios
         .get(`/papers/subjects/${subjectId}`)
@@ -109,7 +111,7 @@ function AnswerSheetsPage({page}) {
       {isLoading ? <MoonLoader color="#4457FF" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 
         :
         <div className={`${classes} ${isClicked === 'outer' ? ' ml-16 outer w-[calc(100vw-64px)]' : 'ml-64 w-[calc(100vw-256px)] inner'} max-sm:16 max-sm:w-[calc(100vw-64px)]`}>
-          <div className='flex flex-row justify-between items-center h-12'>
+          <div className='flex flex-row items-center justify-between h-12'>
             <Link className={`${linkClasses('answersheets')} `} to={`/answersheets/${year}/${subjectId}`}>
               <div>
                 Answer Sheets

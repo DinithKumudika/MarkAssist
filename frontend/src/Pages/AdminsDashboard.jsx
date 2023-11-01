@@ -1,7 +1,6 @@
 import React from 'react'
 import NavBar from '../Components/NavBar'
 import SideBar from '../Components/SideBar'
-import Subjects from '../Components/Subjects/Subjects'
 import {useState} from 'react'
 import AdminDashboard from '../Components/Dashboards/AdminDashboard'
 function AdminsDashboard() {
