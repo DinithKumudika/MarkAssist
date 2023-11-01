@@ -1,4 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
+import TopBar from "./Components/TopBar";
+import QuestionsPage from "./Pages/QuestionsPage";
 import EssayPage from './Pages/EssayPage';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
@@ -11,7 +13,7 @@ import YearsPage from './Pages/YearsPage';
 import MarkingSchemesPage from './Pages/MarkingSchemesPage';
 import MarkingSchemeConfigurePage from './Pages/MarkingSchemeConfigurePage';
 import AnswerSheetsPage from './Pages/AnswerSheetsPage';
-import TopBar from './Components/TopBar';
+// import TopBar from './Components/TopBar';
 import TeachersPage from './Pages/TeachersPage';
 import MarksPage from './Pages/MarksPage';
 import PapersPage from './Pages/PapersPage';
@@ -22,7 +24,7 @@ import StudentsDashboard from './Pages/StudentsDashboard';
 
 function App(){
   return(
-    <div className='h-full'>
+    <div>
       {/* <TopBar /> */}
       <Routes>
         <Route path="/" element={<Login />} />
@@ -64,6 +66,10 @@ function App(){
         <Route path="/admin/teachers" element={<TeachersPage />} />
         <Route path="/admin/grades" element={<TeachersPage />} />
 
+
+        <Route path="/" element={<AdminHandleStudents2 />} />
+        <Route path="/adminhandleteacher2" element={<AdminHandleTeacher2 />} />
+        <Route path="/adminhandlestudents" element={<AdminHandleStudents />} />
 
       </Routes>
     </div>

@@ -2,7 +2,6 @@ import React from 'react'
 import NavBar from '../Components/NavBar'
 import SideBar from '../Components/SideBar'
 import TeacherDashboard from '../Components/Dashboards/TeacherDashboard'
-import Subjects from '../Components/Subjects/Subjects'
 import {useState} from 'react'
 function TeachersDashboard() {
 
@@ -28,4 +27,4 @@ function TeachersDashboard() {
   )
 }
 
-export default TeachersDashboard
+export default TeachersDashboard;
