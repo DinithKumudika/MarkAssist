@@ -13,6 +13,8 @@ class StudentSubjectBase(BaseModel):
     ocr_marks:float
     non_ocr_marks:float
     total_marks:float
+    gpv:float
+    grade:str
     
     class Config:
         schema_extra = {
@@ -26,6 +28,8 @@ class StudentSubjectBase(BaseModel):
             "ocr_marks": 60,
             "non_ocr_marks":22 ,
             "total_marks":82,
+            "gpv":3.0,
+            "grade":"C+"
             }
         }
     
@@ -56,6 +60,8 @@ class StudentSubject(BaseModel):
                             "ocr_marks": 60,
                             "non_ocr_marks":22 ,
                             "total_marks":82,
+                            "gpv":3.0,
+                            "grade":"C+"
                         },
                         {
                             "subject_id": "64882f6c32d15c1d89f06cdf",
@@ -67,6 +73,8 @@ class StudentSubject(BaseModel):
                             "ocr_marks": 60,
                             "non_ocr_marks":22 ,
                             "total_marks":82,
+                            "gpv":3.0,
+                            "grade":"C+"
                         },
                         {
                             "subject_id": "64882f6c32d15c1d89f06cdf",
@@ -78,6 +86,8 @@ class StudentSubject(BaseModel):
                             "ocr_marks": 60,
                             "non_ocr_marks":22 ,
                             "total_marks":82,
+                            "gpv":3.0,
+                            "grade":"C+"
                         }          
                 ],
             }
@@ -110,6 +120,8 @@ class StudentSubjectCreate(BaseModel):
                             "ocr_marks": 60,
                             "non_ocr_marks":22 ,
                             "total_marks":82,
+                            "gpv":3.0,
+                            "grade":"C+"
                         },         
                 ],
             }
@@ -133,6 +145,8 @@ class StudentSubjectUpdate(BaseModel):
                             "ocr_marks": 60,
                             "non_ocr_marks":22 ,
                             "total_marks":82,
+                            "gpv":3.0,
+                            "grade":"C+"
                         },
           
                 ],
