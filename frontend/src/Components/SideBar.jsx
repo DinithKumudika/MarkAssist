@@ -29,7 +29,7 @@ function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onC
   if(clicked==="outer"){
     navbarclasses = classnames('h-full z-20 fixed px-2 text-white font-bold text-center flex flex-col justify-between sidebar w-16 bg-custom-blue-main outer pt-1')
   }else if(clicked==="inner"){
-    navbarclasses = classnames('h-full z-20 fixed px-2 text-white font-bold text-center flex flex-col justify-between sidebar w-64 bg-custom-blue-main inner pt-1 max-sm:w-14')
+    navbarclasses = classnames('h-full z-20 fixed px-2 text-white font-bold text-center flex flex-col justify-between sidebar w-64 bg-custom-blue-main inner pt-1 max-sm:w-16')
   }
 
   let sidebarComponent;
@@ -68,7 +68,7 @@ function SideBar({dashboard,subjects,markingSchemes,answerPapers,mcq,clicked,onC
         <div className='w-full'>
           {/* <Link to="/profile" className={`flex hover:bg-white hover:bg-opacity-30 rounded rounded-lg items-center w-full py-3 ${clicked === 'outer' ? 'justify-center': 'justify-right'}`}><div className='ml-1 block text-3xl pr-1'><CgProfile/></div>{clicked==="inner" ? <div className='ml-1 max-sm:hidden'>Profile</div> : ""}</Link> */}
           {/* <Link to="/settings" className='shadow shadow-gray-600 flex justify-center hover:bg-sky-300 w-full py-4'>{clicked==="inner" ? <div className='ml-1 max-sm:hidden'>Settings</div> : <div className='ml-1 block text-3xl pr-1'><MdSettings/></div>}{clicked==="inner" ? <div className='mr-1 max-sm:block sm:hidden text-3xl'><MdSettings/></div> : ""}</Link> */}
-          <button onClick={handleLogout} className={`flex gap-2 hover:bg-white hover:bg-opacity-30 rounded rounded-lg items-center w-full py-3 ${clicked === 'outer' ? 'justify-center': 'justify-right'}`}><div className={`${clicked==="outer" ? ' ml-0 ' : ' ml-4 '} block text-3xl pr-1 max-sm:ml-1`}><img className="w-6" src="http://localhost:3000/logoutcurve.svg" alt="logot" /></div>{clicked==="inner" ? <div className=' ml-1 max-sm:hidden'>Logout</div> : ""}</button>
+          <button onClick={handleLogout} className={`flex gap-2 hover:bg-white hover:bg-opacity-30 rounded rounded-lg items-center w-full py-3 ${clicked === 'outer' ? 'justify-center': 'max-sm:justify-center justify-right'}`}><div className={`${clicked==="outer" ? ' ml-0 ' : ' ml-4 '} block text-3xl pr-1 max-sm:ml-1`}><img className="w-6" src="http://localhost:3000/logoutcurve.svg" alt="logot" /></div>{clicked==="inner" ? <div className=' ml-1 max-sm:hidden'>Logout</div> : ""}</button>
         </div>
       </div>
     </div>

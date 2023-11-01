@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from typing import List
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
+from io import TextIOWrapper
 from datetime import datetime
 import httpx
 import requests
@@ -15,12 +16,18 @@ from models.paper import PaperModel
 from schemas.paper import Paper,PaperCreate,PaperForm
 
 from models.user import UserModel
-from schemas.answer import AnswerCreate, Answer
 from schemas.user import User
+
+from schemas.answer import AnswerCreate, Answer
 from models.answer import AnswerModel, extract_answers, read_answers ,read_answers_azure
-from helpers import get_images, text_similarity
-from utils.firebase_storage import upload_file2
+
+from models.student_subject import StudentSubjectModel
+from schemas.student_subject import StudentSubjectBase, StudentSubject,StudentSubjectUpdate, StudentSubjectCreate
+
 from models.subject import SubjectModel;
+
+from helpers import get_images, text_similarity, add_student_subject, add_subject,update_student_subject_collection
+from utils.firebase_storage import upload_file2
 
 from utils.auth import get_current_active_user
 
@@ -32,6 +39,7 @@ paper_model = PaperModel()
 subject_model = SubjectModel()
 answer_model = AnswerModel()
 user_model = UserModel()
+student_subject_model = StudentSubjectModel()
 
 @router.get("/", response_description="Get all papers", response_model=List[Paper])
 async def get_all_papers(request: Request, current_user: User = Depends(get_current_active_user)):
@@ -277,7 +285,17 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
                               paper_url_up = await upload_file(UploadFile(filename=extracted_file, file=io.BytesIO(extracted_file_data)), extracted_file)
                               print(f"Uploaded file: {extracted_file}")
                               print(f"File URL: {paper_url_up}")
-
+                              
+                              # check if user details alredy in the student_subject collection
+                              index = extracted_file.split(".")[0]
+                              student_subject = student_subject_model.by_index(request, index)
+                              
+                              if student_subject:
+                                   add_subject(request,student_subject,subject,index)
+                              else:
+                                   new_student_subject = add_student_subject(request,subject,index)
+                                   print("this is end of else", new_student_subject)
+                                   
                               # Create a new paper object with the provided data and file URL
                               paper = PaperCreate(
                                    year=year,
@@ -294,6 +312,7 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
 
                               # Save the paper to the database using your model
                               new_paper = await paper_model.add_new_paper(request, paper)
+                              
                               if new_paper:
                                    document_url = new_paper["paperUrl"]
                                    async with httpx.AsyncClient() as client:
@@ -325,6 +344,7 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
                                                       question_no = answers[i]["question no"]
                                                       answer_text = answers[i]["text"]
                                                       print("user_id:",new_paper['paper'].split(".")[0])
+                                                      
                                                       answer = AnswerCreate(
                                                            paperNo=new_paper['id'], 
                                                            subjectId= new_paper['subjectId'], 
@@ -391,7 +411,21 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
                     # Upload the file and get the file URL
                     paper_url_up = await upload_file(file, file.filename)
                     print(paper_url_up)
-
+                    
+                    
+                    # check if user details alredy in the student_subject collection
+                    index = file.filename.split(".")[0]
+                    student_subject = student_subject_model.by_index(request, index)
+                    print("This is student subject", student_subject)
+                    
+                    if student_subject:
+                         add_subject(request,student_subject,subject,index)
+                    else:
+                         # create a new one
+                         print("This is student subject else close")
+                         new_student_subject = add_student_subject(request,subject,index)
+                         print("this is end of else", new_student_subject)
+                    
                     # Create a new paper object with the provided data and file URL
                     paper = PaperCreate(
                          year=year,
@@ -408,6 +442,7 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
 
                     # Save the paper to the database using your model
                     new_paper = await paper_model.add_new_paper(request, paper)
+                    
                     if new_paper:
                          document_url = new_paper["paperUrl"]
                          async with httpx.AsyncClient() as client:
@@ -496,3 +531,112 @@ async def upload_files(request: Request, files: List[UploadFile] = File(...), ye
                status_code=status.HTTP_404_NOT_FOUND,
                detail="Add subject First"
           )
+          
+# @router.post('/upload/file/', response_description="Add new papers", response_model=List[Paper], status_code=status.HTTP_201_CREATED)
+# async def upload_files(request: Request, files: List[UploadFile] = File(...), year: str = Form(...), subjectId: str = Form(...)):          
+@router.post('/upload/marks_type',response_description="Add assignment marks", status_code=status.HTTP_201_CREATED)
+async def upload_marks(request: Request, files: List[UploadFile] = File(...), marks_type: str = Form(...), year: str = Form(...), subjectId: str = Form(...)):
+     print("This is marks type",marks_type)
+     print("This is year",year)
+     print("This is subjectId",subjectId)
+     
+     # Get the subjectCode and subjectName using subjectId
+     subject = subject_model.subject_by_id(request, subjectId)
+     # print("This is subject",subject)
+     # Check if the uploaded file is a CSV file
+     if files[0].filename.endswith('.csv'):
+          # Read the content of the CSV file
+          contents = await files[0].read()
+          contents_str = contents.decode('utf-8')  # Assuming the file is UTF-8 encoded
+        
+          # Split the CSV content by lines
+          lines = contents_str.split('\n')
+          
+          lineOne = lines[0].split(',')
+        
+          # print("This is line one",lineOne)
+          fullMarksList = []
+        
+          # Skip the first line (header) and process the rest
+          for line in lines[1:]:
+               # Process the CSV data line by line here
+               # print("This is line :",len(line))
+               
+               if(len(line) !=0):            
+                    marksList = line.split(',')
+                    marksDict = { }
+                    if(len(marksList)>0 or len(marksList)!=0):
+                         # print("This is marks list",marksList)       
+                         for index, value in enumerate(marksList): 
+                              marksDict.update({lineOne[index].strip():value.strip()})
+                         fullMarksList.append(marksDict) 
+          
+          
+          print("This is full marks",fullMarksList)
+          if(marks_type=="assignmentMarks"):
+               filters = {"_id":ObjectId(subject['id'])} 
+               data = {"finalAssignmentMarks":fullMarksList}
+               updated_subject = subject_model.update(request,filters, data)
+               if not updated_subject:
+                    raise HTTPException(
+                         status_code=status.HTTP_304_NOT_MODIFIED, 
+                         detail="Error in updating subject collection"
+                    )
+          else:
+               filters = {"_id":ObjectId(subject['id'])} 
+               data = {"nonOcrMarks":fullMarksList}
+               updated_subject = subject_model.update(request,filters, data)
+               if not updated_subject:
+                    raise HTTPException(
+                         status_code=status.HTTP_304_NOT_MODIFIED, 
+                         detail="Error in updating subject collection"
+                    )
+          
+          
+          # Now csv file is generalised and stored in fullMarksList, now add that data into student_subject collection
+          for studentMarks in fullMarksList:
+               # print("This is student marks",studentMarks['index'])
+               print("This is student marks",studentMarks)
+               
+               # check if user details alredy in the student_subject collection
+               index = studentMarks['index']
+               student_subject = student_subject_model.by_index(request, index)
+               # print("This is student subject", student_subject)
+               
+               if student_subject:
+                    subjectListOfStudent = student_subject['subject']
+                    print("Student markss:::::",studentMarks)
+                    # params = subject,subjectListOfStudent,index,marks_type,studentMarks
+
+                    for subjectOfStudent in subjectListOfStudent:
+                         if subjectOfStudent['subject_code'] == subject['subjectCode']:
+                              if(marks_type=="assignmentMarks"):
+                                   #Remove currently added marks
+                                   current_total_mark_of_assignments = float(subjectOfStudent['assignment_marks']) * float(subject['assignmentMarks']/100)
+                                   total_mark_of_assignments = float(studentMarks['assignment_marks']) * float(subject['assignmentMarks']/100)
+                                   total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_assignments + total_mark_of_assignments # calculate total marks of student by adding new marks
+                                   update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,total_marks)
+                              else:
+                                   current_total_mark_of_nonocr = float(subjectOfStudent['non_ocr_marks']) * float(subject['paperMarks']/100)
+                                   total_mark_of_nonocr = float(studentMarks['non_ocr_marks']) * float(subject['paperMarks']/100)
+                                   total_marks = subjectOfStudent['total_marks'] - current_total_mark_of_nonocr + total_mark_of_nonocr # calculate total marks of student by adding new marks
+                                   update_student_subject_collection(request,subjectOfStudent,subject,index,marks_type,studentMarks,subjectListOfStudent,total_marks)
+                         
+                                   
+
+               else:
+                    # create new student_subject collection
+                    # print("This is student subject else close")
+                    new_student_subject = add_student_subject(request,subject,index)
+                    if(new_student_subject):
+                         update_student_subject_collection(request,subject,index,marks_type,studentMarks,new_student_subject['subject'])
+                    # print("this is end of else", new_student_subject)
+                       
+
+          data = {
+                 "status": 200,
+                 "message": "File uploaded successfully",
+                 "marks":fullMarksList,
+                 "marksForSubjectCollection":fullMarksList
+             }
+     return data

@@ -2,6 +2,15 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
 
+class finalAssignmentMarks(BaseModel):
+    index:Optional[str]|None
+    assignment_marks:Optional[str]|None
+
+class finalNonOcrMarks(BaseModel):
+    index:Optional[str]|None
+    non_ocr_marks:Optional[str]|None
+    
+
     # subjectStream:str
 class Subject(BaseModel):
     id: str
@@ -15,7 +24,9 @@ class Subject(BaseModel):
     paperMarks:int
     editingTeacher:str
     nonEditingTeacher:str
-    backgroundImage: int = 1 
+    backgroundImage: int = 1
+    finalAssignmentMarks: Optional[List[finalAssignmentMarks]] |None 
+    nonOcrMarks: Optional[List[finalNonOcrMarks]] |None 
     
     
             # "subjectStream":"SCS",
@@ -73,6 +84,9 @@ class SubjectCreate(BaseModel):
     backgroundImage: int = 1 
     createdAt: Optional[datetime]
     updatedAt: Optional[datetime]
+    finalAssignmentMarks: Optional[List[finalAssignmentMarks]] |None 
+    nonOcrMarks: Optional[List[finalNonOcrMarks]] |None 
+    
 
             # "subjectStream":"SCS",
     class Config:

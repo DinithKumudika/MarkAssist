@@ -6,6 +6,7 @@ import SubjectAddBox from './SubjectAddBox';
 import Button from '../Button';
 import { useSort } from '../../Hooks/Sort';
 import axios from 'axios';
+import BreadCrumb from '../BreadCrumb';
 function Subjects({clicked,data}) {
   const length = data?.length;
   console.log("Length:",length);
@@ -16,7 +17,7 @@ function Subjects({clicked,data}) {
   }
   const userType = allItems['user_role'];
 
-  const classes = classnames('sidebar static max-sm:ml-16');
+  const classes = classnames('sidebar absolute top-[52px] max-sm:pl-16 bg-background overflow-auto pt-6 pb-[60px] ');
 
   const location = useLocation();
   const pathName = location.pathname.split('/').filter((path) => path !== '')
@@ -85,10 +86,13 @@ function Subjects({clicked,data}) {
   })
 
   return (
-    <div className={`${classes} ${clicked === 'outer' ? ' ml-16 outer w-[calc(100vw-96px)]' : 'ml-64 w-[calc(100vw-288px)] inner'} max-sm:16 max-sm:w-[calc(100vw-96px)]`}>
-      <div className='flex justify-center items-center sidebar'>
-          <div className='mt-[8%] h-[85%] w-11/12'>
-            <div className='flex flex-row justify-between items-center mb-4'>
+    <div className={`${classes} ${clicked === 'outer' ? ' pl-16 outer ' : 'pl-64 inner'} max-sm:pl-16 w-full`}>
+      <div className='flex flex-col justify-center items-center sidebar overflow-hidden h-fit'>
+          <div className='w-11/12'>
+            <BreadCrumb/>
+          </div>
+          <div className='bg-white p-4 rounded w-11/12 min-h-max '>
+            <div className='flex flex-row justify-between items-center mb-4 min-h-max'>
               <div className='flex flex-row items-center justify-start h-10'>
                   <p className='p-2 rounded rounded-lg w-20 mr-4 font-bold text-[#191854]'>Subjects({length})</p>
                   <p className='p-2 rounded rounded-lg w-20 '>Sort by:</p>
@@ -104,7 +108,8 @@ function Subjects({clicked,data}) {
                 <Button onClick={handleClick}> Add a Subject</Button>
               }
             </div>
-            <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 overflow-auto'>
+            <div className='grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6'>
+              {subjects}
               {subjects}
             </div>
           </div>

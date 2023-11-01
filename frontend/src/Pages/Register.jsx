@@ -18,6 +18,7 @@ function Register(){
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
+        studentIndex: '',
         email: '',
         password: '',
         userType: 'student',
@@ -28,7 +29,7 @@ function Register(){
     
     const [error, setError] = useState();
 
-    const { firstName, lastName, email, password, confirmPassword } = formData;
+    const { firstName, lastName,studentIndex, email, password, confirmPassword } = formData;
 
 
     const onChange = (e) => {
@@ -46,6 +47,7 @@ function Register(){
             const formdata = new FormData();
             formdata.append('firstName', formData.firstName);
             formdata.append('lastName', formData.lastName);
+            formdata.append('studentIndex', formData.studentIndex);
             formdata.append('email', formData.email);
             formdata.append('password', formData.password);
             formdata.append('userType', 'student');
@@ -57,9 +59,9 @@ function Register(){
                 navigate('/login');
             }catch(error){
                 console.log("error:"+error.response.data.message);
-                if(error.response && error.response.status >=400 && error.response.status <500){
-                    console.log(error.response.data.message);
-                    setError(error.response.data.message);
+                if(error.response && error.response.status >=400 && error.response.status <=500){
+                    console.log("ERRORR:::",error.response.data);
+                    setError("Invalid fields!");
                 }
             }
         }
@@ -70,7 +72,7 @@ function Register(){
         <div className=" flex justify-center items-center h-full">
             <div className="flex flex-col items-center rounded rounded-sm shadow shadow-gray-400 w-96 h-fit py-5 pb-10 px-10">
                 <div className="w-5/12 mb-10 mt-10"><img src={Logo} alt="Logo"/></div>
-                <div className="flex items-center  rounded rounded-sm w-3/4 shadow shadow-gray-300">
+                {/* <div className="flex items-center  rounded rounded-sm w-3/4 shadow shadow-gray-300">
                     <button className="flex items-center justify-center p-1" onClick={handleClick}><FcGoogle className=" text-xl mx-3.5"/>
                     Continue with Google</button>
                 </div>
@@ -78,12 +80,13 @@ function Register(){
                   <div style={{ flex: '1', borderTop: '1px solid black' }}></div>
                   <span style={{ margin: '0 10px' }}>or</span>
                   <div style={{ flex: '1', borderTop: '1px solid black' }}></div>
-                </div>
+                </div> */}
                 <div className="w-full">
                     <form className="flex flex-col items-center justify-center w-full" action="" onSubmit={handleSubmit}>
                         {error && <div className="bg-red-500 text-white text-sm mb-2 w-full p-2 rounded text-center mb-6">{error}</div>}
                         <input className={classes} type="text" name="firstName" placeholder="First Name" value={firstName} onChange={onChange}/>
                         <input className={classes} type="text" name="lastName" placeholder="Last Name" value={lastName} onChange={onChange}/>
+                        <input className={classes} type="text" name="studentIndex" placeholder="Index No." value={studentIndex} onChange={onChange}/>
                         <input className={classes} type="email" name="email" placeholder="Email" value={email} onChange={onChange}/>
                         {/* <select value={userType} onChange={handleUserTypeChange} className='rounded shadow shadow-gray-400 w-full h-9 p-2 mb-4'>
                           <option value="">Select user type</option>

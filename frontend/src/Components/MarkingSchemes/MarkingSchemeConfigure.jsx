@@ -30,7 +30,22 @@ function MarkingSchemeConfigure({clicked, data,subjectId}) {
 
   const handleProceed = () => {
     const definedData = formData.filter((item) => item !== undefined);
-    // console.log("DefinedData:",definedData);
+    console.log("DefinedData:",definedData);
+    const allElementsFilled = definedData.every(item => {
+      // Check if all required properties have values
+      console.log("ITEM::::",item.selected);
+      if(item.selected){
+        return item.questionNo && item.subQuestionNo && item.partNo && item.noOfPoints && item.marks && item.keywordsMarks;
+      }else{
+        return true;
+      }
+    });
+    console.log("All elements filled:",allElementsFilled);
+    if(!allElementsFilled){
+      console.log("Please fill all the fields");
+      alert("Please fill all the fields");
+      return;
+    }
     axios
     .put(`http://127.0.0.1:8000/api_v1/markings/update/${subjectId}`,definedData)
     .then((response)=>{
