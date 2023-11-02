@@ -1,11 +1,11 @@
 import React from 'react'
-
+import DragDrop3 from '../Components/DragDrop3.jsx';
 function McqPage() {
   return (
     <div>
-      MCQ page
+      <DragDrop3 />
     </div>
   )
 }
 
-export default McqPage
+export default McqPage;

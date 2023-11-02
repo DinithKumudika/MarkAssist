@@ -22,8 +22,8 @@ function MarkingSchemeConfigurePage() {
 
   const fetchMarkings = async () =>{
     axios
-    // .get(`http://127.0.0.1:8000/api_v1/markings/questions?scheme=${markingschemeId}`)
-    .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${subjectId}`).then((response) => {
+    // .get(`/markings/questions?scheme=${markingschemeId}`)
+    .get(`/markings/questions?sub=${subjectId}`).then((response) => {
       const data = response.data
       setMarkings(data)
       // console.log("Markings:",data)

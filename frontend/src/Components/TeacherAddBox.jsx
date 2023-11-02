@@ -58,7 +58,7 @@ function TeacherAddBox({closeFunc}) {
             const formdata = new FormData();
             // formdata.append('subjectCode', formData.subjectCode);
             axios
-            .post('http://127.0.0.1:8000/api_v1/auth/register?type=teacher',formData)
+            .post('/auth/register?type=teacher',formData)
             .then((response) => {
                 // console.log("Hello:",response);
                 window.location.reload();
@@ -75,7 +75,7 @@ function TeacherAddBox({closeFunc}) {
             setError("");
         }
         // try{
-        //     // const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/token',formdata);
+        //     // const response = await axios.post('/auth/token',formdata);
            
         //     // navigate('/subjects');
         // }catch(error){
@@ -149,9 +149,9 @@ function TeacherAddBox({closeFunc}) {
                             </div>
                         </div>
                 </div>
-                <div className='w-full'>
+                {/* <div className='w-full'>
                     <p className='font-bold text-blue-950 text-xl my-4 '>Other Information</p>
-                </div>
+                </div> */}
                 {adding && <BarLoader color="#4457FF" height={6} width={128} />}
 
             </form>

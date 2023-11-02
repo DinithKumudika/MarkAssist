@@ -44,7 +44,7 @@ function Login(){
         loginData.append('password', formData.password);
         console.log(formData)
         try{
-            const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/token',loginData);
+            const response = await axios.post('/auth/token',loginData);
             
             const allItems = jwt_decode(response.data.access_token);
             localStorage.setItem('accessToken', response.data.access_token)

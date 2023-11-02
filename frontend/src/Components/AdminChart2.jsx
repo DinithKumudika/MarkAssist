@@ -27,6 +27,12 @@ function TeacherChart() {
       Papers: 39,
       amt: 2000,
     },
+    {
+      name: 'Year5',
+      uv: 1890,
+      Papers: 75,
+      amt: 2181,
+    },
   ];
 
   return (

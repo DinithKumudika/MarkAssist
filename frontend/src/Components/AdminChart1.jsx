@@ -2,7 +2,7 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 
 function AdminChart1() {
-  const value = [68]; // Represents 70 percent
+  const value = [70]; // Represents 70 percent
   const options = {
     // chart: {
     //   width: 100, // Adjust the width of the chart
@@ -18,8 +18,8 @@ function AdminChart1() {
       <div id="chart">
         <Chart type="radialBar" series={value} options={options} className="lg:w-auto align-self: flex-start;"/>
       </div>
-      <div className='mb-1 text-base font-semibold text-center text-black-950'><span className='text-lg font-bold text-green-600'>"680"</span> Papers are Graded</div>
-      <div className='text-base font-semibold text-center text-black-950'><span className='text-lg font-bold text-red-600'>"320"</span> Papers are Not Graded</div>
+      <div className='mb-1 text-base font-semibold text-center text-black-950'><span className='text-lg font-bold text-green-600'>"700"</span> Papers are Graded</div>
+      <div className='text-base font-semibold text-center text-black-950'><span className='text-lg font-bold text-red-600'>"300"</span> Papers are Not Graded</div>
     </div>
   );
 }

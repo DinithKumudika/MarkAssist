@@ -1,0 +1,24 @@
+ARG NODE_VERSION="18.14.1-alpine"
+ARG APP_ROOT=/client
+
+FROM node:${NODE_VERSION}
+
+LABEL version="1.0.0"
+WORKDIR ${APP_ROOT}
+
+COPY package.json ${APP_ROOT}/
+
+ENV REACT_APP_GOOGLE_CLIENT_ID=942322700321-9rl62tgmimdev1g8ko44c35djemg7dem.apps.googleusercontent.com
+ENV REACT_APP_GOOGLE_OAUTH_REDIRECT_URL=http://localhost:8000/auth/google
+
+RUN npm install
+COPY ./public ${APP_ROOT}/public
+COPY ./src ${APP_ROOT}/src
+
+RUN npm install -D tailwindcss
+COPY tailwind.config.js ${APP_ROOT}/
+
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
