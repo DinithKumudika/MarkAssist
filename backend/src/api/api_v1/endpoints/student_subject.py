@@ -66,3 +66,22 @@ async def calculate_gpa(request: Request):
           status_code=status.HTTP_404_NOT_FOUND, 
           detail=f"There is no details with"
      )    
+     
+#calculate student gpa
+@router.post("/calculate/rank", response_description="calculate student rank", status_code=status.HTTP_200_OK)
+async def calculate_gpa(request: Request):
+
+     student_subject = student_subject_model.list_of_index_gpa(request)
+     # print("\n\nThis is student_subject in endpoint",student_subject,"\n\n")
+     # print("5")
+     if student_subject:
+          print("6")
+          return JSONResponse({
+               "detail": "answers saved",
+               "data": student_subject
+          }, 
+          status_code=status.HTTP_201_CREATED)
+     raise HTTPException(
+          status_code=status.HTTP_404_NOT_FOUND, 
+          detail=f"There is no details with"
+     ) 

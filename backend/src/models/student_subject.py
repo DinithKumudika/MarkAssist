@@ -138,18 +138,33 @@ class StudentSubjectModel():
               
           # sort the final_updated_student_subject_list_of_gpa_index list
           final_updated_student_subject_list_of_gpa_index = sorted(final_updated_student_subject_list_of_gpa_index, key=lambda x: x["gpa"], reverse=True)
+          print("This is final_updated_student_subject_list_of_gpa_index",final_updated_student_subject_list_of_gpa_index)
           
+          final_updated_student_subject_list = []
           # now update the rank of each student
-          for index,student in final_updated_student_subject_list_of_gpa_index:
+          for i,student in enumerate(final_updated_student_subject_list_of_gpa_index):
+               print("\n\n This is student in final_updated_student_subject_list_of_gpa_index",student)
                # update student_subject collection
                filters = {"index": student['index']}
-               data = {"rank": index+1 }
+               data = {"rank": i+1 }
+               
+               print("This is new rank",i+1);
+               print("This is subject in rank",student['index'])
      
                updated_student_subject_collection = self.get_collection(request).find_one_and_update(
                    filters,
                    {'$set': data},
                    return_document=ReturnDocument.AFTER
                )
+               
+               # Convert ObjectId to string for serialization
+               updated_student_subject_collection["id"] = str(updated_student_subject_collection["_id"])
+               updated_student_subject_collection.pop("_id")
+               # print("\n\nThis is updated_student_subject_collection", updated_student_subject_collection)
+               # print("This is updated_student_subject_collection id", updated_student_subject_collection['id'], "\n\n")
+               final_updated_student_subject_list.append(updated_student_subject_collection)
+               
+          return final_updated_student_subject_list
 
 
 
