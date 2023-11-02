@@ -2,7 +2,7 @@ import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {AiOutlineCheck ,AiOutlineClose} from 'react-icons/ai';
 import {ImCheckmark,ImCross} from 'react-icons/im';
 import { Fragment, useEffect, useState } from 'react';
-function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, role, date, subjects, select,configured, index, fileName, overallMark, MarkingSchemes,teachers, AnswerSheets,Assignments_NonOCR, marks,papers}) {
+function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, role, date, subjects, select,configured, index, fileName, overallMark, MarkingSchemes,teachers, grade,grades,AnswerSheets,Assignments_NonOCR, marks,papers}) {
   const navigate = useNavigate();
   console.log("teacher:",teachers)
   const handleSelect = () =>{
@@ -15,6 +15,7 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
   let teacher =""
   let markingscheme =""
   let paper =""
+  let Grade = ""
   let AnswerSheet =""
   let AssignmentsNonOCR =""
   // const [Checked, setChecked] = useState({})
@@ -132,6 +133,29 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
     })
   }
 
+  if(grades){
+    Grade = grades?.map((grade) => {
+      // Create a Date object from the timestamp string
+      
+      // console.log("year:",AnswerSheet)
+      return (
+        <Fragment key={grade?.index}>
+          <tr className="w-full " >
+
+              <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-2/5'>{grade?.index}</td>
+              <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-2/5'>{grade?.marks}</td>
+              <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60 w-2/5'>{grade?.grading}</td>
+              {/* {date && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60'>{teacher.date}</td>} */}
+              {/* <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-4 font-medium opacity-60 w-3/12'><Link key={AnswerSheet.id} to={"/subjects/marks/"+AnswerSheet.year+"/"+AnswerSheet.subjectId} className='w-full'>100</Link></td> */}
+              {/* {subjects && <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>{teacher.subjects}</td>} */}
+              {/* <td className='text-lg px-4 max-sm:px-1 h-12 border-y-2 border-x-2 font-medium opacity-60'>3</td> */}
+
+            </tr>
+        </Fragment>
+      )
+    })
+  }
+
   if(Assignments_NonOCR){
     AssignmentsNonOCR = Assignments_NonOCR.map((Assignments_NonOCR) => {
       // Create a Date object from the timestamp string
@@ -176,6 +200,7 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
           {marks && <th className='text-xl h-8 font-bold opacity-60 w-1/5'>Marks</th>}
          
           {select && <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Select</th>}
+          {grade && <th className='text-xl h-8 font-bold opacity-60 w-3/12'>Grade</th>}
 
         </tr>
         </thead>
@@ -200,6 +225,7 @@ function Table({handleAllCheck,Checked,checkAll,handleCheck,check,checked,name, 
               {paper}
               {AnswerSheet}
               {AssignmentsNonOCR}
+              {Grade}
             {/* </tr> */}
         </tbody>
       </table>
