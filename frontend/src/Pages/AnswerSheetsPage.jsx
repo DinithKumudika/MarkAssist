@@ -26,16 +26,18 @@ function AnswerSheetsPage({page}) {
   console.log("currentPath:",currentPath);
 
 
+  
   useEffect(()=>{
     axios
-    .get(`http://127.0.0.1:8000/api_v1/markings/${subjectId}`)
+    .get(`/markings/${subjectId}`)
     .then((response)=>{
       console.log("Markingscheme:",response.data);
       setMarkingScheme(response.data);
       // setIsLoading(false);
+      
       if(page==='answersheets'){
         axios
-        .get(`http://127.0.0.1:8000/api_v1/papers/subjects/${subjectId}`)
+        .get(`/papers/subjects/${subjectId}`)
         .then((response)=>{
           console.log(response.data);
           setAnswerSheet(response.data);
@@ -48,9 +50,9 @@ function AnswerSheetsPage({page}) {
         })
       }else if(page==='assignments'){
         axios
-        .get(`http://127.0.0.1:8000/api_v1/papers/subjects/${subjectId}`)
+        .get(`/subjects/${subjectId}/marks/assignmentMarks`)
         .then((response)=>{
-          console.log(response.data);
+          console.log("ASSIGNMENT:::",response.data);
           setAssignmentMarks(response.data);
           setIsLoading(false);
         })
@@ -61,9 +63,9 @@ function AnswerSheetsPage({page}) {
         })
       }else if(page==='nonocr'){
         axios
-        .get(`http://127.0.0.1:8000/api_v1/papers/subjects/${subjectId}`)
+        .get(`/subjects/${subjectId}/marks/nonocrMarks`)
         .then((response)=>{
-          console.log(response.data);
+          console.log("NONOCR:::",response.data);
           setNonOcrMarks(response.data);
           setIsLoading(false);
         })
@@ -109,7 +111,7 @@ function AnswerSheetsPage({page}) {
       {isLoading ? <MoonLoader color="#4457FF" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 
         :
         <div className={`${classes} ${isClicked === 'outer' ? ' ml-16 outer w-[calc(100vw-64px)]' : 'ml-64 w-[calc(100vw-256px)] inner'} max-sm:16 max-sm:w-[calc(100vw-64px)]`}>
-          <div className='flex flex-row justify-between items-center h-12'>
+          <div className='flex flex-row items-center justify-between h-12'>
             <Link className={`${linkClasses('answersheets')} `} to={`/answersheets/${year}/${subjectId}`}>
               <div>
                 Answer Sheets

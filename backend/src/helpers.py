@@ -14,6 +14,11 @@ import textdistance
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
+from thefuzz import process
+# from thefuzz import fuzz
+from fuzzywuzzy import fuzz
+import re
+from itertools import product
 from pytesseract import Output
 from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
@@ -175,19 +180,20 @@ def show_text(image, options):
 def text_similarity(text1: str, text2: str)->str:
      openai.api_key = settings.OPENAI_API_KEY
      # Prepare the prompt
-     prompt = f"""Text 1: {text1}\nText 2: {text2}\n
-               You are a marker who mark exam papers by comparing student answer and marking scheme answer. 
-               Text 1 is the answer of the marking scheme and Text 2 is the answer written by the student for a question.
-               Compare both Text 1 and Text 2 using both cosine similarity and semantic analysis techniques together with the context. 
-               then provide me a score as a percentage between 0 and 1 in below format. Overall score is: score after comparison"""
+     prompt = f"""
+               You are a assistant who evaluate exam papers by comparing student answer with the marking scheme answer. 
+               marking scheme is denoted by Text 1 and the answer written by the student for a question is denoted by the Text 2.
+               Text 1: {text1}
+               Text 2: {text2}
+               Compare both Text 1 and Text 2 using semantic analysis techniques considering their context. 
+               then provide me a cosine similarity score as a percentage between 0 and 1 in below format. 
+               Overall score is: <score after comparison>
+               """
 
      # Make an API request
      response = openai.Completion.create(
           engine='text-davinci-003',
           prompt=prompt,
-          max_tokens=256,
-          n=1,
-          stop=None,
           temperature=0,
      )
 
@@ -236,7 +242,73 @@ def keywords_match(paragraph: str, keywords: list):
      else:
          print("No keywords found.")
          return 0
-   
+
+# def keyword_accuracy(answer_student: str, keywords: list):
+#      keywordsAccuracy=0
+#      # keywordsAccuracy
+#      collection = ["AFC Barcelona", "Barcelona AFC", "barcelona fc", "afc barcalona"]
+#      print(process.extract(answer_student["text"], keywords, scorer=fuzz.ratio))
+#      # print(f"Partial ratio similarity score: {fuzz.partial_ratio(keywords[0], answer_student['text'])}")
+#      # But order will not effect simple ratio if strings do not match
+#      for keyword in keywords:
+#           print(f"Partial ratio similarity score {keyword.lower()} => [{answer_student['text'].lower()}]: {fuzz.partial_ratio(keyword.lower(), answer_student['text'].lower())}")
+#           if fuzz.ratio(keyword, answer_student['text']) > 50:
+#                keywordsAccuracy+=100/len(keywords)
+#      print(f"Simple ratio similarity score: {fuzz.ratio(keywords[0], answer_student['text'])}")
+#      result_string = ' '.join(keywords)
+#      no_keywords= len(keywords)
+#      print("no_keywords",no_keywords)
+#      keywords=[]
+#      for keyword in keywords:
+#           print("keyword",keyword)
+#           if keyword.lower() in answer_student["text"].lower():
+#               print(f"'{keyword}' is present in the paragraph.")
+#               if keyword in keywords:
+#                    print(keywords)
+#                #     pass
+#               else:
+#                    print("Keywords::",keywords)
+#                    keywords.append(keyword)
+#                    keywordsAccuracy+=100/no_keywords
+#           else:
+#               print(f"'{keyword}' is not present in the paragraph.")
+#      print("keywordsAccuracy",keywordsAccuracy)
+
+def check_keywords_in_paragraph(paragraph, keywords, threshold=80):
+    # Initialize a dictionary to store keyword matches
+    paragraph_words = paragraph.split(" ")
+    paragraph_length = len(paragraph_words)
+    keywords = [item for item in keywords if item != '' or item != ''] #remove empty strings
+    keyword_matches = {keyword: [] for keyword in keywords}
+
+    # Split the paragraph into words
+    paragraph_words = paragraph.split()
+    print("This is keywords_length",len(keywords),"::",keywords)
+    for keyword in keywords:
+        if keyword == "" or keyword == " ":
+             continue
+        keyword_words = keyword.split(" ")
+        keyword_words = [re.sub(r'[\s.]', '', word) for word in keyword_words if re.sub(r'[\s.]', '', word)] #remove empty strings and spaces
+    #     print("This is keyword_words",keyword_words)
+        keywords_length = len(keyword_words)
+     #    keyword_variations = [' '.join(perm) for perm in product(*[word.split() for word in keyword_words])]
+    #     print("This is keyword_variations",keyword_variations)    
+     #    for variation in keyword_variations:
+     #        print("This is variation",variation)
+        for i in range(paragraph_length - keywords_length + 1):
+             word = ""
+             for j in range(keywords_length):
+                  if j == keywords_length - 1:
+                    word += paragraph_words[i + j].lower()
+                  else:
+                    word += paragraph_words[i + j].lower() + " "
+         #     print("This is word",word)
+             similarity = fuzz.ratio(keyword.lower(), word.lower()) #compare similarity between keyword and word
+          #    print(f"Similarity score {keyword.lower()} => [{word.lower()}]: {similarity}")
+             if similarity >= threshold:
+                  keyword_matches[keyword].append(word)
+    return keyword_matches
+
 # add new document to student_subject collection 
 def add_student_subject(request: Request, subject: dict, index: str):
      # print("This is add student_subject function")
@@ -251,6 +323,8 @@ def add_student_subject(request: Request, subject: dict, index: str):
                "ocr_marks": 0.0,
                "non_ocr_marks": 0.0,
                "total_marks":0.0,
+               "gpv":0.0,
+               "grade":""
           }
      ]
                     
@@ -287,6 +361,8 @@ def add_subject(request: Request,student_subject:dict, subject: dict, index: str
                     "ocr_marks": 0.0,
                     "non_ocr_marks": 0.0,
                     "total_marks":0.0,
+                    "gpv":0.0,
+                    "grade":""
                }
                # print("is new subject", new_subject);
                # print("this is current list", student_subject["subject"]);
@@ -302,31 +378,52 @@ def add_subject(request: Request,student_subject:dict, subject: dict, index: str
                     
 
 # update student_subject collection's document
-def update_student_subject_collection(request: Request, subject: dict, index: str,marks_type:str,studentMarks:dict,subjectListOfStudent:List[dict]):
+def update_student_subject_collection(request: Request, subjectOfStudent:dict ,subject: dict, index: str,marks_type:str,studentMarks:dict,subjectListOfStudent:List[dict],total_marks:float):
      # get the subject by subject
      # print("This function calls update_student_subject_collection")
-     for subjectOfStudent in subjectListOfStudent:
-          if subjectOfStudent['subject_code'] == subject['subjectCode']:
-               if(marks_type=="assignmentMarks"):
-                    # update the marks
-                    subjectOfStudent.update({"assignment_marks": studentMarks['assignment_marks']})
-                    # print("this is subjectOfStudent",subjectOfStudent)
-                    
-                    # update the exixting
-                    filters = {"index":index} 
-                    data = {"subject":subjectListOfStudent}
-                    student_subject_update = student_subject_model.update(request, filters, data)
-                    # print("this is result after update", student_subject_update);
-               else:
-                    # This is for nonOCR marks
-                    # update the marks
-                    subjectOfStudent.update({"non_ocr_marks": studentMarks['non_ocr_marks']})
-                    # print("this is subjectOfStudent",subjectOfStudent)
-                    
-                    # update the exixting
-                    filters = {"index":index} 
-                    data = {"subject":subjectListOfStudent}
-                    student_subject_update = student_subject_model.update(request, filters, data)
-                    # print("this is result after update", student_subject_update);
+     if(marks_type=="assignmentMarks"):
+          # update the marks
+          subjectOfStudent.update({"assignment_marks": float(studentMarks['assignment_marks']), "total_marks":total_marks})
+          # print("this is subjectOfStudent",subjectOfStudent)
+          
+          # update the exixting
+          filters = {"index":index} 
+          data = {"subject":subjectListOfStudent}
+          student_subject_update = student_subject_model.update(request, filters, data)
+          return student_subject_update
+          
+          # print("this is result after update", student_subject_update);
+     else:
+          # This is for nonOCR marks
+          # update the marks
+          subjectOfStudent.update({"non_ocr_marks": float(studentMarks['non_ocr_marks']), "total_marks":total_marks})
+          # print("this is subjectOfStudent",subjectOfStudent)
+          
+          # update the exixting
+          filters = {"index":index} 
+          data = {"subject":subjectListOfStudent}
+          student_subject_update = student_subject_model.update(request, filters, data)
+          return student_subject_update
+          # print("this is result after update", student_subject_update);
+
+# update student_subject collection's subject fields
+def update_student_subject_collection_given_field(request: Request,subjectOfStudent:dict , subject: dict, index: str,subjectListOfStudent:List[dict],field:List[str],field_value:dict):
+     # get the subject by subject
+     # print("This function calls update_student_subject_collection")
+     print("This is field",field)
+     print("This is field_value",field_value)
+     
+     # update the marks
+     for field in field:
+          print("This is field",field)
+          print("This is field value:::",field_value[field])
+          subjectOfStudent.update({field: field_value[field]})
+     # print("this is subjectOfStudent",subjectOfStudent)
+     # update the exixting
+     filters = {"index":index} 
+     data = {"subject":subjectListOfStudent}
+     student_subject_update = student_subject_model.update(request, filters, data)
+     return student_subject_update
+
     
     

@@ -82,7 +82,7 @@ function SubjectAddBox({closeFunc,teachers}) {
         // console.log("year:",typeof parseInt(formdata.get('year')));
         // console.log("formdata:",formData);
         axios
-        .post(`http://127.0.0.1:8000/api_v1/subjects`,form)
+        .post(`/subjects`,form)
         .then((response)=>{
             console.log(response);
             if(response.status === 201){
@@ -96,7 +96,7 @@ function SubjectAddBox({closeFunc,teachers}) {
             // Handle the error, e.g., display an error message to the user
         });
         // try{
-        //     // const response = await axios.post('http://127.0.0.1:8000/api_v1/subjects',formdata);
+        //     // const response = await axios.post('/subjects',formdata);
            
         //     // navigate('/subjects');
         // }catch(error){
@@ -211,12 +211,12 @@ function SubjectAddBox({closeFunc,teachers}) {
                                       {teacher}
                                     </select>
                                 </div>
-                                <div className='max-md:w-[85%] w-[50%] flex flex-row items-center mb-8 justify-between max-md:justify-start'>
+                                {/* <div className='max-md:w-[85%] w-[50%] flex flex-row items-center mb-8 justify-between max-md:justify-start'>
                                     <label className='mr-4 font-sans w-36'>Non Editing Teacher</label>
                                     <select name="nonEditingTeacher" className='items-center w-[65%] h-8 text-center shadow shadow-gray-500 rounded ' value={nonEditingTeacher} onChange={handleSelectChange}>
                                       {teacher}
                                     </select>
-                                </div>
+                                </div> */}
                                 {/* <Button classNames="text-center w-[50%]">Add Controller</Button> */}
                             </div>
                         </div>

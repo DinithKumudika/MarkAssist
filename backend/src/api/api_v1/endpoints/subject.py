@@ -17,7 +17,7 @@ subject_model = SubjectModel()
 
 # get editing/non edinting subjects list by user id(subject of current teacher)
 # edinting is always true, if want to get non editing subjects, pass editing = false
-@router.get('{subject_id}/marks/{marks_type}', response_description="Get Subjects assignment/nonOCR marks by user",status_code=status.HTTP_200_OK)
+@router.get('/{subject_id}/marks/{marks_type}', response_description="Get Subjects assignment/nonOCR marks by user",status_code=status.HTTP_200_OK)
 async def get_assignment_marks(request: Request, subject_id:str, marks_type:str,  limit: Optional[int] = None):
      print("get assignment marks",subject_id, marks_type)  
 
@@ -118,6 +118,7 @@ async def get_subject_by_id_user_id(request: Request, user_id:str ,id: str):
           detail=f"couldn't find a subject by id of {id}"
      )
 
+
 # need to improve this 
 @router.delete('/{id}', response_description="delete a subject",status_code=status.HTTP_204_NO_CONTENT)
 async def delete_subject(request: Request, id: str):
@@ -176,7 +177,8 @@ async def add_a_subject(request:Request, payload: SubjectCreate = Body(...)):
                createdAt =  datetime.now(),
                updatedAt = datetime.now(),
                finalAssignmentMarks= None,
-               nonOcrMarks= None
+               nonOcrMarks= None,
+               finalTotalMarks = None
           )
           
           new_subject = await subject_model.add_new_subject(request, subject);

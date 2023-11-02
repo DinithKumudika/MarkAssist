@@ -5,6 +5,9 @@ import  ReactDOM  from 'react-dom';
 import { Link ,useLocation, useParams ,useNavigate} from 'react-router-dom';
 import { BarLoader } from 'react-spinners';
 import axios from 'axios'
+import Error from '../utils/Error';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function DragDrop({children,closeFunc,data}) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -59,7 +62,7 @@ function DragDrop({children,closeFunc,data}) {
       formData.append('year', year);
       formData.append('subjectId',subjectId);
       axios
-      .post(`http://127.0.0.1:8000/api_v1/markings`,formData)
+      .post(`/markings`,formData)
       .then((response) => {
         console.log("Dinith:",response);
         localStorage.setItem('markingSceme', JSON.stringify(response.data));
@@ -74,7 +77,11 @@ function DragDrop({children,closeFunc,data}) {
           console.log(error.response.data.detail);
           setUploading(false);
           closeFunc()
-          alert('Something went wrong')
+          Error("error","Error occured!")
+          setTimeout(function(){
+                window.location.reload();
+             }, 2001);
+          
           window.location.reload();
       }
       });
@@ -83,7 +90,7 @@ function DragDrop({children,closeFunc,data}) {
       formData.append('year', year);
       formData.append('subjectId',subjectId);
       axios
-      .post(`http://127.0.0.1:8000/api_v1/papers/upload/file`,formData)
+      .post(`/papers/upload/file`,formData)
       .then((response) => {
         console.log("Hello:",response.data);
         setUploading(false);
@@ -96,10 +103,18 @@ function DragDrop({children,closeFunc,data}) {
         if(error.response && error.response.status >=400 && error.response.status <=500){
           // console.log(error.response.data.message);
           console.log(error.response.data.detail);
-          // alert('Something went wrong')
+          // Error("error","Error occured!")
+          setTimeout(function(){
+                window.location.reload();
+             }, 2001);
+          
           setUploading(false);
           closeFunc()
-          alert('Something went wrong')
+          Error("error","Error occured!")
+          setTimeout(function(){
+                window.location.reload();
+             }, 2001);
+          
           window.location.reload();
       }
       });
@@ -110,7 +125,7 @@ function DragDrop({children,closeFunc,data}) {
       formData.append('subjectId',subjectId);
       console.log("Hello_assignment:",formData);
       axios
-      .post(`http://127.0.0.1:8000/api_v1/papers/upload/marks_type`,formData)
+      .post(`/papers/upload/marks_type`,formData)
       .then((response) => {
         console.log("Hello:",response.data);
         setUploading(false);
@@ -123,10 +138,18 @@ function DragDrop({children,closeFunc,data}) {
         if(error.response && error.response.status >=400 && error.response.status <=500){
           // console.log(error.response.data.message);
           console.log(error.response.data.detail);
-          // alert('Something went wrong')
+          // Error("error","Error occured!")
+          setTimeout(function(){
+                window.location.reload();
+             }, 2001);
+          
           setUploading(false);
           closeFunc()
-          alert('Something went wrong')
+          Error("error","Error occured!")
+          setTimeout(function(){
+                window.location.reload();
+             }, 2001);
+          
           window.location.reload();
       }
       });
@@ -138,7 +161,7 @@ function DragDrop({children,closeFunc,data}) {
       formData.append('subjectId',subjectId);
       console.log("Hello_assignment:",formData);
       axios
-      .post(`http://127.0.0.1:8000/api_v1/papers/upload/marks_type`,formData)
+      .post(`/papers/upload/marks_type`,formData)
       .then((response) => {
         console.log("Hello:",response.data);
         setUploading(false);
@@ -150,10 +173,18 @@ function DragDrop({children,closeFunc,data}) {
       .catch((error) => {
         console.log("ERRORRRR::::"+error);
         // console.log(error.response.data.message);
-        // alert('Something went wrong')
+        // Error("error","Error occured!")
+          setTimeout(function(){
+                window.location.reload();
+             }, 2001);
+        
         setUploading(false);
         closeFunc()
-        alert('Something went wrong')
+        Error("error","Error occured!")
+          setTimeout(function(){
+                window.location.reload();
+             }, 2001);
+        
         window.location.reload();
       });
     }
@@ -231,6 +262,7 @@ function DragDrop({children,closeFunc,data}) {
         
 
       </div>
+      <ToastContainer />
     </div>,
     document.querySelector('.modal-container')
   )

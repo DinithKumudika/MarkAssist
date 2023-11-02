@@ -44,7 +44,7 @@ function Login(){
         loginData.append('password', formData.password);
         console.log(formData)
         try{
-            const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/token',loginData);
+            const response = await axios.post('/auth/token',loginData);
             
             const allItems = jwt_decode(response.data.access_token);
             localStorage.setItem('accessToken', response.data.access_token)
@@ -55,7 +55,7 @@ function Login(){
 
             switch (allItems['user_role']) {
                 case "student":
-                    navigate('/subjects');
+                    navigate('/student/dashboard');
                     break;
                 case "teacher":
                     navigate('/subjects');
@@ -68,10 +68,10 @@ function Login(){
                     break;
             }
         }catch(error){
-            // console.log("error:"+error.response.data.message);
+            console.log("error:"+error.response.data.detail);
             if(error.response && error.response.status >=400 && error.response.status <=500){
-                // console.log(error.response.data.message);
-                setError(error.response.data.message);
+                console.log(error.response.data.detail);
+                setError(error.response.data.detail);
             }
         }
     }

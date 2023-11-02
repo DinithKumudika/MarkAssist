@@ -8,6 +8,9 @@ import { MoonLoader } from 'react-spinners';
 import { useState,useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Error from '../../utils/Error';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
   const navigate = useNavigate();
   const [markings,setMarkings] = useState([]);
@@ -76,21 +79,29 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
       // if(Checked[data.paper]){
         
             axios
-            .patch(`http://127.0.0.1:8000/api_v1/answers/compare/${markingScheme.id}/${data[0].subjectId}`,Checked)
+            .patch(`/answers/compare/${markingScheme.id}/${data[0].subjectId}`,Checked)
             .then((response)=>{
               const marks = response.data
               // setMarkings(marking)
               // markingschemeID = marking[0].markingScheme
               console.log("Markkkkkkssssss:",marks)
               setIsLoading(false);
-              window.location.reload();
+              Error("success","Accuracy Generated Suceessfully!")
+              setTimeout(function(){
+                window.location.reload();
+             }, 2001);
     
             })
             .catch((error) => {
-              console.error(error);
-              alert('Something went wrong')
+              console.error("ERRROOwtretOORRR:::",error);
               setIsLoading(false);
-              window.location.reload();
+              Error("error","Error occured!")
+              setTimeout(function(){
+                window.location.reload();
+             }, 2001);
+              // clearInterval(id);
+              // setTimeout(window.location.reload(), 5000);
+              
               // setMarks(null)
               // Handle the error, e.g., display an error message to the user
             });
@@ -112,7 +123,7 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
     )
 
     table = <Table check={true} checked={true} Checked={Checked} checkAll={checkAll} name={true} handleCheck={handleCheck} handleAllCheck={handleAllCheck} date={true} select={true} AnswerSheets={
-      data.filter((item)=>{
+      data?.filter((item)=>{
         return search.toLowerCase() === '' ? item
         : item.paper.toLowerCase().includes(search)
       })
@@ -127,8 +138,8 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
       </>
     )
 
-    table = <Table name={true} date={true} marks={true} Assignments_NonOCR={
-        data.filter((item)=>{
+    table = <Table index={true} marks={true} Assignments_NonOCR={
+        data?.filter((item)=>{
           return search.toLowerCase() === '' ? item
           : item.index.includes(search)
       })
@@ -143,8 +154,8 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
       </>
     )
 
-    table = <Table name={true} date={true} marks={true} Assignments_NonOCR={
-      data.filter((item)=>{
+    table = <Table index={true} marks={true} Assignments_NonOCR={
+      data?.filter((item)=>{
         return search.toLowerCase() === '' ? item
         : item.index.includes(search)
       })
@@ -171,7 +182,11 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
               <div className='flex lg:w-1/2 mb-2  md:[90%] md:mb-2 md-max:justify-between'>
                 <button className="rounded rounded-sm bg-custom-blue-main w-fit px-2 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleCKick}><AiOutlinePlus/><div className='ml-2'>Upload</div></button>
                 <button className="rounded rounded-sm bg-custom-blue-main w-fit px-2 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row"><BiFilter/><div className='ml-2'>Filter</div></button>
-                <button className="rounded rounded-sm w-fit bg-custom-blue-main max-sm:w-fill px-2 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleGenerateAccuracy}><BiFilter/><div className='ml-2'>Generate Accuracy</div></button>
+                {
+                  (page==='answersheets') ? 
+                    <button className="rounded rounded-sm w-fit bg-custom-blue-main max-sm:w-fill px-2 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleGenerateAccuracy}><BiFilter/><div className='ml-2'>Generate Accuracy</div></button>
+                    : <></>
+                }
               </div>
               <form className='lg:w-1/2 md:2/3 ' >
                 <input onChange={(e)=>setSearch(e.target.value)} className="rounded shadow shadow-gray-600 w-full h-9 p-2 mb-4" type="text" placeholder='Search'/>
@@ -187,6 +202,7 @@ function AnswerSheets({page, clicked, data,markingScheme,year,subjectId}) {
           : show && <DragDrop closeFunc={closeModal}>{dragdrop}</DragDrop>
         }
        {/* {(markingScheme?.isProceeded && <Modal handleLink={handleLink} message="Configure the marking scheme before uploading answer sheets."/>) && show && <DragDrop closeFunc={closeModal}>Answer Sheets</DragDrop>} */}
+       <ToastContainer />
     </div>
   )
 }
