@@ -88,9 +88,9 @@ function Subjects({clicked,data}) {
   return (
     <div className={`${classes} ${clicked === 'outer' ? ' pl-16 outer ' : 'pl-64 inner'} max-sm:pl-16 w-full`}>
       <div className='flex flex-col justify-center items-center sidebar overflow-hidden h-fit'>
-          <div className='w-11/12'>
+          {/* <div className='w-11/12'>
             <BreadCrumb/>
-          </div>
+          </div> */}
           <div className='bg-white p-4 rounded w-11/12 min-h-max '>
             <div className='flex flex-row justify-between items-center mb-4 min-h-max'>
               <div className='flex flex-row items-center justify-start h-10'>

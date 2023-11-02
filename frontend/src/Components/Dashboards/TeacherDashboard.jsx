@@ -20,24 +20,24 @@ const TeacherDashboard = ({clicked, data}) => {
      <div className="flex bg-gray-300 lg:cols-1"> {/*gap-6 */}
       
       <div className="flex flex-col w-full h-full mb-5 px-8 gap-y-4 ">
-      <BreadCrumb/>
+      {/* <BreadCrumb/> */}
+      <div className="w-full bg-white pt-[60px]">
       {/* Stats components */}
-      <div className="w-full bg-white">
       
       <div class="grid grid-cols-1 sm:grid-cols-2 sm:gap-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 xl:gap-16 w-full p-3 text-white lg:mb-5" style={{backgroundSize: "cover"}}>
         {/* first compo */}
   <div class="relative p-6 md:p-10 rounded-md bg-blue-700 lg:h-3/6 sm:h-3/4 flex flex-row justify-center items-center ">
     <div className="absolute flex flex-row justify-center items-center w-full">
-      <div className=" text-md">Editing Subject</div>
-      <div className="text-4xl font-semibold ml-6">02</div>
+      <div className=" text-md">Lecturing Subjects</div>
+      <div className="text-4xl font-semibold ml-6">04</div>
     </div>
   </div>
   
    {/* second compo */}
   <div class="relative p-6 md:p-10 rounded-md bg-blue-700 sm:h-3/4 lg:h-3/6 flex flex-row justify-center items-center">
     <div className="absolute flex flex-row justify-center items-center w-full">
-      <div className=" text-md">Non Editing Subject</div>
-      <div className="text-4xl font-semibold ml-6">02</div>
+      <div className=" text-md">Total no. students</div>
+      <div className="text-4xl font-semibold ml-6">08</div>
     </div>
   </div>
   

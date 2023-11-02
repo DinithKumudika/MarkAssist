@@ -19,6 +19,7 @@ import './Components/TopBar.css';
 import TeachersDashboard from './Pages/TeachersDashboard';
 import AdminsDashboard from './Pages/AdminsDashboard';
 import StudentsDashboard from './Pages/StudentsDashboard';
+import AdminGradesPage from './Pages/AdminGradesPage';
 
 function App(){
   return(
@@ -59,9 +60,9 @@ function App(){
         <Route path="/student/dashboard" element={<StudentsDashboard />} />
 
         <Route path="/student/results" element={<StudentsDashboard />} />
-        {/* <Route path="/student/dashboard" element={<AdminDashboard />} /> */}
 
         <Route path="/admin/teachers" element={<TeachersPage />} />
+        <Route path="/admin/grades" element={<AdminGradesPage />} />
 
 
       </Routes>

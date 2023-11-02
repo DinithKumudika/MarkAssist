@@ -363,6 +363,7 @@ async def calculate_marks(request: Request, markingSchemeId:str, subjectId: str,
                          marks_reserverd_in_marking = int(markings_by_scheme_id[i]["marks"])
                          keywords_marks_reserverd_in_marking = int(markings_by_scheme_id[i]["keywordsMarks"])
                          markConfig = marking_scheme_by_id["markConfig"]
+                         print("markConfig:::::::",answers_by_student[i])
                          accuracy_percentage = float(answers_by_student[i]["accuracy"])*100
                          keywords_accuracy_percentage = answers_by_student[i]["keywordsaccuracy"]
                          print("accuracy_percentage",accuracy_percentage)
@@ -371,6 +372,8 @@ async def calculate_marks(request: Request, markingSchemeId:str, subjectId: str,
                          mark_percentage = 0
                          for value in markConfig:
                               print("accuracy_percentage",value['minimum'])
+                              print("marks_reserverd_in_marking",value['maximum'])
+                              print("accuracy_percentage",accuracy_percentage)
                               
                               if( (value['minimum'] <= accuracy_percentage) and (value['maximum'] >= accuracy_percentage)  ):
                                    mark_percentage = value['percentageOfMarks']

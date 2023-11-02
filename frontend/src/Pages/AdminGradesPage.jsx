@@ -3,7 +3,8 @@ import NavBar from '../Components/NavBar'
 import SideBar from '../Components/SideBar'
 import {useState} from 'react'
 import AdminDashboard from '../Components/Dashboards/AdminDashboard'
-function AdminsDashboard() {
+import AdminGrade from '../Components/AdminGrade'
+function AdminGradesPage() {
 
   const [isClicked,setClick] = useState("inner")
 
@@ -21,10 +22,10 @@ function AdminsDashboard() {
     <div>
       <NavBar clicked={isClicked}/>
       <SideBar dashboard subjects clicked={isClicked} onClickFunc={handleClick}/>
-      <AdminDashboard clicked={isClicked}/>
+      <AdminGrade clicked={isClicked}/>
       {/* <Subjects clicked={isClicked}/> */}
     </div>
   )
 }
 
-export default AdminsDashboard
+export default AdminGradesPage
