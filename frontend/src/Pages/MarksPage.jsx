@@ -33,31 +33,31 @@ function MarksPage() {
       const answer = response.data
       setAnswers(answer)
       setIsLoading(false);
-      console.log("Answers:",answer)
+      // console.log("Answers:",answer)
       // Process the response data or update your React component state
       axios
       .get(`http://127.0.0.1:8000/api_v1/markings/questions?sub=${subjectId}`)
       .then((response)=>{
         const marking = response.data
-        console.log("Markasdfghings:",answers)
+        // console.log("Markasdfghings:",answers)
         setMarkings(marking)
         // console.log("Markasdfghings:",marking[0].markingScheme)
         setIsLoading2(false);
         setmarkingschemeID(marking[0].markingScheme) 
-        axios
-        .get(`http://127.0.0.1:8000/api_v1/answers/compare/${marking[0].markingScheme}?sub=${subjectId}&stu=${answer[0].userId}`)
-        .then((response)=>{
-          const marks = response.data
-          // setMarkings(marking)
-          // markingschemeID = marking[0].markingScheme
-          console.log("Markkkkkkssssss:",marks)
+        // axios
+        // .get(`http://127.0.0.1:8000/api_v1/answers/compare/${marking[0].markingScheme}?sub=${subjectId}&stu=${answer[0].userId}`)
+        // .then((response)=>{
+        //   const marks = response.data
+        //   // setMarkings(marking)
+        //   // markingschemeID = marking[0].markingScheme
+        //   console.log("Markkkkkkssssss:",marks)
 
-        })
-        .catch((error) => {
-          console.error(error);
-          // setMarks(null)
-          // Handle the error, e.g., display an error message to the user
-        });
+        // })
+        // .catch((error) => {
+        //   console.error(error);
+        //   // setMarks(null)
+        //   // Handle the error, e.g., display an error message to the user
+        // });
       })
       .catch((error) => {
         console.error(error);
@@ -108,10 +108,10 @@ function MarksPage() {
   }
   return (
     <div>
-      <NavBar />
+      <NavBar clicked={isClicked}/>
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
       {/* {markings.length>=answers.length ? <Marks clicked={isClicked} answers={answers} markings={markings}/> : ''} */}
-        {(isLoading || isLoading2) ? <MoonLoader color="#36d7b7" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 
+        {(isLoading || isLoading2) ? <MoonLoader color="#4457FF" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 
           :<Marks clicked={isClicked} answers={answers} markings={markings}/>
         }
 

@@ -52,12 +52,12 @@ function DragDrop({children,closeFunc,data}) {
     e.preventDefault();
     if(!files?.length) return
     const formData = new FormData()
-    files.forEach(file => formData.append('file', file))
-    formData.append('year', year);
-    formData.append('subjectId',subjectId);
-    // console.log("form data",formData)
+    files.forEach(file => formData.append('files', file))
+    console.log("form data",formData.get('files'))
     setUploading(true);
     if(pathName[0]==="markingschemes"){
+      formData.append('year', year);
+      formData.append('subjectId',subjectId);
       axios
       .post(`http://127.0.0.1:8000/api_v1/markings`,formData)
       .then((response) => {
@@ -68,75 +68,93 @@ function DragDrop({children,closeFunc,data}) {
         window.location.reload();
 
       })
-    }else if(pathName[0]==="answersheets"){
+      .catch((error) => {
+        if(error.response && error.response.status >=400 && error.response.status <=500){
+          // console.log(error.response.data.message);
+          console.log(error.response.data.detail);
+          setUploading(false);
+          closeFunc()
+          alert('Something went wrong')
+          window.location.reload();
+      }
+      });
+    }
+    else if(pathName[0]==="answersheets"){
+      formData.append('year', year);
+      formData.append('subjectId',subjectId);
       axios
       .post(`http://127.0.0.1:8000/api_v1/papers/upload/file`,formData)
       .then((response) => {
-        console.log("Hello:",response.data.indexNo);
-        paper = response.data.data;
-        index = response.data.indexNo;
-        console.log(index)
-        console.log(paper)
-        axios.get(`http://127.0.0.1:8000/api_v1/papers/download/${paper}`)
-        .then((response) => {
-          console.log("Hiiii:",response.status);
-          if(response.status===200){
-            axios
-            .get(`http://127.0.0.1:8000/api_v1/answers/image/${paper}`)
-            .then((response) => {
-              console.log("Heyyyy:",response);
-              if(response.status===201){
-                axios
-                .get(`http://127.0.0.1:8000/api_v1/answers/text/${paper}`)
-                .then((response) => {
-                  console.log("Howaya:",response)
-                  if(response.status===200){
-                    axios
-                    .post(`http://127.0.0.1:8000/api_v1/answers/save/${paper}?sub=${subjectId}&stu=${index}`)
-                    .then((response) => {
-                      console.log("Dinesh:",response)
-                      localStorage.setItem('answers', JSON.stringify(response.data));
-                      setUploading(false);
-                      closeFunc()
-                      window.location.reload();
-                      // navigate(`/markingschemes/${year}/${subjectId}`)
-                    })
-                    .catch((error) => {
-                      if(error.response && error.response.status >=400 && error.response.status <500){
-                        // console.log(error.response.data.message);
-                        console.log(error.response.data.detail);
-                    }
-                    });
-                  }
-                })
-                .catch((error) => {
-                  if(error.response && error.response.status >=400 && error.response.status <500){
-                    // console.log(error.response.data.message);
-                    console.log(error.response.data.detail);
-                }
-                });
-              }
-            })
-            .catch((error) => {
-              if(error.response && error.response.status >=400 && error.response.status <500){
-                // console.log(error.response.data.message);
-                console.log(error.response.data.detail);
-            }
-            });
-          }
-        })
-        .catch((error) => {
-          if(error.response && error.response.status >=400 && error.response.status <500){
-            // console.log(error.response.data.message);
-            console.log(error.response.data.detail);
-        }
-        });
+        console.log("Hello:",response.data);
+        setUploading(false);
+        closeFunc()
+        window.location.reload();
+        // console.log(index)
+        // for (const [index, paper] of papers.entries()){
       })
       .catch((error) => {
-        if(error.response && error.response.status >=400 && error.response.status <500){
+        if(error.response && error.response.status >=400 && error.response.status <=500){
           // console.log(error.response.data.message);
           console.log(error.response.data.detail);
+          // alert('Something went wrong')
+          setUploading(false);
+          closeFunc()
+          alert('Something went wrong')
+          window.location.reload();
       }
+      });
+    }
+    else if(pathName[0]==="assignments"){
+      formData.append('marks_type', "assignmentMarks");
+      formData.append('year', year);
+      formData.append('subjectId',subjectId);
+      console.log("Hello_assignment:",formData);
+      axios
+      .post(`http://127.0.0.1:8000/api_v1/papers/upload/marks_type`,formData)
+      .then((response) => {
+        console.log("Hello:",response.data);
+        setUploading(false);
+        closeFunc()
+        window.location.reload();
+        // console.log(index)
+        // for (const [index, paper] of papers.entries()){
+      })
+      .catch((error) => {
+        if(error.response && error.response.status >=400 && error.response.status <=500){
+          // console.log(error.response.data.message);
+          console.log(error.response.data.detail);
+          // alert('Something went wrong')
+          setUploading(false);
+          closeFunc()
+          alert('Something went wrong')
+          window.location.reload();
+      }
+      });
+    }
+    else if(pathName[0]==="nonocr"){
+      console.log("PATH:::::",pathName[0]);
+      formData.append('marks_type', "non_ocr_marks");
+      formData.append('year', year);
+      formData.append('subjectId',subjectId);
+      console.log("Hello_assignment:",formData);
+      axios
+      .post(`http://127.0.0.1:8000/api_v1/papers/upload/marks_type`,formData)
+      .then((response) => {
+        console.log("Hello:",response.data);
+        setUploading(false);
+        closeFunc()
+        window.location.reload();
+        // console.log(index)
+        // for (const [index, paper] of papers.entries()){
+      })
+      .catch((error) => {
+        console.log("ERRORRRR::::"+error);
+        // console.log(error.response.data.message);
+        // alert('Something went wrong')
+        setUploading(false);
+        closeFunc()
+        alert('Something went wrong')
+        window.location.reload();
       });
     }
     // console.log("error:"+error.response.data.message);
@@ -145,12 +163,12 @@ function DragDrop({children,closeFunc,data}) {
   console.log(files);
   return ReactDOM.createPortal(
     <div className='flex justify-center items-center'>
-      <div className='z-30 fixed inset-0 bg-gray-300 opacity-80 flex items-center justify-center' onClick={closeFunc}></div>
-      <div className='z-30 absolute top-[10%] h-fit w-fit p-5 bg-white  flex flex-col items-center max-sm:top-[10%]'>
-          <div className='w-full flex justify-end'>
+      <div className='z-30 fixed inset-0 opacity-70 bg-gray-500 flex items-center justify-center' onClick={closeFunc}></div>
+      <div className='z-30 absolute top-0 left-0 h-full w-full p-5 bg-white  flex flex-col items-center max-sm:top-[10%]'>
+          <div className='fixed right-6 w-full flex justify-end'>
             <AiOutlineClose onClick={closeFunc} className='cursor-pointer -mb-12 text-white text-center text-3xl bg-red-400 rounded-xl p-1 hover:bg-red-500'/>
           </div>
-          <p className= "flex items-center justify-center ml-8 mt-11 text-2xl font-bold text-#2e1065 md:text-2xl dark:text-#2e1065 pt-10 " >{children}</p>
+          <p className= "flex items-center justify-center ml-8 mt-11 text-2xl font-bold text-[#191854] md:text-2xl dark:text-#2e1065 pt-10 " >{children}</p>
           <p className="flex items-center justify-center mt-2 ml-8 text-lg font-semibold text-inherit md:text-lg dark:text-inherit ">Upload your {children} (Paper should be according to our structure)</p>
           {
             pathName[0]==="markingschemes" ?
@@ -159,18 +177,18 @@ function DragDrop({children,closeFunc,data}) {
               : ''
             : ''
           }
-      <div className="flex flex-col w-[90%] justify-center items-center">
+      <div className="flex flex-col w-[90%] mt-8 h-[60%] justify-center items-center">
       {/* Drop Box */}
-        <form onSubmit={handleSubmit} className=' flex flex-col items-center justify-center w-[95%]'>  
-            <div {...getRootProps()} className="border border-green-600 py-6 flex flex-col inset-y-5 right-0 items-center justify-center box-border h-max w-[90%] m-12 px-4 mtransition bg-blue-700 rounded-lg">
+        <form onSubmit={handleSubmit} className='h-full flex flex-col items-center justify-center w-[95%]'>  
+            <div {...getRootProps()} className="h-full py-6 flex flex-col inset-y-5 right-0 items-center justify-center box-border w-[90%] m-12 px-4 mtransition bg-[#D4D4D4] rounded-lg">
               <input {...getInputProps()} multiple/>
 
-              <div className="relative flex justify-center box-border h-max w-[90%] border-2 border-white  border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none py-4">
+              <div className="h-full relative flex justify-center box-border w-[90%] border-2 border-white  border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none py-4">
 
                   <div className="absolute text-center box-border pt-0 w-[100%] text-xl font-bold text-white font-roboto p-5">
                       {children}
                   </div>
-                  <div className="mt-10 flex flex-col items-center justify-center w-full text-center relative text-lg font-roboto w-[90%] inset-x-0 top-0 text-white mt-13">
+                  <div className="mt-10 flex flex-col items-center justify-center w-full text-center relative text-lg font-roboto inset-x-0 top-0 text-white mt-13">
                       <div>
                         {
                         isDragActive ?
@@ -180,16 +198,16 @@ function DragDrop({children,closeFunc,data}) {
                         
                       </div>
                       <div className="mt-4 flex flex-col items-center justify-center ">
-                        <button className="mb-4 w-40 max-sm:w-24 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center" ><AiOutlinePlus/>Choose Files</button>
+                        <button className="mb-4 w-40 max-sm:w-24 bg-white hover:opacity-90 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center" ><AiOutlinePlus/>Choose Files</button>
 
                       </div>
                   </div>
               </div>
             </div>
-            {uploading && <BarLoader color="#00ADEF" height={6} width={128} />}
-          <button type='submit' className="my-4 w-40 max-sm:w-24 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded flex justify-center text-center items-center " ><AiOutlineUpload/>Upload</button>
+            {uploading && <div><BarLoader color="#3443C9" height={6} width={256} /></div>}
+          <button type='submit' className="my-8 w-fit max-sm:w-24 bg-[#3443C9] hover:opacity-90 text-white font-bold py-2 rounded flex gap-2 px-[8%] justify-center text-center items-center " ><AiOutlineUpload/>Upload {children}</button>
         </form>  
-            <ul className='list-disc w-fit'>
+            <ul className='list-disc w-fit mt-8'>
               {files.map(file => (
                 <li key={file.name}>
                   <div className="flex flex-row justify-between mb-2">

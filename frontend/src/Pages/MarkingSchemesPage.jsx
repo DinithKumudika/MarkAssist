@@ -3,6 +3,7 @@ import SideBar from '../Components/SideBar'
 import MarkingSchemes from '../Components/MarkingSchemes/MarkingSchemes'
 import {useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom'
+import { MoonLoader } from 'react-spinners';
 import axios from 'axios'
 function MarkingSchemesPage() {
   const { year,subjectId} = useParams()
@@ -13,6 +14,7 @@ function MarkingSchemesPage() {
   }
   const user_id=allItems['user_id'];
   const [isClicked,setClick] = useState("inner");
+  const [isLoading, setIsLoading] = useState(true);
   const [markingScheme,setMarkingScheme] = useState({});
   
   const name=`${subjectId}---- ${year} ---Marking Scheme`
@@ -29,11 +31,13 @@ function MarkingSchemesPage() {
       const data = response.data
       setMarkingScheme(data)
       console.log("Data:",response.data)
+      setIsLoading(false);
       // Process the response data or update your React component state
     })
     .catch((error) => {
       console.error(error);
       setMarkingScheme(null)
+      setIsLoading(false);
       // Handle the error, e.g., display an error message to the user
     });
   }
@@ -53,10 +57,11 @@ function MarkingSchemesPage() {
 
   return (
     <div>
-      <NavBar />
+      <NavBar clicked={isClicked}/>
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
-      <MarkingSchemes clicked={isClicked} data={markingScheme}/>
-      
+      {isLoading ? <MoonLoader color="#4457FF" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 
+        :<MarkingSchemes clicked={isClicked} data={markingScheme}/>
+      }
     </div>
   )
 }

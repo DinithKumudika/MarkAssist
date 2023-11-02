@@ -1,7 +1,7 @@
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
 from bson.objectid import ObjectId
-from typing import Optional
+from typing import Optional,Dict,Union
 from pymongo import ReturnDocument
 from config.database import Database
 from schemas.marking_scheme import MarkingScheme , MarkingSchemeCreate, MarkingSchemeUpdate
@@ -103,13 +103,16 @@ class MarkingSchemeModel():
      
      
      def update(self, request: Request, filter: str, value: str | ObjectId, data)-> MarkingScheme | bool:
+          # print("filter", filter)
           updated_scheme = self.get_collection(request).find_one_and_update(
                {filter : value}, 
                {'$set': data},
                return_document=ReturnDocument.AFTER
           )
           
+          print("updated scheme", updated_scheme)
           if updated_scheme:
+               updated_scheme["id"] = str(updated_scheme["_id"])
                return updated_scheme
           else:
                return False

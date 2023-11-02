@@ -2,36 +2,49 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
 
+class finalAssignmentMarks(BaseModel):
+    index:Optional[str]|None
+    assignment_marks:Optional[str]|None
+
+class finalNonOcrMarks(BaseModel):
+    index:Optional[str]|None
+    non_ocr_marks:Optional[str]|None
+    
+
+    # subjectStream:str
 class Subject(BaseModel):
     id: str
-    # subjectStream:str
     subjectCode:str
     subjectName:str
     year:int
-    teacherId:str
     semester:int
     academicYear:int
+    no_credits:int
     assignmentMarks:int
     paperMarks:int
     editingTeacher:str
-    nonEditingTeaacher:str
+    nonEditingTeacher:str
+    backgroundImage: int = 1
+    finalAssignmentMarks: Optional[List[finalAssignmentMarks]] |None 
+    nonOcrMarks: Optional[List[finalNonOcrMarks]] |None 
     
+    
+            # "subjectStream":"SCS",
 
     class Config:
         schema_extra = {
         "example": {
             "id": "64882f6c32d15c1d89f06cdf",
-            # "subjectStream":"SCS",
             "subjectCode": "SCS2213",
             "subjectName":"DSA",
             "year": 2022,
-            "teacherId": "64873b4029eb156b34979ab0",
             "semester":2 ,
             "academicYear":2,
+            "no_credits":2,
             "assignmentMarks":30,
             "paperMarks":70,
-            "editingTeaacher":"Saman",
-            "nonEditingTeacher":"Chaminda",
+            "editingTeacher":"64873b4029eb156b34979ab0",
+            "nonEditingTeacher":"64873b4029eb156b34979ab0",
             }
         }
         
@@ -61,30 +74,34 @@ class SubjectCreate(BaseModel):
     subjectCode:str
     subjectName:str
     year:int
-    teacherId:str
     semester:int
     academicYear:int
+    no_credits:int
     assignmentMarks:int
     paperMarks:int
     editingTeacher:str
-    nonEditingTeaacher:str
-    createdAt: Optional[datetime] = Field(default_factory=datetime.now)
-    updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
+    nonEditingTeacher:str
+    backgroundImage: int = 1 
+    createdAt: Optional[datetime]
+    updatedAt: Optional[datetime]
+    finalAssignmentMarks: Optional[List[finalAssignmentMarks]] |None 
+    nonOcrMarks: Optional[List[finalNonOcrMarks]] |None 
+    
 
+            # "subjectStream":"SCS",
     class Config:
         schema_extra = {
         "example": {
-            # "subjectStream":"SCS",
             "subjectCode": "SCS2213",
             "subjectName":"DSA",
             "year": 2022,
-            "teacherId": "64873b4029eb156b34979ab0",
             "semester":2 ,
             "academicYear":2,
+            "no_credits":2,
             "assignmentMarks":30,
             "paperMarks":70,
-            "editingTeacher":"Saman",
-            "nonEditingTeaacher":"Chaminda",
+            "editingTeacher":"64873b4029eb156b34979ab0",
+            "nonEditingTeacher":"64873b4029eb156b34979ab0",
             "createdAt": "2023-06-27T10:00:00",
             "updatedAt": "2023-06-27T10:00:00"
             }

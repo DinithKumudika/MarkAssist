@@ -4,8 +4,12 @@ import Subjects from '../Components/Subjects/Subjects'
 import {useEffect, useState} from 'react'
 import { MoonLoader } from 'react-spinners';
 import axios from 'axios'
+// import { set } from 'mongoose';
 
 function SubjectsPage() {
+  setTimeout(() => {
+    // Timeout of 1s
+  }, 1000);
   const allItems=JSON.parse(localStorage.getItem('tokenData'));
   if(!allItems){
     window.location.href="/";
@@ -31,15 +35,21 @@ function SubjectsPage() {
       // console.log(headers)
       if(userType==="admin"){
         axios
-        .get(`http://127.0.0.1:8000/api_v1/subjects/${user_id}`, {headers})
+        .get(`http://127.0.0.1:8000/api_v1/admins/subjects`, {headers})
         .then((response) => {
           const data = response.data;
           console.log(data);
           setSubjects(data);
+          const sortedData = [...data].sort((a, b) => a.subjectName.localeCompare(b.subjectName));
+          setSubjects(sortedData)
           setIsLoading(false);
         })
         .catch((error) => {
-          console.error(error);
+          console.log(error.response.status);
+          if(error.response.status===404){
+            setSubjects(null);
+            setIsLoading(false);
+          }
         });
       }else if(userType==="teacher"){
         // console.log(headers);
@@ -48,10 +58,16 @@ function SubjectsPage() {
         .then((response) => {
           const data = response.data;
           setSubjects(data);
+          const sortedData = [...data].sort((a, b) => a.subjectName.localeCompare(b.subjectName));
+          setSubjects(sortedData)
           setIsLoading(false);
         })
         .catch((error) => {
-          console.error(error);
+          console.log(error.response.status);
+          if(error.response.status===404){
+            setSubjects(null);
+            setIsLoading(false);
+          }
         });
       }
     
@@ -80,10 +96,10 @@ function SubjectsPage() {
   ]
 
   return (
-    <div>
-      <NavBar black onClickFunc={handleClick}/>
+    <div className='h-[100vh]'>
+      <NavBar black onClickFunc={handleClick} clicked={isClicked}/>
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
-      {isLoading ? <MoonLoader color="#36d7b7" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 
+      {isLoading ? <MoonLoader color="#4457FF" height={6} width={128} className='absolute top-[20vw] left-[55%]'/> 
         :<Subjects clicked={isClicked} data={subjects}/>
       }
       

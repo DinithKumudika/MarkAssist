@@ -12,6 +12,9 @@ class User(BaseModel):
     userType: str
     emailActive: bool
     isDeleted: bool
+    title: str | None = None
+    role: str | None = None
+    createdAt: datetime | None = None
 
     class Config:
         schema_extra = {
@@ -21,7 +24,9 @@ class User(BaseModel):
                 "email": "dinith1999@gmail.com",
                 "userType": "student",
                 "emailActive": False,
-                "isDeleted": False
+                "isDeleted": False,
+                "title": "Dr",
+                "role": "Lecturer"
             }
         }
 
@@ -81,7 +86,7 @@ class UserCreate(UserBase):
 class StudentCreate(UserCreate):
     password: str
     userType: str = "student"
-    studentIndex: int
+    studentIndex: int = None
 
     class Config:
         schema_extra = {

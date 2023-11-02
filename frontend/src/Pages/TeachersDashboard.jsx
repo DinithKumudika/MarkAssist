@@ -1,9 +1,10 @@
 import React from 'react'
 import NavBar from '../Components/NavBar'
 import SideBar from '../Components/SideBar'
+import TeacherDashboard from '../Components/Dashboards/TeacherDashboard'
 import Subjects from '../Components/Subjects/Subjects'
 import {useState} from 'react'
-function AdminDashboard() {
+function TeachersDashboard() {
 
   const [isClicked,setClick] = useState("inner")
 
@@ -19,11 +20,12 @@ function AdminDashboard() {
 
   return (
     <div>
-      <NavBar />
+      <NavBar clicked={isClicked}/>
       <SideBar dashboard subjects clicked={isClicked} onClickFunc={handleClick}/>
+      <TeacherDashboard clicked={isClicked}/>
       {/* <Subjects clicked={isClicked}/> */}
     </div>
   )
 }
 
-export default AdminDashboard
+export default TeachersDashboard

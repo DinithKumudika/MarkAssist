@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from fastapi import UploadFile,File
-from typing import Optional, List
+from typing import Optional, List, Dict
 from datetime import datetime
 
 
@@ -27,7 +27,9 @@ class MarkingScheme(BaseModel):
      subjectId:str
      markingUrl:str
      markConfig: List[MarkPercentage]
-
+     isProceeded: bool = False
+     createdAt: Optional[datetime] = Field(default_factory=datetime.now)
+     updatedAt: Optional[datetime] = Field(default_factory=datetime.now)
      class Config:
           schema_extra = {
                "example": {

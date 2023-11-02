@@ -51,7 +51,7 @@ function MarkingSchemeConfigurePage() {
 
   return (
     <div>
-      <NavBar />
+      <NavBar clicked={isClicked}/>
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
       <MarkingSchemeConfigure clicked={isClicked} data={markings} subjectId={subjectId}/>
       

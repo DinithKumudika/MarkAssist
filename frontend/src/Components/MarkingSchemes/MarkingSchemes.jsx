@@ -42,13 +42,13 @@ function MarkingSchemes({clicked, data}) {
               <p className='text-lg text-black opacity-80 text-center'>Upload a new one or change the previous one</p>
             </div>
             <div className='px-12 max-sm:px-4 flex flex-row justify-between w-full'>
-              <button className="rounded rounded-sm bg-[#00ADEF] w-40 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleCKick}><AiOutlinePlus/><div className='ml-2'>Upload</div></button>
-              <button className="rounded rounded-sm bg-[#00ADEF] w-40 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row"><BiFilter/><div className='ml-2'>Filter</div></button>
+              <button className="rounded rounded-sm bg-custom-blue-main w-40 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row" onClick={handleCKick}><AiOutlinePlus/><div className='ml-2'>Upload</div></button>
+              <button className="rounded rounded-sm bg-custom-blue-main w-40 max-sm:w-20 h-9 mr-2 text-white flex justify-center items-center flex-row"><BiFilter/><div className='ml-2'>Filter</div></button>
               <form className='w-3/4 ' >
                 <input className="rounded shadow shadow-gray-600 w-full h-9 p-2 mb-4" type="text" placeholder='Search'/>
               </form>
             </div>
-            <Table name={true} date={true} select={link} MarkingSchemes={data}/>
+            <Table name={true} date={true} select={link} configured={true} MarkingSchemes={data}/>
         </div>
             // <td className='text-lg px-4 max-sm:px-1 h-10 border-y-2 border-x-2 font-medium opacity-60'>{data.subjectCode}-{data.subjectName}-{data.year}</td>
 

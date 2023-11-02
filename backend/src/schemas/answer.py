@@ -9,6 +9,10 @@ class Answer(BaseModel):
      questionNo: str
      text: str
      uploadUrl: str
+     accuracy: Optional[float] = 0.0
+     keywordsaccuracy: Optional[float] = 0.0
+     marks: Optional[float] = 0.0
+     
      
 class AnswerCreate(BaseModel):
      paperNo: str
@@ -17,7 +21,12 @@ class AnswerCreate(BaseModel):
      questionNo: str
      text: str
      uploadUrl: str
+     accuracy: Optional[float] = 0.0
+     keywordsaccuracy: Optional[float] = 0.0
+     marks: Optional[float] = 0.0
      
 class AnswerUpdate(BaseModel):
-     pass
+     userId: str
+     questionNo: str
+     accuracy:float
 

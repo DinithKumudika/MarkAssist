@@ -1,28 +1,28 @@
 from fastapi import APIRouter, HTTPException, status, Request,Depends,UploadFile, File,Form
 from fastapi.params import Body
 from fastapi.responses import JSONResponse
-from typing import List
+from typing import List, Dict
 from bson.objectid import ObjectId
 import httpx
+import random
 
 import cv2
 import numpy as np
 from google.cloud import vision
 
-import cv2
-import numpy as np
-from google.cloud import vision
+from msrest.authentication import CognitiveServicesCredentials
+from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 
 import os
+from config.config import settings
 
 from models.marking_scheme import MarkingSchemeModel
 from schemas.marking_scheme import MarkingScheme, MarkingSchemeCreate, MarkPercentage
-from schemas.marking import MarkingUpdate
+from schemas.marking import MarkingUpdate, Marking, MarkingCreate
 from models.marking import MarkingModel
 from models.subject import SubjectModel
 
 from schemas.user import User
-from schemas.marking import Marking, MarkingCreate
 from utils.auth import get_current_active_user
 from utils.firebase_storage import upload_file, upload_file2 
 import helpers
@@ -45,7 +45,7 @@ async def get_All(request: Request):
      
      
 @router.post("/", response_description="upload a marking scheme", response_model = MarkingScheme, status_code= status.HTTP_201_CREATED)
-async def add_marking(request: Request, file: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...) ):
+async def add_marking(request: Request, files: UploadFile = File(...), year: str = Form(...), subjectId: str = Form(...) ):
      
      # get the subjectCode and subjectName using subjectId
      # subject = subject_model.subject_by_id(request, subjectId)
@@ -63,7 +63,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                marking_model.delete(request, "subjectId", subjectId)
           
           
-          marking_url = await upload_file(file,file.filename)  # Assuming you have implemented the `upload_file` function
+          marking_url = await upload_file(files,files.filename)  # Assuming you have implemented the `upload_file` function
           
           defaultMarkConfig = [
                {
@@ -72,12 +72,12 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     "percentageOfMarks": 30
                },
                {
-                    "minimum": 30,
+                    "minimum": 31,
                     "maximum": 70,
                     "percentageOfMarks": 70
                },
                {
-                    "minimum": 70,
+                    "minimum": 71,
                     "maximum": 100,
                     "percentageOfMarks": 100
                }          
@@ -101,8 +101,8 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     response = await client.get(marking_url)
                     response.raise_for_status()
                     save_path = f"./../data/marking_schemes/{marking_id}.pdf"
-                    with open(save_path, "wb") as file:
-                         file.write(response.content)
+                    with open(save_path, "wb") as files:
+                         files.write(response.content)
                try:
                     # convert marking scheme to images
                     dir_path = os.path.join('./../data/images/marking_scheme', marking_id)
@@ -171,12 +171,14 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     answers = []
                     keywords = []
                     client = vision.ImageAnnotatorClient()
+                    # cv_client = ComputerVisionClient(settings.VISION_ENDPOINT, CognitiveServicesCredentials(settings.VISION_API_KEY))
                     # answer_path = os.path.join(f'./../data/markings/{marking_id}', "answers")
                     # keyword_path = os.path.join(f'./../data/markings/{marking_id}', "keywords")
                     answer_images = helpers.get_images(answer_path)
                     keyword_images = helpers.get_images(keyword_path)
                     
                     for i, image in enumerate(answer_images):
+                         # scanned_text = helpers.read_text(client, image)
                          scanned_text = helpers.read_text(client, image)
                          answers.append({
                               "question no": i+1, 
@@ -184,6 +186,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                          })
                     
                     for i, image in enumerate(keyword_images):
+                         # scanned_text = helpers.read_text(client, image)
                          scanned_text = helpers.read_text(client, image)
                          keywords_arr = scanned_text.split(',')
                          keywords.append({
@@ -198,8 +201,8 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                     markings = []
                     
                     for i, image in enumerate(answer_images):
-                         with open(image, "rb") as file:
-                              upload = UploadFile(filename=image, file=file)
+                         with open(image, "rb") as files:
+                              upload = UploadFile(filename=image, file=files)
                               filename = f"Q_{i+1}"
                               file_url = await upload_file2(upload, "uploads/images/answers/marking_schemes", marking_id, filename)
                               urls.append(file_url)
@@ -218,6 +221,7 @@ async def add_marking(request: Request, file: UploadFile = File(...), year: str 
                               partNo='',
                               noOfPoints='',
                               marks='',
+                              keywordsMarks='',
                               text=answer_text,
                               keywords=extracted_keywords,
                               uploadUrl=file_url,
@@ -298,28 +302,26 @@ async def download_paper(request: Request, scheme_id : str):
 
 
 @router.put('/update/grading/{markingSchemeId}', response_description="update an marking config of a marking scheme", response_model=MarkingScheme)
-async def update_mark_config(request: Request, markingSchemeId: str, payload: List[MarkPercentage] = Body()):
+async def update_mark_config(request: Request, markingSchemeId: str, payload = Body(...)):
      print("markingSchemeId:",markingSchemeId)
-     print("payload:",payload)
-     updated_scheme = marking_scheme_model.update(request, "_id", ObjectId(markingSchemeId), payload)
-     
+     print("payload:", payload)
+     updated_scheme = marking_scheme_model.update(request, "_id", ObjectId(markingSchemeId), {"markConfig": payload})
      if updated_scheme:
           return updated_scheme
-     else:
-          return JSONResponse(
-               {
-                    "message": "error updating marking scheme"
-               }, 
-               status_code=status.HTTP_304_NOT_MODIFIED
-          )
+     raise HTTPException(
+          status_code=status.HTTP_304_NOT_MODIFIED, 
+          detail=f"error updating marking scheme"
+     )
      
 @router.put('/update/{subjectId}', response_description="Update an existing marking scheme questions")
 async def update_marking(request: Request, subjectId: str, payload: List[MarkingUpdate] = Body()):
      print("SubjectID:",subjectId)
      updates = []
+     data_available=False
      for data in payload:
           print("datassss:",data)
           if data is not None:
+               data_available=True
                updates.append(
                     {
                          "filter": {"_id": ObjectId(data.id), "subjectId": subjectId}, 
@@ -330,25 +332,28 @@ async def update_marking(request: Request, subjectId: str, payload: List[Marking
                                    "partNo": data.partNo,
                                    "noOfPoints": data.noOfPoints,
                                    "marks": data.marks,
+                                   "keywordsMarks": data.keywordsMarks,
                                    "selected": data.selected
                               }
                          }
                     }
                )
-     update_count = marking_model.update_multiple(request, updates)
-     
-     if update_count:
-          # TODO: return updated answer entries
-          return JSONResponse(
-               {
-                    "detail": f"{update_count} answers updated"
-               }, 
-               status_code=status.HTTP_200_OK
+     if data_available:
+          update_count = marking_model.update_multiple(request, updates)
+          if update_count:
+               # TODO: return updated answer entries
+               print("update_count:",update_count)
+               updated_scheme = marking_scheme_model.update(request, "subjectId", str(subjectId), {"isProceeded": True})
+               return JSONResponse(
+                    {
+                         "detail": f"{update_count} answers updated"
+                    }, 
+                    status_code=status.HTTP_200_OK
+               )
+          raise HTTPException(
+               status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+               detail="update failed"
           )
-     raise HTTPException(
-          status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-          detail="update failed"
-     )
      
 
 # get marking scheme by  subjectId

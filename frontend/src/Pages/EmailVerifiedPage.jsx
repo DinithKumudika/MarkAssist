@@ -1,8 +1,16 @@
 import { MdVerified } from "react-icons/md";
 import Button from "../Components/Button";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 function EmailVerifiedPage() {
+  const { token } = useParams();
   const handleClick = ()=>{
-    window.location.href = '/';
+    axios
+    .get(`http://127.0.0.1:8000/api_v1/auth/verify-email/${token}`)
+    .then((response)=>{
+      console.log(response.data);
+      window.location.href = '/';
+    })
   }
   return (
     <div className="border-2 border-gray-900 flex items-center justify-center h-full">

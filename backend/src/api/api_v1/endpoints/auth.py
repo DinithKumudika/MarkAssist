@@ -38,7 +38,9 @@ async def login(request: Request, payload: OAuth2PasswordRequestForm = Depends()
     token = generate_token({
         "user_id": user["id"],
         "username": user["email"],
-        "user_role": user["userType"]
+        "user_role": user["userType"],
+        "firstName": user["firstName"],
+        "lastName": user["lastName"],
     })
 
     return Token(access_token=token, token_type="bearer")
@@ -53,7 +55,8 @@ async def google_login(request: Request):
 # register new user
 @router.post("/register", response_description="Create new user", response_model=User)
 async def register(request: Request, type: str, payload: Union[StudentCreate, TeacherCreate] = Body()) -> User:
-    
+    print("TYPE::",type)
+    print("PAYLOAD::",payload)
     user = user_model.by_email(request, payload.email)
 
     if user:
@@ -92,7 +95,7 @@ async def register(request: Request, type: str, payload: Union[StudentCreate, Te
         
         if(type == 'student'):
             if updated_user:
-                url = f"http://localhost:5000/verify-account/{token.hex()}"
+                url = f"http://localhost:3000/verify-account/{token.hex()}"
             
                 try:
                     send_email_verification_email(to=payload.email, name=payload.firstName, url=url)
@@ -105,7 +108,7 @@ async def register(request: Request, type: str, payload: Union[StudentCreate, Te
                     return HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif(type == 'teacher'):
                 if updated_user:
-                    url = f"http://localhost:5000/complete-registration/{token.hex()}"
+                    url = f"http://localhost:3000/complete-registration/{token.hex()}"
             
                 try:
                     send_add_password_email(to=payload.email, name=payload.firstName, url=url)
@@ -166,14 +169,14 @@ async def verify_token(request: Request, token: str):
             detail="Invalid code or user doesn't exist"
         )
     
-    if user.emailActive:
+    if user['emailActive']:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, 
             detail='Email can only be verified once'
         )
     
     verify_user = UserVerify(emailActive=True, updatedAt=datetime.utcnow())
-    updated_user = user_model.update_single(request, "_id", ObjectId(user.id), verify_user.dict())
+    updated_user = user_model.update_single(request, "_id", ObjectId(user['id']), verify_user.dict())
     
     if updated_user:
         return JSONResponse(
@@ -186,6 +189,7 @@ async def verify_token(request: Request, token: str):
 
 @router.post('/complete-registration/{token}', response_description='add password to account')
 async def add_password_to_account(request: Request, token: str, payload:AddTecherPassword = Body()):
+    print("incoming", payload)
     hashed_code = hashlib.sha256()
     hashed_code.update(bytes.fromhex(token))
     verification_code = hashed_code.hexdigest()

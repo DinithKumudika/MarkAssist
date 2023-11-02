@@ -52,12 +52,12 @@ function Register(){
             formdata.append('emailActive', false);
             formdata.append('isDeleted', false);
             try{
-                const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/register',formData);
+                const response = await axios.post('http://127.0.0.1:8000/api_v1/auth/register?type=student',formData);
                 console.log(response.data); 
                 navigate('/login');
             }catch(error){
                 console.log("error:"+error.response.data.message);
-                if(error.response && error.response.status >=400 && error.response.status <500){
+                if(error.response && error.response.status >=400 && error.response.status <=500){
                     console.log(error.response.data.message);
                     setError(error.response.data.message);
                 }

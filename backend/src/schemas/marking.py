@@ -10,6 +10,7 @@ class Marking(BaseModel):
      noOfPoints: str
      marks: str
      text: str
+     keywordsMarks:str
      keywords: list
      uploadUrl: str
      markingScheme: str
@@ -33,6 +34,7 @@ class MarkingCreate(BaseModel):
      partNo: str
      noOfPoints: str
      marks: str
+     keywordsMarks:str
      text: str
      keywords: list
      uploadUrl: str
@@ -47,6 +49,7 @@ class MarkingUpdate(BaseModel):
      partNo: str
      noOfPoints: str
      marks: str
+     keywordsMarks:str
      text: Optional[str] = None
      keywords: list
      uploadUrl: Optional[str] = None

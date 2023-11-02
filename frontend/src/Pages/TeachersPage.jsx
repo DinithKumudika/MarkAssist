@@ -46,7 +46,7 @@ function TeachersPage() {
 
   return (
     <div>
-      <NavBar black onClickFunc={handleClick}/>
+      <NavBar black onClickFunc={handleClick} clicked={isClicked}/>
       <SideBar mcq subjects markingSchemes answerPapers clicked={isClicked} onClickFunc={handleClick}/>
       <Teachers clicked={isClicked} data={teachers}/>
     </div>
